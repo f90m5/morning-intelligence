@@ -52,6 +52,12 @@ def run():
 
     logger.info(f"=== Morning Intelligence Brief — {today} ===")
 
+    # Skip if today's brief already exists
+    existing = PROJECT_ROOT / "outputs" / "briefs" / f"{today}.md"
+    if existing.exists():
+        logger.info(f"Brief already exists for {today} — skipping. Delete {existing.name} to regenerate.")
+        return True
+
     # Step 1: Fetch articles
     try:
         articles = fetch_and_rank_articles()
