@@ -1,0 +1,17 @@
+json{"preset": "fast"}
+-
+Sonnet, 2000 tokens, no verification. Cheapest, fastest (~$0.05, ~30 seconds)
+
+
+
+
+json{"preset": "standard"}
+-
+Sonnet, 4000 tokens, verification pass that checks sourcing/specificity/accuracy. What just ran (~$0.15, ~60 seconds)
+
+
+
+
+json{"preset": "deep"}
+-
+Opus, 6000 tokens, Opus verification pass. Maximum quality — Opus is better at nuanced analysis and will catch more gaps (~$1.00, ~90 seconds)

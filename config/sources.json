@@ -1,0 +1,41 @@
+{
+  "rss_feeds": [
+
+    {"name": "BBC News - Business",       "url": "https://feeds.bbci.co.uk/news/business/rss.xml",        "category": "business",  "tier": 3},
+    {"name": "NPR - Business",            "url": "https://feeds.npr.org/1006/rss.xml",                    "category": "business",  "tier": 2},
+    {"name": "Fortune",                    "url": "https://fortune.com/feed/",                             "category": "business",  "tier": 2},
+    {"name": "Business Insider",           "url": "https://www.businessinsider.com/rss",                   "category": "business",  "tier": 1},
+    {"name": "Financial Times",            "url": "https://www.ft.com/rss/home",                           "category": "business",  "tier": 3},
+
+    {"name": "CNBC - Top News",            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114", "category": "markets", "tier": 2},
+    {"name": "MarketWatch",                "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories", "category": "markets", "tier": 3},
+    {"name": "Bloomberg",                  "url": "https://feeds.bloomberg.com/markets/news.rss",          "category": "markets",   "tier": 3},
+    {"name": "Yahoo Finance",              "url": "https://finance.yahoo.com/news/rssindex",               "category": "markets",   "tier": 1},
+
+    {"name": "TechCrunch",                 "url": "https://techcrunch.com/feed/",                          "category": "technology", "tier": 2},
+    {"name": "Ars Technica",               "url": "https://feeds.arstechnica.com/arstechnica/index",       "category": "technology", "tier": 2},
+    {"name": "The Verge",                  "url": "https://www.theverge.com/rss/index.xml",                "category": "technology", "tier": 2},
+    {"name": "Wired",                      "url": "https://www.wired.com/feed/rss",                        "category": "technology", "tier": 2},
+    {"name": "MIT Technology Review",      "url": "https://www.technologyreview.com/feed/",                "category": "technology", "tier": 3},
+    {"name": "The Register",               "url": "https://www.theregister.com/headlines.atom",            "category": "technology", "tier": 1},
+    {"name": "Hacker News - Best",         "url": "https://hnrss.org/best",                                "category": "technology", "tier": 2},
+    {"name": "Engadget",                   "url": "https://www.engadget.com/rss.xml",                      "category": "technology", "tier": 1},
+
+    {"name": "MIT AI News",                "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml", "category": "ai_data", "tier": 3},
+    {"name": "Google AI Blog",             "url": "https://blog.google/technology/ai/rss/",                "category": "ai_data",   "tier": 2},
+    {"name": "Towards Data Science",       "url": "https://towardsdatascience.com/feed",                   "category": "ai_data",   "tier": 1},
+    {"name": "KDnuggets",                  "url": "https://www.kdnuggets.com/feed",                        "category": "ai_data",   "tier": 2},
+    {"name": "Data Engineering Weekly",    "url": "https://www.dataengineeringweekly.com/feed",            "category": "ai_data",   "tier": 2},
+
+    {"name": "The Guardian - World",       "url": "https://www.theguardian.com/world/rss",                 "category": "world",     "tier": 2},
+    {"name": "NPR - Top Stories",          "url": "https://feeds.npr.org/1001/rss.xml",                    "category": "world",     "tier": 2},
+    {"name": "Al Jazeera",                 "url": "https://www.aljazeera.com/xml/rss/all.xml",             "category": "world",     "tier": 2},
+
+    {"name": "Nature News",                "url": "https://www.nature.com/nature.rss",                     "category": "science",   "tier": 3},
+    {"name": "Science Daily",              "url": "https://www.sciencedaily.com/rss/all.xml",              "category": "science",   "tier": 2}
+
+  ],
+  "categories": ["business", "markets", "technology", "ai_data", "world", "science"],
+  "max_articles_per_feed": 8,
+  "max_total_articles": 20
+}

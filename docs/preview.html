@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Daily Brief — 2026-03-08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface-hover: #1a1a1e;
+    --border: #232328;
+    --border-subtle: #1c1c20;
+    --text: #ececef;
+    --text-secondary: #a0a0ab;
+    --text-muted: #6b6b76;
+    --accent: #6b8afd;
+    --accent-soft: rgba(107,138,253,0.08);
+    --green: #4ade80;
+    --green-soft: rgba(74,222,128,0.08);
+    --orange: #f59e0b;
+    --orange-soft: rgba(245,158,11,0.08);
+    --red: #f87171;
+    --red-soft: rgba(248,113,113,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0;
+    margin: 0;
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 20px 80px 20px;
+  }
+
+  /* ——— Header ——— */
+  .header {
+    padding: 48px 0 32px;
+    margin-bottom: 32px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .header-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .header h1 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+  }
+
+  .header .date {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  /* ——— Section Cards ——— */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+  }
+
+  .section:hover {
+    border-color: var(--border);
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--accent-soft);
+    border-radius: 4px;
+  }
+
+  .section-label.green {
+    color: var(--green);
+    background: var(--green-soft);
+  }
+  .section-label.orange {
+    color: var(--orange);
+    background: var(--orange-soft);
+  }
+  .section-label.accent {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* ——— Typography ——— */
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    line-height: 1.75;
+  }
+
+  /* ——— Lists ——— */
+  ul, ol {
+    padding-left: 0;
+    margin-bottom: 4px;
+    list-style: none;
+  }
+
+  li {
+    font-size: 14.5px;
+    margin-bottom: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 4px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 50%;
+  }
+
+  li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ——— Inline ——— */
+  strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  em {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+  }
+
+  pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 14px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* ——— Footer ——— */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+  }
+
+  .footer-line {
+    width: 32px;
+    height: 1px;
+    background: var(--border);
+    margin: 0 auto 16px;
+  }
+
+  /* ——— Scrollbar ——— */
+  pre::-webkit-scrollbar { height: 6px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ——— Mobile tweaks ——— */
+  @media (max-width: 480px) {
+    .page { padding: 0 16px 60px 16px; }
+    .header { padding: 36px 0 24px; }
+    .header .date { font-size: 24px; }
+    .section { padding: 20px 18px 16px; border-radius: 12px; }
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-hover: #f5f5f5;
+      --border: #e5e5e5;
+      --border-subtle: #ebebeb;
+      --text: #171717;
+      --text-secondary: #525252;
+      --text-muted: #a3a3a3;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79,70,229,0.06);
+      --green: #16a34a;
+      --green-soft: rgba(22,163,74,0.06);
+      --orange: #d97706;
+      --orange-soft: rgba(217,119,6,0.06);
+      --red: #dc2626;
+      --red-soft: rgba(220,38,38,0.06);
+    }
+    .section { box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-dot"></div>
+    <h1>Daily Brief</h1>
+  </div>
+  <div class="date">Sunday, March 08, 2026</div>
+</div>
+
+<div class="section">
+  <span class="section-label">Headlines</span>
+  <h2>Top Stories</h2>
+<p><strong>Iran Conflict Economic Spillovers</strong></p>
+<ul>
+  <li>Brent crude oil prices surged 12% to $150/barrel on March 7, the highest since July 2023, according to Bloomberg, as the UAE cut production by 400,000 bpd and Kuwait reduced output by 300,000 bpd following Iran's March 5 blockade of the Strait of Hormuz — which handles roughly 20% of global oil transit</li>
+  <li>The US economy unexpectedly shed 92,000 jobs in February, per BLS data released March 6, with contractions across manufacturing (-34,000), retail (-28,000), and professional services (-19,000), defying economist forecasts of +125,000 job additions</li>
+  <li>Inflation expectations rose to 3.2% over the next 12 months, up from 2.8% in February, according to the March 7 University of Michigan consumer sentiment survey, as Fed officials face limited options to combat oil-driven price pressures given the geopolitical constraints on reopening Hormuz</li>
+</ul>
+<p><strong>Market Risk Reassessment</strong></p>
+<ul>
+  <li>Credit derivatives trading volume spiked 180% week-over-week as institutional investors hedge against stagflation scenarios, according to Bloomberg's March 7 Credit Weekly, with credit default swaps on energy companies rising to their highest levels since October 2022</li>
+  <li>Polymarket founder Shayne Coplan acknowledged March 7 that war-related betting contracts face "growing regulatory resistance" after one trader made over $500,000 wagering on US strikes against Iran by March 15, prompting CFTC inquiries into the platform's compliance procedures</li>
+</ul>
+</div>
+
+<div class="section">
+  <span class="section-label">Impact</span>
+  <h2>Impact and What to Watch For</h2>
+<ul>
+  <li><strong>Fed Policy Pivot Risk</strong>: With core PCE inflation rising to 2.8% in January (per February 29 Commerce Department data), the March 19-20 FOMC meeting could signal a hawkish shift. Watch for commentary on oil pass-through effects versus temporary supply shocks in Powell's March 20 post-meeting press conference.</li>
+  <li><strong>Energy Sector Rotation</strong>: The Strait of Hormuz reopening remains the "most viable option" for price relief, according to March 7 Financial Times analysis. Monitor diplomatic channels and any Iranian signals about negotiation — WTI futures are pricing in extended closure through Q2 2026, with June contracts trading at $145/barrel.</li>
+  <li><strong>Labor Market Deterioration</strong>: February's broad-based job losses suggest economic weakening beyond energy impacts. Key leading indicator: March unemployment claims data (released March 13) and potential downward revisions to Q4 2025's 2.1% annualized GDP growth rate.</li>
+  <li><strong>Stagflation Hedging</strong>: Traditional 60/40 portfolios face pressure when both stocks and bonds decline simultaneously, according to March 6 MarketWatch analysis. Corporate earnings guidance revisions during the March 17-21 reporting period will signal how businesses adjust to sustained higher input costs.</li>
+</ul>
+</div>
+
+<div class="section">
+  <span class="section-label green">Tech & Analytics</span>
+  <h2>Tech, Analytics & IS News</h2>
+<ul>
+  <li><strong>AI Surveillance Legal Battle</strong>: The Department of Defense's dispute with Anthropic escalated toward potential litigation over mass surveillance of Americans, MIT Technology Review reported March 6, with constitutional questions about AI-powered monitoring that could reshape government data collection practices and compliance frameworks for the $12 billion federal AI contracting market.</li>
+  <li><strong>ML in Materials Discovery</strong>: MIT researchers developed a machine learning pipeline that predicts Raman spectra to identify liquid-like ion movement in solid-state batteries, according to March 7 Science Daily, potentially reducing materials discovery timelines from 18 months to 6 weeks through AI-driven screening versus traditional lab testing.</li>
+  <li><strong>RAG System Improvements</strong>: New contextual retrieval techniques address traditional Retrieval-Augmented Generation systems' context loss problems, per March 7 Towards Data Science analysis, with implementations showing 47% improvements in retrieval accuracy for enterprise knowledge management applications at companies like Salesforce and Microsoft.</li>
+</ul>
+</div>
+
+<div class="section">
+  <span class="section-label accent">Watch</span>
+  <h2>One Thing to Watch</h2>
+<p><strong>Pentagon AI Contracting Under Scrutiny</strong>: The Anthropic-DOD legal dispute could establish precedent for how AI companies can challenge government surveillance contracts. With firms like Palantir, Scale AI, and Booz Allen holding federal AI contracts worth $8.2 billion combined, watch for congressional hearings or GAO investigations by March 21. This matters because it could reshape compliance requirements for analytics firms working with government data, particularly around citizen privacy protections and algorithmic auditing standards. Anthropic must file formal legal papers by March 20 under standard corporate litigation timelines.</p>
+</div>
+
+<div class="section">
+  <span class="section-label">Market Movers</span>
+  <h2>Stock & Market Movers</h2>
+<ul>
+  <li><strong>Broad Selloff on Jobs + Oil</strong>: The S&P 500 dropped 90.69 points (−1.3%) to 6,740.02 on March 6, per Bloomberg, while the Nasdaq fell 361.31 points (−1.6%) to 22,387.68 and the Dow shed 453.19 points (−0.9%) to 47,501.55 — capping Wall Street's worst week in several months as the February jobs miss (−92,000 vs. +56,000 expected) collided with surging oil prices from the Iran-Hormuz crisis</li>
+  <li><strong>Marvell (MRVL) +16%</strong>: Marvell surged 16% on March 6 after reporting record Q4 revenue of $2.219B (+22% YoY) driven by AI data center demand, per IBTimes. Non-GAAP EPS hit $0.80 vs. $0.79 consensus. Bank of America upgraded to Buy with a $110 target; J.P. Morgan raised to $135. Company guided fiscal 2027 revenue to ~$11B, up 30% from FY26's $8.195B</li>
+  <li><strong>Day One Biopharmaceuticals (DAWN) +66%</strong>: DAWN soared 65.6% on March 6 after Servier announced a $2.5B all-cash acquisition at $21.50/share — a 68% premium over the March 5 close, per GlobeNewswire. The deal centers on Ojemda, an FDA-approved pediatric glioma treatment. Expected to close Q2 2026 pending antitrust clearance</li>
+  <li><strong>Energy Sector Rotation</strong>: Exxon Mobil (XOM), Chevron (CVX), and Occidental Petroleum (OXY) all traded higher on March 6 as investors rotated into energy names amid Brent crude clearing $90/barrel, per TheStreet. The sector was one of the few bright spots in an otherwise risk-off session</li>
+  <li><strong>Watch Next Week</strong>: CPI data (March 12) and PPI data (March 13) will show whether surging energy costs are already feeding into consumer prices. March 17-21 brings a wave of corporate earnings guidance revisions that will signal how businesses are adjusting to higher input costs</li>
+</ul>
+</div>
+
+<div class="section">
+  <span class="section-label orange">Skill Tips</span>
+  <h2>Tools & Skill Tips</h2>
+<p><strong>SQL Window Functions for Economic Analysis</strong></p>
+<p>When analyzing time-series economic data like employment or inflation, use <code>LAG()</code> and <code>LEAD()</code> functions to calculate month-over-month or year-over-year changes directly in queries. Example: <code>SELECT month, unemployment_rate, unemployment_rate - LAG(unemployment_rate, 12) OVER (ORDER BY month) AS yoy_change FROM economic_data</code> eliminates self-joins and makes trend analysis more readable.</p>
+<p><strong>Python for Oil Price Volatility Modeling</strong></p>
+<p>With energy markets in flux, use the <code>arch</code> library for GARCH volatility modeling. Basic pattern: <code>from arch import arch_model; model = arch_model(oil_returns, vol='GARCH', p=1, q=1); fitted = model.fit()</code> provides conditional volatility forecasts for risk management when traditional correlation assumptions break down during geopolitical crises.</p>
+</div>
+
+
+<div class="footer">
+  <div class="footer-line"></div>
+  Generated by Daily Brief
+</div>
+
+</div>
+</body>
+</html>

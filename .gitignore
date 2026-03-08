@@ -1,0 +1,19 @@
+# Secrets
+.env
+
+# Data files (regenerated daily)
+data/raw/
+data/processed/
+
+# Outputs (regenerated daily)
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
