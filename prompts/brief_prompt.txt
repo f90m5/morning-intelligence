@@ -48,17 +48,19 @@ Same sourcing rules: name the company, date, and source.
 A developing story or emerging trend worth following over the coming days or weeks. Explain what's happening, what to look for next, and why it matters. Include a timeframe and source.
 
 ## 5. Stock & Market Movers
-2-4 bullet points highlighting notable stock market movements, sector shifts, or individual equities making big moves. Focus on:
-- Stocks or sectors with significant price swings (5%+ moves) and what's driving them
-- Earnings surprises, analyst upgrades/downgrades, or guidance changes
-- Sector rotation signals or unusual trading volume
+2-4 bullet points on what actually moved in the market — report confirmed price changes, not predictions. Focus on:
+- Stocks or indexes with confirmed significant price moves (5%+ swings) and the specific catalyst
+- Earnings surprises, analyst upgrades/downgrades, or guidance changes that already happened
+- Sector-wide moves with a clear driver
 - Any market-moving events scheduled in the next 1-2 trading days (earnings releases, IPOs, index rebalances)
 
-Same sourcing rules: include the ticker symbol, percentage move, source, and date. Example:
-Bad: "Tech stocks fell on rate concerns"
+CRITICAL: Only report moves that have already occurred. Do NOT write "could see", "may decline", "watch for potential moves", or any other forward-looking price speculation. If a stock hasn't actually moved yet, don't include it. Report facts, not forecasts.
+
+Same sourcing rules: include the ticker symbol, confirmed percentage move, source, and date. Example:
+Bad: "Tech stocks could fall on rate concerns — watch MSFT and GOOGL for potential declines"
 Good: "The Nasdaq Composite dropped 2.3% on March 6, per Bloomberg, led by semiconductor stocks after TSMC (TSM) warned of softening AI chip demand in its March 5 investor update"
 
-This section should help the reader understand what's moving in the market and why. Eventually this will be personalized to the reader's portfolio, so build the habit of being specific about tickers and catalysts.
+If confirmed move data is scarce in the articles provided, write 1-2 strong bullets instead of padding with speculation.
 
 ## 6. Tools & Skill Tips
 Two practical techniques, tools, or shortcuts related to analytics work. Be specific enough that the reader could try each one today. For each tip, write a short heading and 2-3 sentences explaining it.
@@ -67,13 +69,27 @@ Good areas: SQL patterns, Python libraries, dashboard design, Excel tricks, data
 
 If there's a natural connection to today's news, use it for one of the tips. The other can be independently useful.
 
+## 7. Geopolitics
+3-5 bullet points covering the most significant international developments and geopolitical shifts. Focus on:
+- Active conflicts, ceasefires, peace negotiations, or military deployments
+- Sanctions, trade disputes, diplomatic breakthroughs, or treaty developments
+- Elections, regime changes, or political instability in major economies
+- Strategic moves by major powers (US, China, EU, Russia) and regional blocs
+- Resource or energy disputes with global supply chain implications
+
+CRITICAL: Each bullet MUST include the location/region, specific dates, and the source reporting it (e.g., "according to Reuters", "per a BBC report dated March 7"). Name the countries, leaders, and organizations involved. The reader should understand not just what happened, but where, when, and why it matters globally.
+
+Bad: "Tensions rose in the Middle East"
+Good: "Iran's Foreign Minister Abbas Araghchi and Saudi Crown Prince Mohammed bin Salman met in Riyadh on March 6 for the first bilateral summit since the 2023 Beijing-brokered détente, per Al Jazeera — discussions focused on Yemen ceasefire terms and a joint Red Sea shipping corridor"
+
 ---
 
 Guidelines:
 - Write for someone smart but early-career. Explain jargon briefly when you use it.
 - Prioritize signal over noise. Skip celebrity news, clickbait, and minor product updates.
-- Total length: 800-1100 words. Focused 8-10 minute read.
+- Total length: 900-1300 words. Focused 8-12 minute read.
 - Use plain markdown formatting. No emojis.
 - Be direct, specific, and sourced. Every factual claim should reference who reported it or where the data comes from.
 - Tone: sharp, analytical, concise — like a Bloomberg terminal note, not a blog post.
 - Use bullet markers (• or -) consistently for all bullet points.
+- NO REPEATED FACTS: A topic can appear in multiple sections if each mention adds genuinely new information. If Iran's oil blockade is in Top Stories with the price data, Impact can cover the Fed policy consequences, Geopolitics can cover the diplomatic angle, and Market Movers can cover the energy sector moves — but none of them should restate the same figures or sentences already used. Every mention of a topic must contribute something the reader hasn't seen yet in the brief.

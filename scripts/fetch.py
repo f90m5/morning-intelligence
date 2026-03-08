@@ -193,6 +193,8 @@ def rank_articles(articles, history=None):
         "ai ", "artificial intelligence", "machine learning", "data",
         "cloud", "cybersecurity", "startup", "funding",
         "market", "stock", "economy", "trade", "tariff",
+        "sanctions", "nato", "military", "conflict", "treaty",
+        "diplomacy", "geopolit", "nuclear", "alliance", "embargo",
     ]
 
     if history is None:

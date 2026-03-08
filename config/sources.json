@@ -31,11 +31,18 @@
     {"name": "NPR - Top Stories",          "url": "https://feeds.npr.org/1001/rss.xml",                    "category": "world",     "tier": 2},
     {"name": "Al Jazeera",                 "url": "https://www.aljazeera.com/xml/rss/all.xml",             "category": "world",     "tier": 2},
 
+    {"name": "Reuters - World",            "url": "https://www.reutersagency.com/feed/?best-topics=political-general&post_type=best", "category": "geopolitics", "tier": 3},
+    {"name": "BBC News - World",           "url": "https://feeds.bbci.co.uk/news/world/rss.xml",           "category": "geopolitics", "tier": 3},
+    {"name": "Foreign Affairs",            "url": "https://www.foreignaffairs.com/rss.xml",                "category": "geopolitics", "tier": 3},
+    {"name": "AP News - World",            "url": "https://rsshub.app/apnews/topics/world-news",           "category": "geopolitics", "tier": 2},
+    {"name": "France24 - International",   "url": "https://www.france24.com/en/rss",                       "category": "geopolitics", "tier": 2},
+    {"name": "DW News",                    "url": "https://rss.dw.com/rdf/rss-en-all",                     "category": "geopolitics", "tier": 2},
+
     {"name": "Nature News",                "url": "https://www.nature.com/nature.rss",                     "category": "science",   "tier": 3},
     {"name": "Science Daily",              "url": "https://www.sciencedaily.com/rss/all.xml",              "category": "science",   "tier": 2}
 
   ],
-  "categories": ["business", "markets", "technology", "ai_data", "world", "science"],
+  "categories": ["business", "markets", "technology", "ai_data", "world", "geopolitics", "science"],
   "max_articles_per_feed": 8,
-  "max_total_articles": 20
+  "max_total_articles": 25
 }

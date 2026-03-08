@@ -132,10 +132,12 @@ def get_html_template():
   .section-label.green { color: var(--green); }
   .section-label.orange { color: var(--orange); }
   .section-label.accent { color: var(--accent); }
+  .section-label.red { color: var(--red); }
 
   .section:has(.section-label.green) { border-left-color: var(--green); }
   .section:has(.section-label.orange) { border-left-color: var(--orange); }
   .section:has(.section-label.accent) { border-left-color: var(--accent); }
+  .section:has(.section-label.red) { border-left-color: var(--red); }
 
   /* ——— Typography ——— */
   h2 {
@@ -331,6 +333,7 @@ def markdown_to_html_sections(markdown_text):
         "4": ("Watch", "accent", ""),
         "5": ("Market Movers", "", ""),
         "6": ("Skill Tips", "orange", ""),
+        "7": ("Geopolitics", "red", ""),
     }
 
     for section in sections:
