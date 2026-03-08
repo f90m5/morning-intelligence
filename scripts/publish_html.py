@@ -524,6 +524,27 @@ def _extract_section_bullets(lines, section_marker, max_bullets=5):
     return bullets
 
 
+def _extract_section_subheadings(lines, section_marker, max_items=5):
+    """Pull bold subheading titles (like **Iran Conflict...**) from a section."""
+    headings = []
+    in_section = False
+    for line in lines:
+        if section_marker in line:
+            in_section = True
+            continue
+        if in_section and line.strip().startswith("## "):
+            break
+        if in_section:
+            stripped = line.strip()
+            # Match lines that are just a bold heading: **Some Title**
+            match = re.match(r'^\*\*(.+?)\*\*$', stripped)
+            if match:
+                headings.append(match.group(1))
+                if len(headings) >= max_items:
+                    break
+    return headings
+
+
 def _extract_section_text(lines, section_marker, max_len=200):
     """Pull paragraph text from a markdown section."""
     text = ""
@@ -563,11 +584,11 @@ def extract_widget_data(markdown_text):
             date = date_match.group(1).strip()
             break
 
-    # Top stories — first 3 bullet points from section 1
-    top_stories = _extract_section_bullets(lines, "## 1.", max_bullets=3)
+    # Top stories — bold subheadings from section 1 (the main headlines)
+    top_stories = _extract_section_subheadings(lines, "## 1.", max_items=4)
 
-    # Stock & Market Movers — from section 5
-    stock_news = _extract_section_bullets(lines, "## 5.", max_bullets=3)
+    # Tech, Analytics & IS News — bullet labels from section 3
+    tech_news = _extract_section_bullets(lines, "## 3.", max_bullets=3)
 
     # One Thing to Watch — section 4
     watch = _extract_section_text(lines, "## 4.", max_len=180)
@@ -575,7 +596,7 @@ def extract_widget_data(markdown_text):
     return {
         "date": date,
         "top_stories": top_stories,
-        "stock_news": stock_news,
+        "tech_news": tech_news,
         "watch": watch,
         "updated": datetime.now().isoformat(),
     }

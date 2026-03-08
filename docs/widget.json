@@ -1,15 +1,15 @@
 {
   "date": "March 08, 2026",
   "top_stories": [
-    "Iran's naval blockade of the Strait of Hormuz entered its second week",
-    "Brent crude prices surged 12% to $152/barrel on March 8",
-    "Iranian drone strikes hit Kuwait's Public Institution for Social Se..."
+    "Iran Conflict Disrupts Global Energy Markets",
+    "US Economic Indicators Flash Warning Signs",
+    "US-China Tech Competition Intensifies"
   ],
-  "stock_news": [
-    "Energy sector surge: Schlumberger (SLB) gained 8.3% and Halliburton...",
-    "Defense contractor rally: Lockheed Martin (LMT) climbed 5.2% and Ra...",
-    "Semiconductor pressure: Taiwan Semiconductor (TSM) fell 3.4% March ..."
+  "tech_news": [
+    "Pentagon AI surveillance controversy: The Department of Defense's l...",
+    "Open-source wildlife AI release: Google released SpeciesNet on Marc...",
+    "Battery research breakthrough: MIT researchers developed a machine ..."
   ],
   "watch": "Samsung's Multi-AI Strategy Challenge to Apple: Samsung announced March 8 that 2026 Galaxy smartphones will host AI models from OpenAI, Anthropic, and Google simultaneously, all...",
-  "updated": "2026-03-08T01:07:05.692916"
+  "updated": "2026-03-08T01:11:51.036481"
 }

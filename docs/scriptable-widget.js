@@ -62,15 +62,15 @@ async function createWidget() {
 
   w.addSpacer(6);
 
-  // ---- STOCK & MARKET NEWS ----
-  let stockNews = data.stock_news || [];
-  if (stockNews.length > 0) {
-    let stockLabel = w.addText("IMPACT & OUTLOOK");
-    stockLabel.font = Font.boldSystemFont(9);
-    stockLabel.textColor = new Color("#d29922");
+  // ---- TECH & ANALYTICS ----
+  let techNews = data.tech_news || [];
+  if (techNews.length > 0) {
+    let techLabel = w.addText("TECH & ANALYTICS");
+    techLabel.font = Font.boldSystemFont(9);
+    techLabel.textColor = new Color("#4ade80");
     w.addSpacer(4);
 
-    for (let i = 0; i < stockNews.length; i++) {
+    for (let i = 0; i < techNews.length; i++) {
       let row = w.addStack();
       row.layoutHorizontally();
       row.topAlignContent();
@@ -78,10 +78,10 @@ async function createWidget() {
 
       let dot = row.addText("▸");
       dot.font = Font.mediumSystemFont(11);
-      dot.textColor = new Color("#d29922");
+      dot.textColor = new Color("#4ade80");
       dot.size = new Size(10, 18);
 
-      let text = row.addText(stockNews[i]);
+      let text = row.addText(techNews[i]);
       text.font = Font.mediumSystemFont(12);
       text.textColor = new Color("#e6edf3");
       text.lineLimit = 2;
