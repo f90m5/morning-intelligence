@@ -22,9 +22,9 @@ async function createWidget() {
   headerStack.layoutHorizontally();
   headerStack.centerAlignContent();
 
-  let header = headerStack.addText("DAILY BRIEF");
+  let header = headerStack.addText("DONOVAN'S DAILY BRIEF");
   header.font = Font.boldSystemFont(10);
-  header.textColor = new Color("#58a6ff");
+  header.textColor = new Color("#f59e0b");
 
   headerStack.addSpacer();
 
