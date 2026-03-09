@@ -1340,7 +1340,7 @@ async function sendReferralEmail() {
   msg.className = 'auth-msg';
 
   try {
-    const { error } = await sb.functions.invoke('smart-handler', {
+    const { error } = await sb.functions.invoke('send-invite', {
       body: {
         to:            email,
         referral_link: getReferralLink(),
