@@ -525,8 +525,8 @@
     </div>
     <div id="auth-s2" style="display:none;">
       <h2>Enter your code</h2>
-      <p>We sent a 6-digit code to <strong id="otp-email"></strong>. Expires in 10 minutes.</p>
-      <input type="text" id="auth-otp" class="auth-input otp" placeholder="000000" maxlength="6" inputmode="numeric" />
+      <p>We sent a code to <strong id="otp-email"></strong>. Expires in 10 minutes.</p>
+      <input type="text" id="auth-otp" class="auth-input otp" placeholder="00000000" maxlength="8" inputmode="numeric" />
       <button class="btn btn-accent" onclick="verifyOtp()">Sign in</button>
       <div class="auth-back" onclick="backToEmail()">← Use a different email</div>
       <div class="auth-msg" id="msg2"></div>
@@ -778,7 +778,7 @@ async function sendOtp() {
 
 async function verifyOtp() {
   const token = document.getElementById('auth-otp').value.trim().replace(/\D/g,'');
-  if (token.length !== 6) { showMsg('msg2','Enter the 6-digit code from your email.','err'); return; }
+  if (token.length < 6) { showMsg('msg2','Enter the code from your email.','err'); return; }
   const { error } = await sb.auth.verifyOtp({ email: otpEmail, token, type:'email' });
   if (error) { showMsg('msg2','Invalid or expired code — try again.','err'); return; }
 }
