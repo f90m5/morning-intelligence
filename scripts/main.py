@@ -14,6 +14,7 @@ Usage:
 """
 
 import json
+import os
 import sys
 import logging
 from datetime import datetime
@@ -118,8 +119,10 @@ def run():
         logger.warning(f"Category generation failed (non-fatal): {e}")
 
     # Step 4: Publish HTML + widget data
+    # Skip git push when running in CI (GitHub Actions sets CI=true automatically)
+    in_ci = os.getenv("CI", "").lower() == "true"
     try:
-        html_path = publish_brief_html(markdown, push_to_git=True)
+        html_path = publish_brief_html(markdown, push_to_git=not in_ci)
         logger.info(f"HTML published: {html_path}")
     except Exception as e:
         logger.warning(f"HTML publish failed (non-fatal): {e}")
