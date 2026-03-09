@@ -641,10 +641,7 @@
           <span class="pi-value" id="profile-email-display"></span>
           <button class="pi-btn" onclick="toggleEmailChange()">Change</button>
         </div>
-        <div class="profile-info-row">
-          <span class="pi-label">Since</span>
-          <span class="pi-value" id="profile-member-since" style="color:var(--muted2);"></span>
-        </div>
+        <div style="font-size:11px;color:var(--muted);padding:2px 2px 6px;">Member since <span id="profile-member-since"></span></div>
         <div class="email-change-form" id="email-change-form" style="display:none;">
           <input type="email" id="new-email-input" class="auth-input" placeholder="new@example.com" />
           <button class="btn btn-accent" onclick="changeEmail()" style="padding:8px;">Send confirmation</button>
