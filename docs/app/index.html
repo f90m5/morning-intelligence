@@ -764,30 +764,32 @@ function initDragDrop(container) {
       ghost.style.left = (e.clientX - grabOffX) + 'px';
       ghost.style.top  = (e.clientY - grabOffY) + 'px';
 
-      // Find insertion point
+      // Find insertion point — one indicator per gap, never both sides at once.
+      // "Bottom half of row N" is treated as "top of row N+1" so only
+      // a single drop-before line is shown for any given gap.
       clearDropIndicators(container);
       dropRef = null;
 
       const rows = [...container.querySelectorAll('.cat-row')].filter(r => r !== dragging);
-      let found = false;
-      for (const r of rows) {
+      for (let i = 0; i < rows.length; i++) {
+        const r    = rows[i];
         const rect = r.getBoundingClientRect();
-        if (e.clientY <= rect.top + rect.height / 2) {
+        const mid  = rect.top + rect.height / 2;
+
+        if (e.clientY < mid) {
+          // Cursor is in the top half of this row → line above it
           dropRef = { before: r };
           r.classList.add('drop-before');
-          found = true;
-          break;
-        } else if (e.clientY <= rect.bottom) {
-          dropRef = { after: r };
-          r.classList.add('drop-after');
-          found = true;
           break;
         }
-      }
-      // Below all rows → append to end
-      if (!found && rows.length > 0) {
-        dropRef = { after: rows[rows.length - 1] };
-        rows[rows.length - 1].classList.add('drop-after');
+        if (i === rows.length - 1) {
+          // Cursor is below the midpoint of the last row → append to end
+          dropRef = { after: r };
+          r.classList.add('drop-after');
+        }
+        // Otherwise: cursor is in bottom half of row i but row i+1 exists.
+        // Let the next iteration handle it — the gap will register as
+        // "top half of row i+1", keeping a single indicator.
       }
     });
 
