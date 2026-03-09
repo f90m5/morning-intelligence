@@ -1198,7 +1198,7 @@ function copyReferralLink() {
   });
 }
 
-function sendReferralEmail() {
+async function sendReferralEmail() {
   const email = document.getElementById('referral-email-input').value.trim();
   const msg   = document.getElementById('referral-msg');
   if (!email || !email.includes('@')) {
@@ -1206,14 +1206,29 @@ function sendReferralEmail() {
     msg.className = 'auth-msg error';
     return;
   }
-  const link    = getReferralLink();
-  const subject = encodeURIComponent('You\'re invited to Daily News');
-  const body    = encodeURIComponent(
-    `Hey,\n\nI've been using Daily News — a daily AI-powered intelligence brief. Thought you'd like it.\n\nJoin here: ${link}\n\nSee you there!`
-  );
-  window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank');
-  msg.textContent = 'Your email app should open with the invite ready to send.';
-  msg.className = 'auth-msg success';
+  const sendBtn = document.querySelector('#referral-overlay .btn-ghost[onclick="sendReferralEmail()"]');
+  if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Sending…'; }
+  msg.textContent = '';
+  msg.className = 'auth-msg';
+
+  try {
+    const { error } = await sb.functions.invoke('send-invite', {
+      body: {
+        to:             email,
+        referral_link:  getReferralLink(),
+        referrer_email: currentUser?.email || 'A friend',
+      },
+    });
+    if (error) throw error;
+    msg.textContent = `Invite sent to ${email}!`;
+    msg.className = 'auth-msg success';
+    document.getElementById('referral-email-input').value = '';
+  } catch (e) {
+    msg.textContent = 'Failed to send — please try again.';
+    msg.className = 'auth-msg error';
+  } finally {
+    if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send'; }
+  }
 }
 
 async function writeReferral(refCode) {
