@@ -468,8 +468,7 @@
     .expand-btn svg { transition: transform .22s ease; display: block; }
     .expand-btn:hover { color: var(--muted2); }
     .story-block.expanded .expand-btn svg { transform: rotate(180deg); }
-    body.compact .expandable-headline { cursor: pointer; }
-    body.compact .expandable-headline:hover { color: var(--accent); }
+    body.compact .expandable-headline { cursor: pointer; user-select: none; -webkit-user-select: none; }
 
     /* Bullets wrapper — animates open/closed in Headlines mode */
     .bullets-wrap {
