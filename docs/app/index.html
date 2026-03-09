@@ -229,12 +229,18 @@
     }
     .cat-row.off { opacity: .38; }
 
-    /* Placeholder left behind while dragging — keeps layout space */
-    .cat-row.dragging { visibility: hidden; }
+    /* Dragged row is hidden — placeholder takes its space */
+    .cat-row.dragging { display: none; }
 
-    /* Drop indicator lines — inset so they don't shift layout */
-    .cat-row.drop-before { box-shadow: inset 0  3px 0 var(--accent); }
-    .cat-row.drop-after  { box-shadow: inset 0 -3px 0 var(--accent); }
+    /* The visible gap that slides between rows showing the drop destination */
+    .drag-placeholder {
+      border-radius: 6px;
+      background: rgba(112,144,200,.07);
+      border: 1.5px dashed rgba(112,144,200,.32);
+      margin-bottom: 4px;
+      box-sizing: border-box;
+      transition: none;
+    }
 
     /* Floating ghost tile that follows the pointer */
     .drag-ghost {
@@ -717,16 +723,18 @@ async function saveSettings() {
   if (currentUser) await saveUserPrefsToDb();
 }
 
-// ── Drag-and-drop (floating ghost — mouse + touch) ────────────
-// Only called on the ON group — OFF rows are never draggable
+// ── Drag-and-drop (floating ghost + sliding placeholder) ──────
+// Only called on the ON group — OFF rows are never draggable.
+// Instead of a line indicator, a real placeholder div slides between
+// rows so you can see the exact drop position before releasing.
 function initDragDrop(container) {
   if (!container) return;
 
-  let dragging  = null;   // the real row (invisible placeholder)
-  let ghost     = null;   // the floating clone that follows the pointer
-  let dropRef   = null;   // { before: row } or { after: row } or null (append)
-  let grabOffX  = 0;
-  let grabOffY  = 0;
+  let dragging    = null;   // the real row (hidden while dragging)
+  let ghost       = null;   // floating clone that follows the pointer
+  let placeholder = null;   // the gap that slides between rows
+  let grabOffX    = 0;
+  let grabOffY    = 0;
 
   container.querySelectorAll('.drag-handle').forEach(handle => {
     handle.addEventListener('pointerdown', e => {
@@ -737,12 +745,21 @@ function initDragDrop(container) {
       dragging = row;
       handle.setPointerCapture(e.pointerId);
 
-      // Measure row for ghost positioning
       const rect = row.getBoundingClientRect();
       grabOffX = e.clientX - rect.left;
       grabOffY = e.clientY - rect.top;
 
-      // Build ghost — clone the row visually
+      // Insert placeholder in the exact spot before hiding the row,
+      // so layout doesn't shift on grab
+      placeholder = document.createElement('div');
+      placeholder.className = 'drag-placeholder';
+      placeholder.style.height = rect.height + 'px';
+      row.parentNode.insertBefore(placeholder, row);
+
+      // Now hide the row — placeholder holds the space
+      row.classList.add('dragging');
+
+      // Build the floating ghost clone
       ghost = row.cloneNode(true);
       ghost.classList.add('drag-ghost');
       ghost.removeAttribute('id');
@@ -751,78 +768,53 @@ function initDragDrop(container) {
       ghost.style.width  = rect.width + 'px';
       ghost.style.height = rect.height + 'px';
       document.body.appendChild(ghost);
-
-      // Hide original — keeps layout space as a placeholder
-      row.classList.add('dragging');
     });
 
     handle.addEventListener('pointermove', e => {
-      if (!dragging || !ghost) return;
+      if (!dragging || !ghost || !placeholder) return;
       e.preventDefault();
 
       // Ghost follows pointer exactly
       ghost.style.left = (e.clientX - grabOffX) + 'px';
       ghost.style.top  = (e.clientY - grabOffY) + 'px';
 
-      // Find insertion point — one indicator per gap, never both sides at once.
-      // "Bottom half of row N" is treated as "top of row N+1" so only
-      // a single drop-before line is shown for any given gap.
-      clearDropIndicators(container);
-      dropRef = null;
+      // Find where to move the placeholder so rows slide apart
+      // Visible rows only (excludes the hidden dragging row)
+      const rows = [...container.querySelectorAll('.cat-row:not(.dragging)')];
+      let insertBefore = null; // null = append after all rows
 
-      const rows = [...container.querySelectorAll('.cat-row')].filter(r => r !== dragging);
       for (let i = 0; i < rows.length; i++) {
-        const r    = rows[i];
-        const rect = r.getBoundingClientRect();
-        const mid  = rect.top + rect.height / 2;
-
-        if (e.clientY < mid) {
-          // Cursor is in the top half of this row → line above it
-          dropRef = { before: r };
-          r.classList.add('drop-before');
+        const rect = rows[i].getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) {
+          insertBefore = rows[i];
           break;
         }
-        if (i === rows.length - 1) {
-          // Cursor is below the midpoint of the last row → append to end
-          dropRef = { after: r };
-          r.classList.add('drop-after');
-        }
-        // Otherwise: cursor is in bottom half of row i but row i+1 exists.
-        // Let the next iteration handle it — the gap will register as
-        // "top half of row i+1", keeping a single indicator.
+      }
+
+      // Slide the placeholder — rows reflow naturally around it
+      if (insertBefore) {
+        container.insertBefore(placeholder, insertBefore);
+      } else {
+        container.appendChild(placeholder);
       }
     });
 
     const endDrag = () => {
       if (!dragging) return;
 
-      // Commit the reorder
-      if (dropRef) {
-        if (dropRef.before) {
-          container.insertBefore(dragging, dropRef.before);
-        } else {
-          container.insertBefore(dragging, dropRef.after.nextSibling);
-        }
-      }
-
-      // Restore row visibility
+      // Drop: put the real row where the placeholder is, then clean up
+      container.insertBefore(dragging, placeholder);
       dragging.classList.remove('dragging');
-      clearDropIndicators(container);
-
+      placeholder.remove();
       ghost.remove();
-      ghost    = null;
-      dragging = null;
-      dropRef  = null;
+
+      ghost       = null;
+      dragging    = null;
+      placeholder = null;
     };
 
     handle.addEventListener('pointerup',     endDrag);
     handle.addEventListener('pointercancel', endDrag);
-  });
-}
-
-function clearDropIndicators(container) {
-  container.querySelectorAll('.cat-row').forEach(r => {
-    r.classList.remove('drop-before', 'drop-after');
   });
 }
 
