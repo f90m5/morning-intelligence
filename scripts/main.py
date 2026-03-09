@@ -29,10 +29,7 @@ RUNS_LOG = PROJECT_ROOT / "data" / "runs.log"
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.fetch import fetch_and_rank_articles
-from scripts.generate_brief import generate_brief
 from scripts.generate_categories import generate_categories
-from scripts.publish_html import publish_brief_html
-from scripts.history import save_today
 from scripts.emailer import send_brief_emails
 
 
@@ -62,22 +59,38 @@ def log_run(status, details=""):
         f.write(entry)
 
 
+def already_ran_today(today: str) -> bool:
+    """Check Supabase to see if today's categories were already generated."""
+    from dotenv import load_dotenv
+    from supabase import create_client
+    load_dotenv(PROJECT_ROOT / ".env", override=True)
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_KEY")
+    if not url or not key:
+        return False
+    try:
+        client = create_client(url, key)
+        result = client.table("daily_categories").select("date").eq("date", today).limit(1).execute()
+        return bool(result.data)
+    except Exception:
+        return False
+
+
 def run():
-    """Run the full Morning Intelligence Brief pipeline."""
+    """Run the full Daily News pipeline."""
     logger = setup_logging()
     today = datetime.now().strftime("%Y-%m-%d")
     start = datetime.now()
 
-    logger.info(f"=== Morning Intelligence Brief — {today} ===")
+    logger.info(f"=== Daily News Pipeline — {today} ===")
 
-    # Skip if today's brief already exists
-    existing = PROJECT_ROOT / "outputs" / "briefs" / f"{today}.md"
-    if existing.exists():
-        logger.info(f"Brief already exists for {today} — skipping. Delete {existing.name} to regenerate.")
-        log_run("SKIPPED", f"Brief already exists for {today}")
+    # Skip if today's categories already exist in Supabase
+    if already_ran_today(today):
+        logger.info(f"Categories already generated for {today} — skipping.")
+        log_run("SKIPPED", f"Already ran for {today}")
         return True
 
-    # Step 1: Fetch articles
+    # Step 1: Fetch and rank articles
     try:
         articles, all_articles = fetch_and_rank_articles()
     except Exception as e:
@@ -85,56 +98,28 @@ def run():
         log_run("FAILED", f"Fetch error: {e}")
         return False
 
-    if not articles:
+    if not all_articles:
         logger.error("No articles fetched. Aborting.")
         log_run("FAILED", "No articles fetched")
         return False
 
-    logger.info(f"Fetched {len(articles)} top articles for brief, {len(all_articles)} total for categories")
+    logger.info(f"Fetched {len(all_articles)} articles")
 
-    # Step 2: Generate brief (uses top 25 for quality + cost control)
-    try:
-        markdown, out_path = generate_brief(articles)
-    except Exception as e:
-        logger.error(f"Brief generation failed: {e}")
-        log_run("FAILED", f"Generation error: {e}")
-        return False
-
-    if not markdown:
-        logger.error("Brief generation returned empty. Check API key and logs.")
-        log_run("FAILED", "Empty brief from API")
-        return False
-
-    logger.info(f"Brief saved to: {out_path}")
-    logger.info(f"Brief length: {len(markdown)} chars")
-
-    # Step 3: Generate structured category data (uses full article pool for coverage)
+    # Step 2: Generate structured category data (full article pool)
     try:
         cat_data, cat_path = generate_categories(all_articles)
         if cat_data:
             logger.info(f"Category data saved: {cat_path}")
         else:
-            logger.warning("Category generation returned empty (non-fatal)")
+            logger.error("Category generation returned empty.")
+            log_run("FAILED", "Empty category data from API")
+            return False
     except Exception as e:
-        logger.warning(f"Category generation failed (non-fatal): {e}")
+        logger.error(f"Category generation failed: {e}")
+        log_run("FAILED", f"Category error: {e}")
+        return False
 
-    # Step 4: Publish HTML + widget data
-    # Skip git push when running in CI (GitHub Actions sets CI=true automatically)
-    in_ci = os.getenv("CI", "").lower() == "true"
-    try:
-        html_path = publish_brief_html(markdown, push_to_git=not in_ci)
-        logger.info(f"HTML published: {html_path}")
-    except Exception as e:
-        logger.warning(f"HTML publish failed (non-fatal): {e}")
-
-    # Step 5: Save today's brief to history (for dedup on future runs)
-    try:
-        save_today(markdown)
-        logger.info("History updated")
-    except Exception as e:
-        logger.warning(f"History save failed (non-fatal): {e}")
-
-    # Step 6: Send personalised email digest to all users
+    # Step 3: Send email digest
     try:
         send_brief_emails(today)
         logger.info("Emails sent")
@@ -143,7 +128,7 @@ def run():
 
     elapsed = (datetime.now() - start).total_seconds()
     logger.info(f"=== Complete in {elapsed:.1f}s ===")
-    log_run("OK", f"{len(articles)} articles, {len(markdown)} chars, {elapsed:.1f}s")
+    log_run("OK", f"{len(all_articles)} articles, {elapsed:.1f}s")
     return True
 
 
