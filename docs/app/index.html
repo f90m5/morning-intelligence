@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Daily News</title>
 
   <!-- PWA -->
@@ -45,10 +45,10 @@
     /* ── Header ──────────────────────────── */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(19,18,16,0.95);
-      backdrop-filter: blur(12px);
+      background: var(--bg);
       border-bottom: 1px solid var(--border);
       padding: 0 24px; height: 56px;
+      padding-top: env(safe-area-inset-top, 0px);
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo {
