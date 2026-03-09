@@ -21,7 +21,7 @@ import json
 import os
 import re
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import anthropic
@@ -79,6 +79,75 @@ def format_articles_for_prompt(articles):
     return "\n".join(lines)
 
 
+def load_recent_history(days=7):
+    """
+    Fetch the last `days` days of category headlines from Supabase.
+    Returns a list of dicts: [{date, category, category_label, headline}, ...]
+    sorted oldest-first. Returns [] on any failure (non-fatal).
+    """
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_KEY")
+    if not url or not key:
+        print("  [HISTORY] Supabase keys not found — skipping history load")
+        return []
+
+    try:
+        client = create_client(url, key)
+        cutoff = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+        today  = datetime.now().strftime("%Y-%m-%d")
+
+        result = (
+            client.table("daily_categories")
+            .select("date, category, category_label, headline, depth_1")
+            .gte("date", cutoff)
+            .lt("date", today)          # exclude today (we're generating it now)
+            .order("date", desc=False)
+            .execute()
+        )
+
+        rows = result.data or []
+        print(f"  [HISTORY] Loaded {len(rows)} rows from past {days} days")
+        return rows
+
+    except Exception as e:
+        print(f"  [HISTORY] Failed to load history (non-fatal): {e}")
+        return []
+
+
+def format_history_for_prompt(history_rows):
+    """
+    Format recent history as a compact reference block for the prompt.
+    Groups by date, shows category label + headline + bullet count.
+    """
+    if not history_rows:
+        return ""
+
+    # Group by date
+    by_date = {}
+    for row in history_rows:
+        d = row.get("date", "")
+        if d not in by_date:
+            by_date[d] = []
+        by_date[d].append(row)
+
+    lines = []
+    for date_str in sorted(by_date.keys()):
+        try:
+            d = datetime.strptime(date_str, "%Y-%m-%d")
+            label = d.strftime("%b %d")
+        except Exception:
+            label = date_str
+
+        lines.append(f"\n{label}:")
+        for row in by_date[date_str]:
+            cat_label = row.get("category_label") or row.get("category", "")
+            headline  = row.get("headline", "").strip()
+            if headline:
+                lines.append(f"  [{cat_label}] {headline}")
+
+    return "\n".join(lines).strip()
+
+
 def build_prompt(articles, categories):
     """Build the full category generation prompt."""
     template = load_prompt_template()
@@ -86,9 +155,14 @@ def build_prompt(articles, categories):
     articles_text = format_articles_for_prompt(articles)
     categories_text = format_categories_for_prompt(categories)
 
+    # Load 7-day history for deduplication context
+    history_rows = load_recent_history(days=7)
+    history_text = format_history_for_prompt(history_rows)
+
     prompt = template.replace("{date}", today)
     prompt = prompt.replace("{articles}", articles_text)
     prompt = prompt.replace("{categories}", categories_text)
+    prompt = prompt.replace("{recent_history}", history_text if history_text else "(No prior history available)")
     return prompt
 
 

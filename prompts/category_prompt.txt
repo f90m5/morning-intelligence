@@ -8,6 +8,12 @@ Here are today's top news articles:
 
 ---
 
+RECENT COVERAGE (last 7 days — use this to avoid unnecessary repetition):
+
+{recent_history}
+
+---
+
 Your task: For each of the 12 categories below, identify the top 3 most important distinct stories from today's articles. Each story is a separate development — not different levels of detail on the same event. If a category has fewer than 3 distinct stories in today's coverage, produce as many as the articles support and set has_content accordingly.
 
 Categories to cover:
@@ -56,6 +62,26 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
     }}
   }}
 }}
+
+---
+
+DEDUPLICATION — apply before selecting any story:
+
+You have been given a log of headlines published in this briefing over the past 7 days. Use it to avoid showing users the same story twice unless the situation has materially changed.
+
+RULE: Before including a story, ask: "Has this topic already appeared in the recent history above?"
+
+If YES — apply this two-tier test:
+
+  TIER 1 — MAJOR ONGOING SITUATIONS (conflicts, central bank cycles, elections, major trials, geopolitical crises):
+  These may be repeated ONLY when today's articles contain a concrete, datable new development — a ceasefire, a rate decision, a verdict, an escalation, a key vote, a new figure. "Continued fighting" or "tensions remain high" is NOT a new development. The test: could you write a new, factually distinct headline? If not, skip it.
+
+  TIER 2 — SMALLER OR SELF-CONTAINED STORIES (company earnings, product launches, policy announcements, one-day market moves, minor appointments):
+  Do not repeat these. If the same company, policy, or event appeared in the recent history, skip it entirely and find a fresher story for that slot. There will almost always be something new to cover.
+
+If NO — include it normally, subject to all other content rules.
+
+IMPORTANT: This rule is about serving the reader, not mechanical deduplication. The goal is that a subscriber who reads every day always learns something new. When in doubt, choose the fresher story. Never pad a category with a recycled story just because the slot exists — a null is better than a repeat.
 
 ---
 
