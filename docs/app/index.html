@@ -543,6 +543,23 @@
     .onboard-cat-btn .ob-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .onboard-cat-btn:hover { border-color: var(--muted); color: var(--text); }
 
+    /* ── Username modal ──────────────────── */
+    #username-overlay {
+      display: none; position: fixed; inset: 0; z-index: 700;
+      background: rgba(0,0,0,.85); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    #username-overlay.open { display: flex; }
+    .username-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px 30px; width: 100%; max-width: 380px; margin: 20px;
+    }
+    .username-card h2 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .username-card p  { font-size: 13px; color: var(--muted2); margin-bottom: 20px; line-height: 1.6; }
+
     /* ── Referral modal ──────────────────── */
     #referral-overlay {
       display: none; position: fixed; inset: 0; z-index: 600;
@@ -721,6 +738,16 @@
           <button class="pi-btn" onclick="toggleEmailChange()">Change</button>
         </div>
         <div style="font-size:11px;color:var(--muted);padding:2px 2px 6px;">Member since <span id="profile-member-since"></span></div>
+        <div class="profile-info-row" style="margin-top:6px;">
+          <span class="pi-label">Username</span>
+          <span class="pi-value" id="profile-username-display" style="color:var(--muted2);font-style:italic;">not set</span>
+          <button class="pi-btn" onclick="toggleUsernameChange()">Change</button>
+        </div>
+        <div class="email-change-form" id="username-change-form" style="display:none;">
+          <input type="text" id="username-change-input" class="auth-input" placeholder="newusername" maxlength="20" oninput="validateUsernameChangeInput()" />
+          <button class="btn btn-accent" id="username-change-btn" onclick="saveUsernameFromSettings()" style="padding:8px;" disabled>Save</button>
+          <div class="auth-msg" id="username-change-msg"></div>
+        </div>
         <div class="email-change-form" id="email-change-form" style="display:none;">
           <input type="email" id="new-email-input" class="auth-input" placeholder="new@example.com" />
           <button class="btn btn-accent" onclick="changeEmail()" style="padding:8px;">Send confirmation</button>
@@ -783,6 +810,19 @@
     <button class="btn delete-danger-btn" onclick="confirmDeleteAccount()">Yes, delete my account</button>
     <button class="btn btn-ghost" onclick="closeDeleteConfirm()">Cancel</button>
     <div class="auth-msg" id="delete-msg" style="margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- Username modal -->
+<div id="username-overlay">
+  <div class="username-card">
+    <div class="onboard-eyebrow">One last thing</div>
+    <h2>Choose a username</h2>
+    <p>This is how you'll appear when you invite friends. You can change it anytime in your account settings.</p>
+    <input type="text" id="username-input" class="auth-input" placeholder="yourname" maxlength="20" style="margin-bottom:8px;" oninput="validateUsernameInput()" />
+    <div class="auth-msg" id="username-modal-msg" style="margin-bottom:12px;min-height:16px;"></div>
+    <button class="btn btn-accent" id="username-save-btn" onclick="saveUsernameFromModal()" style="width:100%;padding:11px;" disabled>Let's go →</button>
+    <button class="btn btn-ghost" onclick="skipUsername()" style="width:100%;margin-top:7px;font-size:12px;">Skip for now</button>
   </div>
 </div>
 
@@ -1169,6 +1209,94 @@ function backToEmail() {
 
 async function signOut() { await sb.auth.signOut(); }
 
+// ── Username ──────────────────────────────────────────────────
+function usernameValid(val) { return /^[a-zA-Z0-9_]{3,20}$/.test(val); }
+
+function openUsernameModal() {
+  document.getElementById('username-input').value = '';
+  document.getElementById('username-modal-msg').textContent = '';
+  document.getElementById('username-modal-msg').className = 'auth-msg';
+  document.getElementById('username-save-btn').disabled = true;
+  document.getElementById('username-overlay').classList.add('open');
+}
+
+function skipUsername() {
+  document.getElementById('username-overlay').classList.remove('open');
+}
+
+function validateUsernameInput() {
+  const val = document.getElementById('username-input').value.trim();
+  const msg = document.getElementById('username-modal-msg');
+  const btn = document.getElementById('username-save-btn');
+  if (!val) { msg.textContent = ''; btn.disabled = true; return; }
+  if (!usernameValid(val)) {
+    msg.textContent = '3–20 characters, letters, numbers and underscores only.';
+    msg.className = 'auth-msg error'; btn.disabled = true;
+  } else {
+    msg.textContent = ''; msg.className = 'auth-msg'; btn.disabled = false;
+  }
+}
+
+async function saveUsernameFromModal() {
+  const val = document.getElementById('username-input').value.trim();
+  const msg = document.getElementById('username-modal-msg');
+  const btn = document.getElementById('username-save-btn');
+  if (!usernameValid(val)) return;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const { error } = await sb.from('user_profile')
+    .update({ username: val }).eq('user_id', currentUser.id);
+  if (error && error.code === '23505') {
+    msg.textContent = 'That username is already taken — try another.';
+    msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Let\'s go →'; return;
+  }
+  if (error) {
+    msg.textContent = 'Something went wrong, please try again.';
+    msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Let\'s go →'; return;
+  }
+  profileData.username = val;
+  document.getElementById('username-overlay').classList.remove('open');
+}
+
+function toggleUsernameChange() {
+  const form = document.getElementById('username-change-form');
+  form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+  if (form.style.display === 'flex') {
+    const input = document.getElementById('username-change-input');
+    input.value = profileData.username || '';
+    input.focus();
+    document.getElementById('username-change-btn').disabled = !usernameValid(input.value);
+  }
+}
+
+function validateUsernameChangeInput() {
+  const val = document.getElementById('username-change-input').value.trim();
+  document.getElementById('username-change-btn').disabled = !usernameValid(val);
+}
+
+async function saveUsernameFromSettings() {
+  const val = document.getElementById('username-change-input').value.trim();
+  const msg = document.getElementById('username-change-msg');
+  const btn = document.getElementById('username-change-btn');
+  if (!usernameValid(val)) return;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const { error } = await sb.from('user_profile')
+    .update({ username: val }).eq('user_id', currentUser.id);
+  if (error && error.code === '23505') {
+    msg.textContent = 'That username is already taken.';
+    msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Save'; return;
+  }
+  if (error) {
+    msg.textContent = 'Something went wrong.';
+    msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Save'; return;
+  }
+  profileData.username = val;
+  document.getElementById('profile-username-display').textContent = val;
+  document.getElementById('profile-username-display').style.fontStyle = 'normal';
+  msg.textContent = 'Username updated!'; msg.className = 'auth-msg success';
+  btn.textContent = 'Save'; btn.disabled = false;
+  document.getElementById('username-change-form').style.display = 'none';
+}
+
 // ── Referral ──────────────────────────────────────────────────
 function getReferralLink() {
   const code = profileData.referral_code;
@@ -1214,9 +1342,9 @@ async function sendReferralEmail() {
   try {
     const { error } = await sb.functions.invoke('send-invite', {
       body: {
-        to:             email,
-        referral_link:  getReferralLink(),
-        referrer_email: currentUser?.email || 'A friend',
+        to:            email,
+        referral_link: getReferralLink(),
+        referrer_name: profileData.username || currentUser?.email || 'A friend',
       },
     });
     if (error) throw error;
@@ -1516,6 +1644,8 @@ async function completeOnboarding() {
   document.getElementById('onboard-overlay').classList.remove('open');
   renderFeed();
   if (currentUser) await saveUserPrefsToDb();
+  // Prompt for username after onboarding if not set
+  if (!profileData.username) openUsernameModal();
 }
 
 // ── Delete account ────────────────────────────────────────────
@@ -1544,7 +1674,7 @@ async function confirmDeleteAccount() {
 }
 
 // ── Profile ───────────────────────────────────────────────────
-let profileData = { digest_enabled: true, digest_emails: [] };
+let profileData = { digest_enabled: true, digest_emails: [], referral_code: null, username: null };
 
 async function loadUserProfile() {
   if (!currentUser) return;
@@ -1556,6 +1686,7 @@ async function loadUserProfile() {
       digest_enabled:  data.digest_enabled !== false,
       digest_emails:   Array.isArray(data.digest_emails) ? data.digest_emails : [],
       referral_code:   data.referral_code || null,
+      username:        data.username || null,
     };
     // Generate a referral code if user doesn't have one yet
     if (!profileData.referral_code) {
@@ -1572,6 +1703,7 @@ async function saveUserProfile() {
     user_id:        currentUser.id,
     digest_enabled: profileData.digest_enabled,
     digest_emails:  profileData.digest_emails,
+    username:       profileData.username || null,
   }, { onConflict: 'user_id' });
   if (error) console.error('Profile save error:', error);
 }
@@ -1585,9 +1717,13 @@ function openProfile() {
     : '—';
   document.getElementById('profile-member-since').textContent = joinDate;
   document.getElementById('digest-toggle').checked = profileData.digest_enabled;
-  document.getElementById('email-change-form').style.display = 'none';
-  document.getElementById('email-change-msg').style.display  = 'none';
-  document.getElementById('digest-msg').style.display        = 'none';
+  const unDisplay = document.getElementById('profile-username-display');
+  if (unDisplay) { unDisplay.textContent = profileData.username || 'not set'; unDisplay.style.fontStyle = profileData.username ? 'normal' : 'italic'; }
+  document.getElementById('username-change-form').style.display = 'none';
+  document.getElementById('username-change-msg').textContent    = '';
+  document.getElementById('email-change-form').style.display    = 'none';
+  document.getElementById('email-change-msg').style.display     = 'none';
+  document.getElementById('digest-msg').style.display           = 'none';
   renderDigestEmails();
   document.getElementById('profile-overlay').classList.add('open');
 }
