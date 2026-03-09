@@ -517,6 +517,52 @@
     }
     .delete-danger-btn:hover { background: rgba(220,100,100,.2); opacity: 1; }
 
+    /* ── Source links ────────────────────── */
+    .src-link { color: var(--muted); text-decoration: none; transition: color .12s; }
+    .src-link:hover { color: var(--muted2); text-decoration: underline; }
+    .src-dot { color: var(--border2); }
+
+    /* ── Error state ─────────────────────── */
+    .error-state {
+      text-align: center; padding: 60px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .error-icon { font-size: 28px; margin-bottom: 4px; }
+    .error-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .error-sub { font-size: 13px; color: var(--muted2); line-height: 1.6; max-width: 260px; }
+
+    /* ── Pull to refresh ─────────────────── */
+    #ptr-indicator {
+      position: fixed; top: 64px; left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      z-index: 90; pointer-events: none;
+      opacity: 0; transition: opacity .2s;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 6px 14px 6px 10px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11.5px; color: var(--muted2); font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    }
+    #ptr-indicator.visible { opacity: 1; }
+    .ptr-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--border2); border-top-color: var(--accent);
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .ptr-spinning .ptr-spinner { animation: spin .7s linear infinite; }
+
+    /* ── Footer ──────────────────────────── */
+    .app-footer {
+      margin-top: 48px; padding: 20px 0 8px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; flex-wrap: wrap;
+      font-size: 11px; color: var(--muted);
+    }
+    .app-footer a { color: var(--muted); text-decoration: none; }
+    .app-footer a:hover { color: var(--muted2); }
+    .app-footer .footer-dot { color: var(--border2); }
+
     /* ── Mobile ──────────────────────────── */
     @media (max-width: 500px) {
       header { padding: 0 16px; }
@@ -526,6 +572,8 @@
   </style>
 </head>
 <body>
+
+<div id="ptr-indicator"><div class="ptr-spinner"></div><span id="ptr-label">Pull to refresh</span></div>
 
 <header>
   <div class="logo"></div>
@@ -542,6 +590,13 @@
   <div id="feed">
     <div class="spinner-wrap"><div class="spinner"></div><span>Loading</span></div>
   </div>
+  <footer class="app-footer">
+    <a href="/privacy">Privacy Policy</a>
+    <span class="footer-dot">·</span>
+    <a href="/terms">Terms of Use</a>
+    <span class="footer-dot">·</span>
+    <span>© 2025 Daily News</span>
+  </footer>
 </main>
 
 <!-- Auth -->
@@ -580,11 +635,15 @@
 
       <!-- Login email -->
       <div class="profile-section">
-        <div class="settings-label">Login email</div>
+        <div class="settings-label">Account</div>
         <div class="profile-info-row">
           <span class="pi-label">Email</span>
           <span class="pi-value" id="profile-email-display"></span>
           <button class="pi-btn" onclick="toggleEmailChange()">Change</button>
+        </div>
+        <div class="profile-info-row">
+          <span class="pi-label">Since</span>
+          <span class="pi-value" id="profile-member-since" style="color:var(--muted2);"></span>
         </div>
         <div class="email-change-form" id="email-change-form" style="display:none;">
           <input type="email" id="new-email-input" class="auth-input" placeholder="new@example.com" />
@@ -623,6 +682,7 @@
     <div class="settings-foot" style="display:flex;flex-direction:column;gap:7px;">
       <button class="btn btn-ghost" onclick="signOut()" style="width:100%;">Sign out</button>
       <button class="btn" onclick="openDeleteConfirm()" style="width:100%;background:transparent;color:var(--muted);border:none;font-size:11.5px;padding:4px;cursor:pointer;" onmouseover="this.style.color='#e07070'" onmouseout="this.style.color='var(--muted)'">Delete account</button>
+      <div style="text-align:center;font-size:10.5px;color:var(--muted);padding-top:2px;letter-spacing:.04em;">Daily News · v1.0</div>
     </div>
   </div>
 </div>
@@ -710,6 +770,7 @@ const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
 let sb, currentUser = null;
 let todayData = [];
+let feedError  = false;
 let userPrefs = defaultPrefs();
 let pendingPrefs = null;
 let isFirstRun = false;
@@ -753,11 +814,23 @@ function defaultPrefs() {
 
 // ── Data ──────────────────────────────────────────────────────
 async function loadTodayData() {
-  const d = new Date();
-  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const { data, error } = await sb.from('daily_categories').select('*').eq('date', today);
-  if (error) { console.error(error); return; }
-  todayData = data || [];
+  feedError = false;
+  try {
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const { data, error } = await sb.from('daily_categories').select('*').eq('date', today);
+    if (error) throw error;
+    todayData = data || [];
+  } catch (e) {
+    console.error(e);
+    feedError = true;
+  }
+}
+
+async function retryLoad() {
+  document.getElementById('feed').innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><span>Loading</span></div>`;
+  await loadTodayData();
+  renderFeed();
 }
 
 async function loadUserPrefs() {
@@ -823,6 +896,19 @@ function renderFeed() {
 
   const now = new Date();
   datEl.textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Error state
+  if (feedError) {
+    metaEl.textContent = '';
+    feed.innerHTML = `
+      <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Couldn't load today's brief</div>
+        <div class="error-sub">Check your connection and try again.</div>
+        <button class="btn btn-ghost" onclick="retryLoad()" style="margin-top:6px;">Try again</button>
+      </div>`;
+    return;
+  }
 
   // Guest — show teaser preview only
   if (!currentUser) {
@@ -918,8 +1004,14 @@ function buildCard(row) {
       inner += `<ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`;
     }
     if (srcs.length) {
-      const names = srcs.map(s => esc(typeof s === 'object' ? s.name : s)).join(' · ');
-      inner += `<div class="card-sources">${names}</div>`;
+      const parts = srcs.map(s => {
+        const name = esc(typeof s === 'object' ? s.name : s);
+        const url  = (typeof s === 'object' && s.url) ? s.url : null;
+        return url
+          ? `<a class="src-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`
+          : `<span>${name}</span>`;
+      });
+      inner += `<div class="card-sources">${parts.join(' <span class="src-dot">·</span> ')}</div>`;
     }
 
     const divider = i > 0
@@ -1280,6 +1372,10 @@ function openProfile() {
   if (!currentUser) return;
   // Populate fields
   document.getElementById('profile-email-display').textContent = currentUser.email || '';
+  const joinDate = currentUser.created_at
+    ? new Date(currentUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : '—';
+  document.getElementById('profile-member-since').textContent = joinDate;
   document.getElementById('digest-toggle').checked = profileData.digest_enabled;
   document.getElementById('email-change-form').style.display = 'none';
   document.getElementById('email-change-msg').style.display  = 'none';
@@ -1364,6 +1460,51 @@ function showProfileMsg(id, text, type) {
   el.textContent = text; el.className = 'auth-msg ' + type; el.style.display = 'block';
   if (type === 'ok') setTimeout(() => { if (el) el.style.display = 'none'; }, 4000);
 }
+
+// ── Pull to refresh ───────────────────────────────────────────
+(function initPullToRefresh() {
+  let startY = 0, pulling = false, released = false;
+  const THRESHOLD = 70;
+  const indicator = document.getElementById('ptr-indicator');
+  const label     = document.getElementById('ptr-label');
+
+  document.addEventListener('touchstart', e => {
+    if (window.scrollY === 0 && !released) {
+      startY  = e.touches[0].clientY;
+      pulling = true;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling || released) return;
+    const pullY = Math.max(0, e.touches[0].clientY - startY);
+    if (pullY > 8) {
+      const pct = Math.min(pullY / THRESHOLD, 1);
+      indicator.style.opacity = pct;
+      label.textContent = pullY >= THRESHOLD ? 'Release to refresh' : 'Pull to refresh';
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    if (!pulling || released) return;
+    pulling = false;
+    const pullY = Math.max(0, e.changedTouches[0].clientY - startY);
+    indicator.style.opacity = 0;
+    label.textContent = 'Pull to refresh';
+
+    if (pullY >= THRESHOLD && window.scrollY === 0) {
+      released = true;
+      indicator.classList.add('visible', 'ptr-spinning');
+      label.textContent = 'Refreshing…';
+      loadTodayData().then(() => {
+        renderFeed();
+        indicator.classList.remove('visible', 'ptr-spinning');
+        label.textContent = 'Pull to refresh';
+        released = false;
+      });
+    }
+  }, { passive: true });
+})();
 
 // ── Helpers ───────────────────────────────────────────────────
 function showMsg(id, text, type) {
