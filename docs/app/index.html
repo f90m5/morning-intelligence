@@ -451,19 +451,17 @@
 
     .profile-danger { margin-top: 8px; }
 
-    /* ── Compact density ─────────────────── */
-    body.compact .feed         { gap: 10px; }
-    body.compact .card-header  { padding: 10px 15px 8px; }
-    body.compact .card-stories { padding: 9px 15px 12px; }
-    body.compact .card-headline { font-size: 13px; line-height: 1.44; }
-    body.compact .card-bullets  { gap: 2px; margin-top: 5px; }
-    body.compact .card-bullets li { font-size: 11.5px; line-height: 1.55; }
-    body.compact .card-sources  { margin-top: 6px; font-size: 10.5px; }
-    body.compact .story-divider { margin: 8px 0; }
-    body.compact .brief-header  { margin-bottom: 20px; }
-    body.compact .brief-title   { font-size: 19px; }
+    /* ── View modes ──────────────────────── */
+    /* Headlines mode: hide bullets, tighten spacing — pure scan view */
+    body.compact .card-bullets  { display: none; }
+    body.compact .card-sources  { margin-top: 7px; }
+    body.compact .feed          { gap: 10px; }
+    body.compact .card-header   { padding: 11px 16px 9px; }
+    body.compact .card-stories  { padding: 10px 16px 13px; }
+    body.compact .card-headline { font-size: 13.5px; line-height: 1.46; margin-top: 0; }
+    body.compact .story-divider { margin: 10px 0; }
 
-    /* Density toggle pills */
+    /* View mode toggle pills */
     .density-pills { display: flex; gap: 4px; }
     .density-pill {
       font-family: inherit; font-size: 12px; font-weight: 600;
@@ -745,11 +743,12 @@
     </div>
     <div class="settings-body">
       <div class="settings-section">
-        <div class="settings-label">Display density</div>
+        <div class="settings-label">View mode</div>
         <div class="density-pills">
-          <button class="density-pill" id="d-comfortable" onclick="setDensity('comfortable')">Comfortable</button>
-          <button class="density-pill" id="d-compact"     onclick="setDensity('compact')">Compact</button>
+          <button class="density-pill" id="d-comfortable" onclick="setDensity('comfortable')">Detailed</button>
+          <button class="density-pill" id="d-compact"     onclick="setDensity('compact')">Headlines</button>
         </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:7px;" id="density-hint">Full stories with bullet summaries</div>
       </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;">
       <div class="settings-section">
@@ -1089,7 +1088,12 @@ async function signOut() { await sb.auth.signOut(); }
 function openSettings() {
   pendingPrefs = JSON.parse(JSON.stringify(userPrefs));
   renderCatRows();
-  applyDensity(localStorage.getItem('density') || 'comfortable');
+  const density = localStorage.getItem('density') || 'comfortable';
+  applyDensity(density);
+  const hint = document.getElementById('density-hint');
+  if (hint) hint.textContent = density === 'compact'
+    ? 'Headlines only — fast scan view'
+    : 'Full stories with bullet summaries';
   document.getElementById('settings-overlay').classList.add('open');
 }
 
@@ -1294,6 +1298,10 @@ function applyDensity(value) {
 function setDensity(value) {
   localStorage.setItem('density', value);
   applyDensity(value);
+  const hint = document.getElementById('density-hint');
+  if (hint) hint.textContent = value === 'compact'
+    ? 'Headlines only — fast scan view'
+    : 'Full stories with bullet summaries';
 }
 
 // ── Onboarding ────────────────────────────────────────────────
