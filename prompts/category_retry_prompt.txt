@@ -51,6 +51,8 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation. Return O
   }}
 }}
 
+ACCURACY — NON-NEGOTIABLE: This output is delivered as factual intelligence to real users. Every name, number, date, quote, and claim must come directly and explicitly from the provided articles. Do not infer, extrapolate, or fill in any detail not stated in the source material. If you are not certain a fact appears in the article, omit it. A shorter, accurate bullet is always better than a longer, embellished one. Fabricated or inferred facts are a critical failure.
+
 QUALITY GATE — applies to every bullet:
 - Must include a named entity (person, company, country, or organization)
 - Must include a specific figure, outcome, or development (not a vague description)

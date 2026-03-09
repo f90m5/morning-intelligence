@@ -23,7 +23,7 @@
     {
       "id": "energy",
       "label": "Energy & Commodities",
-      "description": "Oil, gas, renewables, commodity prices, energy policy, pipelines, and infrastructure"
+      "description": "Oil, gas, renewables, commodity prices, energy policy, pipelines, and infrastructure. Must be about supply, prices, policy, or physical infrastructure — not individual company product launches. Exclude EV charging station openings, clean energy startup funding, or consumer hardware — those belong in Technology or Startups."
     },
     {
       "id": "cybersecurity",
@@ -48,7 +48,7 @@
     {
       "id": "business",
       "label": "Business & Finance",
-      "description": "Company-specific news: corporate earnings results, M&A deals, executive appointments/departures, company strategy, major layoffs, supply chain disruptions. Exclude macro economic data, index movements, and Fed policy — those belong in Markets."
+      "description": "Company-specific news: corporate earnings results, M&A deals, executive appointments/departures, company strategy, major layoffs, supply chain disruptions. Exclude macro economic data, index movements, and Fed policy — those belong in Markets. Exclude government agencies, federal programs, and regulatory or court rulings — those belong in Geopolitics or Defense."
     },
     {
       "id": "climate",
@@ -58,7 +58,7 @@
     {
       "id": "healthcare",
       "label": "Healthcare",
-      "description": "Drug approvals, health policy, medical research, biotech, public health, insurance"
+      "description": "Drug approvals, clinical trial results, health policy, public health developments, biotech breakthroughs, insurance/coverage changes. Must have a direct patient care, clinical outcome, or health policy angle. Exclude tech platform partnerships and business deals that lack a clear clinical or patient impact — those belong in Business or Technology."
     }
   ]
 }

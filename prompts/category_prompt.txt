@@ -77,6 +77,8 @@ BULLETS: Each bullet is a standalone fact. No vague observations. No repeated fa
 
 NO SPECULATION: Report confirmed events only. Do not write "could", "may", "might", or "is expected to" unless directly quoting a named source.
 
+ACCURACY — THIS IS NON-NEGOTIABLE: This output is delivered as factual intelligence to real users. Every name, number, date, quote, and claim must come directly and explicitly from the provided articles. Do not infer, extrapolate, paraphrase into a falsehood, or fill in any detail that is not stated in the source material. If you are not certain a fact appears in the article, omit it. A shorter, accurate bullet is always better than a longer, embellished one. Fabricated or inferred facts are a critical failure.
+
 QUALITY GATE: If a story cannot support at least 2 bullets that each meet the WHO/WHAT/WHEN/source standard above, skip that story entirely — set it to null. A missing story is better than vague bullets.
 
 LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false. Do not fabricate stories or lower the quality bar to fill slots.
