@@ -468,6 +468,8 @@
     .expand-btn svg { transition: transform .22s ease; display: block; }
     .expand-btn:hover { color: var(--muted2); }
     .story-block.expanded .expand-btn svg { transform: rotate(180deg); }
+    body.compact .expandable-headline { cursor: pointer; }
+    body.compact .expandable-headline:hover { color: var(--accent); }
 
     /* Bullets wrapper — animates open/closed in Headlines mode */
     .bullets-wrap {
@@ -1060,7 +1062,8 @@ function buildCard(row, idx = 0) {
     const srcs     = story.sources  || [];
 
     const expandBtn = bullets.length ? `<button class="expand-btn" onclick="toggleExpand(this)" aria-label="Show details"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>` : '';
-    let inner = `<div class="headline-row"><span class="card-headline">${esc(headline)}</span>${expandBtn}</div>`;
+    const headlineClick = bullets.length ? ` class="card-headline expandable-headline" onclick="toggleExpand(this)"` : ` class="card-headline"`;
+    let inner = `<div class="headline-row"><span${headlineClick}>${esc(headline)}</span>${expandBtn}</div>`;
     if (bullets.length) {
       inner += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
     }
@@ -1326,8 +1329,8 @@ function initDragDrop(container) {
 }
 
 // ── Accordion expand (Headlines mode) ────────────────────────
-function toggleExpand(btn) {
-  btn.closest('.story-block').classList.toggle('expanded');
+function toggleExpand(el) {
+  el.closest('.story-block').classList.toggle('expanded');
 }
 
 // ── Density ───────────────────────────────────────────────────
