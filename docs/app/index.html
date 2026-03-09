@@ -784,7 +784,7 @@
           <button class="density-pill" id="d-comfortable" onclick="setDensity('comfortable')">Detailed</button>
           <button class="density-pill" id="d-compact"     onclick="setDensity('compact')">Headlines</button>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:7px;" id="density-hint">Full stories with bullet summaries</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:7px;" id="density-hint">Headlines only — tap to expand</div>
       </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;">
       <div class="settings-section">
@@ -844,7 +844,7 @@ function defaultPrefs() {
 // ── Init ──────────────────────────────────────────────────────
 (async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  applyDensity(localStorage.getItem('density') || 'comfortable');
+  applyDensity(localStorage.getItem('density') || 'compact');
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session?.user ?? null;
 
@@ -1125,11 +1125,11 @@ async function signOut() { await sb.auth.signOut(); }
 function openSettings() {
   pendingPrefs = JSON.parse(JSON.stringify(userPrefs));
   renderCatRows();
-  const density = localStorage.getItem('density') || 'comfortable';
+  const density = localStorage.getItem('density') || 'compact';
   applyDensity(density);
   const hint = document.getElementById('density-hint');
   if (hint) hint.textContent = density === 'compact'
-    ? 'Headlines only — fast scan view'
+    ? 'Headlines only — tap to expand'
     : 'Full stories with bullet summaries';
   document.getElementById('settings-overlay').classList.add('open');
 }
@@ -1342,7 +1342,7 @@ function setDensity(value) {
   applyDensity(value);
   const hint = document.getElementById('density-hint');
   if (hint) hint.textContent = value === 'compact'
-    ? 'Headlines only — fast scan view'
+    ? 'Headlines only — tap to expand'
     : 'Full stories with bullet summaries';
 }
 
