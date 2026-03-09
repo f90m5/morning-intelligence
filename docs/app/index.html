@@ -75,7 +75,17 @@
     main { max-width: 680px; margin: 0 auto; padding: 36px 20px 100px; }
 
     .brief-header { margin-bottom: 28px; }
-    .brief-date { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .brief-date { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; position: relative; }
+    .date-nav-btn { background: none; border: 1px solid var(--border2); color: var(--muted); width: 26px; height: 26px; border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color .15s, border-color .15s; flex-shrink: 0; }
+    .date-nav-btn:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+    .date-nav-btn:disabled { opacity: .3; cursor: default; }
+    .date-label { cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background .15s; }
+    .date-label:hover { background: var(--surface2); }
+    .date-dropdown { display: none; position: absolute; top: 100%; left: 0; margin-top: 6px; background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 0; z-index: 50; min-width: 200px; max-height: 240px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .date-dropdown.open { display: block; }
+    .date-option { padding: 8px 14px; font-size: 12px; color: var(--muted2); cursor: pointer; transition: background .1s, color .1s; }
+    .date-option:hover { background: var(--surface2); color: var(--text); }
+    .date-option.active { color: var(--accent); font-weight: 600; }
     .brief-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
     .brief-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .brief-rule { border: none; border-top: 1px solid var(--border); margin: 22px 0 26px; }
@@ -679,7 +689,16 @@
 
 <main>
   <div class="brief-header">
-    <div class="brief-date" id="brief-date"></div>
+    <div class="brief-date" id="brief-date">
+      <button class="date-nav-btn" id="date-prev" onclick="navDate(-1)" title="Previous day">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="date-label" id="date-label" onclick="toggleDateDropdown()"></span>
+      <button class="date-nav-btn" id="date-next" onclick="navDate(1)" title="Next day">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+      <div class="date-dropdown" id="date-dropdown"></div>
+    </div>
     <div class="brief-title">Your Daily News</div>
     <div class="brief-meta" id="brief-meta"></div>
   </div>
@@ -916,6 +935,8 @@ let feedError  = false;
 let userPrefs = defaultPrefs();
 let pendingPrefs = null;
 let isFirstRun = false;
+let availableDates = [];
+let selectedDate = null; // ISO string e.g. '2026-03-09'
 
 function defaultPrefs() {
   return {
@@ -953,25 +974,72 @@ function defaultPrefs() {
     }
   });
 
-  await loadTodayData();
+  await Promise.all([loadTodayData(), loadAvailableDates()]);
   if (currentUser) await Promise.all([loadUserPrefs(), loadUserProfile()]);
   renderHeader();
   renderFeed();
 })();
 
 // ── Data ──────────────────────────────────────────────────────
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function loadAvailableDates() {
+  try {
+    const { data } = await sb.from('daily_categories').select('date').order('date', { ascending: false });
+    const unique = [...new Set((data || []).map(r => r.date))];
+    availableDates = unique.sort().reverse(); // newest first
+  } catch (e) { console.error('Date fetch error:', e); }
+}
+
 async function loadTodayData() {
   feedError = false;
   try {
-    const d = new Date();
-    const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const { data, error } = await sb.from('daily_categories').select('*').eq('date', today);
+    if (!selectedDate) selectedDate = todayISO();
+    const { data, error } = await sb.from('daily_categories').select('*').eq('date', selectedDate);
     if (error) throw error;
     todayData = data || [];
   } catch (e) {
     console.error(e);
     feedError = true;
   }
+}
+
+async function switchDate(dateStr) {
+  selectedDate = dateStr;
+  closeDateDropdown();
+  document.getElementById('feed').innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><span>Loading</span></div>`;
+  await loadTodayData();
+  renderFeed();
+}
+
+function navDate(dir) {
+  if (!availableDates.length) return;
+  const idx = availableDates.indexOf(selectedDate);
+  const newIdx = idx - dir; // dates are newest-first, so -1 = next, +1 = prev
+  if (newIdx >= 0 && newIdx < availableDates.length) switchDate(availableDates[newIdx]);
+}
+
+function toggleDateDropdown() {
+  document.getElementById('date-dropdown').classList.toggle('open');
+}
+function closeDateDropdown() {
+  document.getElementById('date-dropdown').classList.remove('open');
+}
+
+function renderDateNav() {
+  const idx = availableDates.indexOf(selectedDate);
+  document.getElementById('date-prev').disabled = (idx < 0 || idx >= availableDates.length - 1);
+  document.getElementById('date-next').disabled = (idx <= 0);
+
+  const dropdown = document.getElementById('date-dropdown');
+  dropdown.innerHTML = availableDates.map(d => {
+    const display = new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const cls = d === selectedDate ? 'date-option active' : 'date-option';
+    return `<div class="${cls}" onclick="switchDate('${d}')">${display}${d === todayISO() ? ' · Today' : ''}</div>`;
+  }).join('');
 }
 
 async function retryLoad() {
@@ -1041,8 +1109,9 @@ function renderFeed() {
   const datEl  = document.getElementById('brief-date');
   const metaEl = document.getElementById('brief-meta');
 
-  const now = new Date();
-  datEl.textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const displayDate = selectedDate ? new Date(selectedDate + 'T12:00:00') : new Date();
+  document.getElementById('date-label').textContent = displayDate.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+  renderDateNav();
 
   // Error state
   if (feedError) {
@@ -1863,6 +1932,11 @@ function esc(s) {
   if (!s) return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+document.addEventListener('click', e => {
+  const dd = document.getElementById('date-dropdown');
+  if (dd && dd.classList.contains('open') && !e.target.closest('.brief-date')) closeDateDropdown();
+});
+
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (!document.getElementById('auth-overlay').classList.contains('open')) return;
