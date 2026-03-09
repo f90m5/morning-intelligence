@@ -10,11 +10,16 @@ Here are today's articles:
 
 TASK: For each category listed below, look harder. The first pass may have been too strict.
 
-Allowed in this retry pass:
-- Adjacent coverage counts: if "startups" is thin on funding news, use product launches, acquisitions, or major hiring announcements
-- Cross-category signal: a story primarily about "technology" may also contain healthcare, climate, or energy developments — extract those
-- Developing stories: if a trend is clearly emerging across multiple articles even without a single definitive event, surface it
-- Still NO fabrication. Only use what is in the articles.
+Retry rules — read carefully:
+- Adjacent coverage is allowed IF it is genuinely about the category topic. A tech article mentioning a biotech drug approval counts for healthcare. An energy article about a startup's battery funding counts for startups.
+- DO NOT place off-topic stories in a category just because coverage is thin. A cultural story, small business story, or general finance story does NOT count as startups. A general environmental story is NOT climate unless it involves policy, emissions, or weather impacts.
+- 1 strong on-topic story is better than 2 off-topic ones.
+- If there is genuinely nothing relevant, set has_content: false. Do not fill the slot.
+
+Category-specific guidance for common thin categories:
+- startups: must involve a named company founded <~15 years ago and a funding event, acquisition, valuation, or failure. General small business or retail news does not qualify.
+- climate: must involve emissions data, climate policy, extreme weather attribution, or environmental regulation. General environmental stories without climate angle do not qualify.
+- healthcare: must involve drug approvals, health policy changes, clinical trial results, biotech news, or public health developments. Generic "wellness" or "technology in healthcare" without specific outcomes does not qualify.
 
 Categories needing retry:
 {categories}
@@ -35,8 +40,8 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation. Return O
         {{
           "headline": "One sentence. Most important development. Specific, sourced, dated. Under 160 characters.",
           "bullets": [
-            "Specific fact with named entity, figure, source, and date — under 120 characters",
-            "Specific fact with named entity, figure, source, and date — under 120 characters"
+            "Named entity + specific figure or development + date + source — under 120 characters",
+            "Named entity + specific figure or development + date + source — under 120 characters"
           ],
           "sources": ["Source Name"]
         }}
@@ -46,9 +51,11 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation. Return O
   }}
 }}
 
-CONTENT RULES:
-- Still no fabrication — only use what is in the articles
-- has_content should be true if you found even 1 real story
-- Only set has_content false if there is genuinely nothing in the articles even with a broad interpretation
-- 1 good story is better than 3 thin ones
-- SOURCES: only list sources actually used
+QUALITY GATE — applies to every bullet:
+- Must include a named entity (person, company, country, or organization)
+- Must include a specific figure, outcome, or development (not a vague description)
+- Must include a date (use the article's publication date if no event date is given)
+- Must attribute the claim to a source ("per Reuters", "according to Bloomberg", "via STAT News March 9")
+- If a story cannot meet this standard for at least 2 bullets, omit the story entirely
+
+SOURCES: Only list sources actually used for that specific story.

@@ -63,9 +63,13 @@ CONTENT RULES — apply to every field:
 
 STORIES MUST BE DISTINCT: Each story covers a different event. Do not split one event across 3 stories. If only 1-2 real stories exist for a category today, produce only those and set the remaining story slots to null or omit them. Do not pad with thin or manufactured stories.
 
+CATEGORY BOUNDARIES: Each story must clearly belong to its assigned category. Do not place macro economic data (indices, Fed rates, inflation) in Business — that is Markets. Do not place company-specific earnings or M&A in Markets — that is Business. When a story could fit two categories, assign it to the most specific one and do not repeat it.
+
 SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), WHEN (date), and source attribution.
 Bad: "AI regulation is increasing"
 Good: "EU AI Act enforcement body formally launched March 9, giving national regulators until August to designate auditors — per Reuters"
+
+DATE RULE: Every bullet must include a date. If the source article does not state an event date, use its publication date. Format: "per [Source] [Month Day]". Never omit the date.
 
 SOURCING: Attribute every claim. Use "per Reuters", "according to Bloomberg", "BLS reported March 6". No unsourced assertions.
 
@@ -73,6 +77,8 @@ BULLETS: Each bullet is a standalone fact. No vague observations. No repeated fa
 
 NO SPECULATION: Report confirmed events only. Do not write "could", "may", "might", or "is expected to" unless directly quoting a named source.
 
-LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false and produce 1 story with what you can. Do not fabricate stories.
+QUALITY GATE: If a story cannot support at least 2 bullets that each meet the WHO/WHAT/WHEN/source standard above, skip that story entirely — set it to null. A missing story is better than vague bullets.
+
+LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false. Do not fabricate stories or lower the quality bar to fill slots.
 
 SOURCES: Only list sources actually used for that specific story.

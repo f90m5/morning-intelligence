@@ -13,7 +13,7 @@
     {
       "id": "markets",
       "label": "Markets & Economy",
-      "description": "Stock markets, economic indicators, Fed policy, inflation, jobs data, earnings, sector moves"
+      "description": "Macro-level financial news: stock indices, bond yields, forex, commodity prices, Fed/central bank policy, inflation data, jobs reports, GDP. Focus on PRICES, RATES, and MACRO indicators — not individual company news."
     },
     {
       "id": "technology",
@@ -33,7 +33,7 @@
     {
       "id": "startups",
       "label": "Startups & Venture",
-      "description": "Funding rounds, IPOs, acquisitions, founder news, venture capital trends, valuations"
+      "description": "Funding rounds, IPOs, acquisitions, valuations, founder news, VC fund launches, startup failures/pivots. Must involve a company founded within the last ~15 years or a named VC fund. Exclude general small business, retail trends, or cultural stories."
     },
     {
       "id": "science",
@@ -48,7 +48,7 @@
     {
       "id": "business",
       "label": "Business & Finance",
-      "description": "Corporate earnings, mergers and acquisitions, executive moves, industry trends, supply chain"
+      "description": "Company-specific news: corporate earnings results, M&A deals, executive appointments/departures, company strategy, major layoffs, supply chain disruptions. Exclude macro economic data, index movements, and Fed policy — those belong in Markets."
     },
     {
       "id": "climate",
