@@ -377,6 +377,66 @@
     .empty-feed-title { font-size: 15px; font-weight: 700; color: var(--text); }
     .empty-feed-sub { font-size: 13px; color: var(--muted2); line-height: 1.65; max-width: 260px; }
 
+    /* ── Profile panel ───────────────────── */
+    #profile-overlay { display: none; position: fixed; inset: 0; z-index: 200; }
+    #profile-overlay.open { display: block; }
+
+    .profile-section { margin-bottom: 20px; }
+
+    .profile-info-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 5px;
+    }
+    .profile-info-row .pi-label { font-size: 11px; color: var(--muted); flex-shrink: 0; min-width: 40px; }
+    .profile-info-row .pi-value { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+    .profile-info-row .pi-btn { font-size: 11px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 2px 4px; flex-shrink: 0; font-family: inherit; }
+    .profile-info-row .pi-btn:hover { opacity: .75; }
+
+    .email-change-form {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 5px;
+      display: flex; flex-direction: column; gap: 7px;
+    }
+    .email-change-form .auth-input { margin-bottom: 0; }
+
+    .digest-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 5px;
+    }
+    .digest-toggle-label { font-size: 13px; font-weight: 500; }
+    .digest-toggle-sub   { font-size: 11px; color: var(--muted2); margin-top: 2px; line-height: 1.4; }
+
+    .digest-email-row {
+      display: flex; align-items: center;
+      padding: 7px 10px 7px 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+    .digest-email-row span { flex: 1; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted2); }
+    .digest-email-row .remove-btn { color: var(--muted); flex-shrink: 0; }
+    .digest-email-row .remove-btn:hover { color: #e07070; }
+
+    .digest-add-row { display: flex; gap: 7px; margin-top: 7px; }
+    .digest-add-row .auth-input { flex: 1; margin-bottom: 0; font-size: 13px; }
+    .digest-add-row .btn { flex-shrink: 0; }
+    .digest-empty { font-size: 12px; color: var(--muted); padding: 4px 2px; line-height: 1.6; }
+
+    .profile-danger { margin-top: 8px; }
+
     /* ── Mobile ──────────────────────────── */
     @media (max-width: 500px) {
       header { padding: 0 16px; }
@@ -422,6 +482,66 @@
       <button class="btn btn-accent" onclick="verifyOtp()">Sign in</button>
       <div class="auth-back" onclick="backToEmail()">← Use a different email</div>
       <div class="auth-msg" id="msg2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile -->
+<div id="profile-overlay">
+  <div class="settings-backdrop" onclick="closeProfile()"></div>
+  <div class="settings-panel">
+    <div class="settings-head">
+      <h3>Account</h3>
+      <button class="icon-btn" onclick="closeProfile()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="settings-body">
+
+      <!-- Login email -->
+      <div class="profile-section">
+        <div class="settings-label">Login email</div>
+        <div class="profile-info-row">
+          <span class="pi-label">Email</span>
+          <span class="pi-value" id="profile-email-display"></span>
+          <button class="pi-btn" onclick="toggleEmailChange()">Change</button>
+        </div>
+        <div class="email-change-form" id="email-change-form" style="display:none;">
+          <input type="email" id="new-email-input" class="auth-input" placeholder="new@example.com" />
+          <button class="btn btn-accent" onclick="changeEmail()" style="padding:8px;">Send confirmation</button>
+          <div class="auth-msg" id="email-change-msg"></div>
+        </div>
+      </div>
+
+      <!-- Daily digest -->
+      <div class="profile-section">
+        <div class="settings-label">Daily digest</div>
+        <div class="digest-toggle-row">
+          <div>
+            <div class="digest-toggle-label">Send me a daily email</div>
+            <div class="digest-toggle-sub">Receive your brief each morning via email</div>
+          </div>
+          <label class="sw">
+            <input type="checkbox" id="digest-toggle" onchange="setDigestEnabled(this.checked)" />
+            <span class="sw-track"></span>
+          </label>
+        </div>
+
+        <!-- Additional delivery emails -->
+        <div id="digest-emails-section">
+          <div class="settings-label" style="padding-top:14px;">Additional delivery emails</div>
+          <div id="digest-email-list"></div>
+          <div class="digest-add-row">
+            <input type="email" id="digest-email-input" class="auth-input" placeholder="another@example.com" />
+            <button class="btn btn-ghost" onclick="addDigestEmail()">Add</button>
+          </div>
+          <div class="auth-msg" id="digest-msg" style="margin-top:7px;"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="settings-foot">
+      <button class="btn btn-ghost" onclick="signOut()" style="width:100%;color:#e07070;border-color:rgba(220,100,100,.25);">Sign out</button>
     </div>
   </div>
 </div>
@@ -501,15 +621,16 @@ function defaultPrefs() {
     renderHeader();
     if (currentUser && wasGuest) {
       closeAuth();
-      loadUserPrefs().then(renderFeed);
+      Promise.all([loadUserPrefs(), loadUserProfile()]).then(renderFeed);
     } else if (!currentUser) {
       userPrefs = defaultPrefs();
+      profileData = { digest_enabled: true, digest_emails: [] };
       renderFeed();
     }
   });
 
   await loadTodayData();
-  if (currentUser) await loadUserPrefs();
+  if (currentUser) await Promise.all([loadUserPrefs(), loadUserProfile()]);
   renderHeader();
   renderFeed();
 })();
@@ -562,13 +683,18 @@ function renderHeader() {
   if (currentUser) {
     el.innerHTML = `
       <span class="user-email">${currentUser.email}</span>
+      <button class="icon-btn" onclick="openProfile()" title="Account">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </button>
       <button class="icon-btn" onclick="openSettings()" title="Customise feed">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
-      </button>
-      <button class="btn btn-ghost" onclick="signOut()" style="font-size:11px;padding:5px 11px;">Sign out</button>`;
+      </button>`;
   } else {
     el.innerHTML = `<button class="btn btn-accent" onclick="openAuth()">Sign in</button>`;
   }
@@ -922,6 +1048,121 @@ function initDragDrop(container) {
     handle.addEventListener('pointerup',     endDrag);
     handle.addEventListener('pointercancel', endDrag);
   });
+}
+
+// ── Profile ───────────────────────────────────────────────────
+let profileData = { digest_enabled: true, digest_emails: [] };
+
+async function loadUserProfile() {
+  if (!currentUser) return;
+  const { data, error } = await sb.from('user_profile')
+    .select('*').eq('user_id', currentUser.id).maybeSingle();
+  if (error) { console.error('Profile load error:', error); return; }
+  if (data) {
+    profileData = {
+      digest_enabled: data.digest_enabled !== false,
+      digest_emails:  Array.isArray(data.digest_emails) ? data.digest_emails : [],
+    };
+  }
+}
+
+async function saveUserProfile() {
+  if (!currentUser) return;
+  const { error } = await sb.from('user_profile').upsert({
+    user_id:        currentUser.id,
+    digest_enabled: profileData.digest_enabled,
+    digest_emails:  profileData.digest_emails,
+  }, { onConflict: 'user_id' });
+  if (error) console.error('Profile save error:', error);
+}
+
+function openProfile() {
+  if (!currentUser) return;
+  // Populate fields
+  document.getElementById('profile-email-display').textContent = currentUser.email || '';
+  document.getElementById('digest-toggle').checked = profileData.digest_enabled;
+  document.getElementById('email-change-form').style.display = 'none';
+  document.getElementById('email-change-msg').style.display  = 'none';
+  document.getElementById('digest-msg').style.display        = 'none';
+  renderDigestEmails();
+  document.getElementById('profile-overlay').classList.add('open');
+}
+
+function closeProfile() {
+  document.getElementById('profile-overlay').classList.remove('open');
+}
+
+function toggleEmailChange() {
+  const form = document.getElementById('email-change-form');
+  form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+  if (form.style.display === 'flex') {
+    document.getElementById('new-email-input').focus();
+  }
+}
+
+async function changeEmail() {
+  const newEmail = document.getElementById('new-email-input').value.trim();
+  if (!newEmail || !newEmail.includes('@')) {
+    showProfileMsg('email-change-msg', 'Enter a valid email address.', 'err'); return;
+  }
+  const { error } = await sb.auth.updateUser({ email: newEmail });
+  if (error) {
+    showProfileMsg('email-change-msg', error.message, 'err');
+  } else {
+    showProfileMsg('email-change-msg', 'Confirmation sent to ' + newEmail + '. Check your inbox.', 'ok');
+    document.getElementById('new-email-input').value = '';
+  }
+}
+
+function setDigestEnabled(enabled) {
+  profileData.digest_enabled = enabled;
+  saveUserProfile();
+}
+
+function renderDigestEmails() {
+  const list = document.getElementById('digest-email-list');
+  if (!profileData.digest_emails || profileData.digest_emails.length === 0) {
+    list.innerHTML = `<p class="digest-empty">Your daily brief will be sent to your login email only.</p>`;
+    return;
+  }
+  list.innerHTML = profileData.digest_emails.map(email => `
+    <div class="digest-email-row">
+      <span>${esc(email)}</span>
+      <button class="icon-btn remove-btn" onclick="removeDigestEmail('${esc(email)}')" title="Remove">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+async function addDigestEmail() {
+  const input = document.getElementById('digest-email-input');
+  const email = input.value.trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    showProfileMsg('digest-msg', 'Enter a valid email address.', 'err'); return;
+  }
+  if (profileData.digest_emails.includes(email)) {
+    showProfileMsg('digest-msg', 'That email is already in your list.', 'err'); return;
+  }
+  if (email === currentUser?.email?.toLowerCase()) {
+    showProfileMsg('digest-msg', 'Your login email already receives the digest.', 'err'); return;
+  }
+  profileData.digest_emails = [...profileData.digest_emails, email];
+  input.value = '';
+  renderDigestEmails();
+  await saveUserProfile();
+  showProfileMsg('digest-msg', 'Added — ' + email + ' will receive the daily brief.', 'ok');
+}
+
+async function removeDigestEmail(email) {
+  profileData.digest_emails = profileData.digest_emails.filter(e => e !== email);
+  renderDigestEmails();
+  await saveUserProfile();
+}
+
+function showProfileMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text; el.className = 'auth-msg ' + type; el.style.display = 'block';
+  if (type === 'ok') setTimeout(() => { if (el) el.style.display = 'none'; }, 4000);
 }
 
 // ── Helpers ───────────────────────────────────────────────────
