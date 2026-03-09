@@ -86,6 +86,9 @@
     .date-option { padding: 8px 14px; font-size: 12px; color: var(--muted2); cursor: pointer; transition: background .1s, color .1s; }
     .date-option:hover { background: var(--surface2); color: var(--text); }
     .date-option.active { color: var(--accent); font-weight: 600; }
+    .jump-today { display: none; margin-left: 8px; background: var(--accent); color: #fff; border: none; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: opacity .15s; }
+    .jump-today:hover { opacity: .85; }
+    .jump-today.visible { display: inline-flex; align-items: center; gap: 4px; }
     .brief-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
     .brief-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .brief-rule { border: none; border-top: 1px solid var(--border); margin: 22px 0 26px; }
@@ -698,6 +701,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>
       </button>
       <div class="date-dropdown" id="date-dropdown"></div>
+      <button class="jump-today" id="jump-today" onclick="switchDate(availableDates[0])">Today ↗</button>
     </div>
     <div class="brief-title">Your Daily News</div>
     <div class="brief-meta" id="brief-meta"></div>
@@ -1033,6 +1037,14 @@ function renderDateNav() {
   const idx = availableDates.indexOf(selectedDate);
   document.getElementById('date-prev').disabled = (idx < 0 || idx >= availableDates.length - 1);
   document.getElementById('date-next').disabled = (idx <= 0);
+
+  // Show "Today" button when not on the most recent date
+  const jumpBtn = document.getElementById('jump-today');
+  if (availableDates.length && selectedDate !== availableDates[0]) {
+    jumpBtn.classList.add('visible');
+  } else {
+    jumpBtn.classList.remove('visible');
+  }
 
   const dropdown = document.getElementById('date-dropdown');
   dropdown.innerHTML = availableDates.map(d => {
