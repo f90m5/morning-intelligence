@@ -451,15 +451,51 @@
 
     .profile-danger { margin-top: 8px; }
 
+    /* ── Headline row (shared, both modes) ── */
+    .headline-row {
+      display: flex; align-items: flex-start; gap: 8px; margin-top: 5px;
+    }
+    .headline-row .card-headline { flex: 1; margin-top: 0; }
+
+    /* Expand chevron — hidden in Detailed, shown in Headlines */
+    .expand-btn {
+      display: none;
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; padding: 2px 3px; border-radius: 4px;
+      flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+      transition: color .12s;
+    }
+    .expand-btn svg { transition: transform .22s ease; display: block; }
+    .expand-btn:hover { color: var(--muted2); }
+    .story-block.expanded .expand-btn svg { transform: rotate(180deg); }
+
+    /* Bullets wrapper — animates open/closed in Headlines mode */
+    .bullets-wrap {
+      display: grid;
+      grid-template-rows: 1fr; /* Detailed: always open */
+    }
+    .bullets-wrap .card-bullets { min-height: 0; }
+
     /* ── View modes ──────────────────────── */
-    /* Headlines mode: hide bullets, tighten spacing — pure scan view */
-    body.compact .card-bullets  { display: none; }
+    body.compact .expand-btn   { display: flex; align-items: center; justify-content: center; }
+    body.compact .feed         { gap: 10px; }
+    body.compact .card-header  { padding: 11px 16px 9px; }
+    body.compact .card-stories { padding: 10px 16px 13px; }
+    body.compact .card-headline { font-size: 13.5px; line-height: 1.46; }
     body.compact .card-sources  { margin-top: 7px; }
-    body.compact .feed          { gap: 10px; }
-    body.compact .card-header   { padding: 11px 16px 9px; }
-    body.compact .card-stories  { padding: 10px 16px 13px; }
-    body.compact .card-headline { font-size: 13.5px; line-height: 1.46; margin-top: 0; }
     body.compact .story-divider { margin: 10px 0; }
+
+    /* Bullets collapsed by default in Headlines mode */
+    body.compact .bullets-wrap {
+      grid-template-rows: 0fr;
+      overflow: hidden;
+      margin-top: 0;
+      transition: grid-template-rows .22s ease, margin-top .22s ease;
+    }
+    body.compact .story-block.expanded .bullets-wrap {
+      grid-template-rows: 1fr;
+      margin-top: 9px;
+    }
 
     /* View mode toggle pills */
     .density-pills { display: flex; gap: 4px; }
@@ -1023,9 +1059,10 @@ function buildCard(row, idx = 0) {
     const bullets  = story.bullets  || [];
     const srcs     = story.sources  || [];
 
-    let inner = `<span class="card-headline">${esc(headline)}</span>`;
+    const expandBtn = bullets.length ? `<button class="expand-btn" onclick="toggleExpand(this)" aria-label="Show details"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>` : '';
+    let inner = `<div class="headline-row"><span class="card-headline">${esc(headline)}</span>${expandBtn}</div>`;
     if (bullets.length) {
-      inner += `<ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`;
+      inner += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
     }
     if (srcs.length) {
       const parts = srcs.map(s => {
@@ -1286,6 +1323,11 @@ function initDragDrop(container) {
     handle.addEventListener('pointerup',     endDrag);
     handle.addEventListener('pointercancel', endDrag);
   });
+}
+
+// ── Accordion expand (Headlines mode) ────────────────────────
+function toggleExpand(btn) {
+  btn.closest('.story-block').classList.toggle('expanded');
 }
 
 // ── Density ───────────────────────────────────────────────────
