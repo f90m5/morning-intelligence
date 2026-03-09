@@ -47,10 +47,11 @@
       position: sticky; top: 0; z-index: 100;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px; height: 56px;
-      padding-top: env(safe-area-inset-top, 0px);
-      display: flex; align-items: center; justify-content: space-between;
+      padding: env(safe-area-inset-top, 0px) 24px 0;
+      height: calc(56px + env(safe-area-inset-top, 0px));
+      display: flex; align-items: flex-end; justify-content: space-between;
     }
+    header > * { height: 56px; display: flex; align-items: center; }
     .logo {
       font-size: 13px; font-weight: 800;
       letter-spacing: .18em; text-transform: uppercase;
