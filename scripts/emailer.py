@@ -3,13 +3,12 @@ emailer.py — Send personalised daily brief emails to all signed-up users.
 
 Pulls today's category data and each user's preferences from Supabase,
 builds a custom HTML email respecting their category order/depth/toggles,
-and sends via Gmail SMTP.
+and sends via Resend (resend.com).
 
 Setup (one-time):
-    1. Go to https://myaccount.google.com/apppasswords
-    2. Generate an App Password for "Mail"
-    3. Add to your .env:  GMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
-    Also add GMAIL_APP_PASSWORD to GitHub Actions secrets.
+    1. Sign up at resend.com, verify dailynews.it.com domain
+    2. Add to your .env:  RESEND_API_KEY=re_xxxx
+    Also add RESEND_API_KEY to GitHub Actions secrets.
 
 Usage:
     from scripts.emailer import send_brief_emails
@@ -17,19 +16,17 @@ Usage:
 """
 
 import os
-import smtplib
 from datetime import datetime
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from pathlib import Path
 
+import resend
 from dotenv import load_dotenv
 from supabase import create_client
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / ".env", override=True)
 
-SENDER_EMAIL   = "donovanquinn22@gmail.com"
+SENDER_EMAIL   = "brief@dailynews.it.com"
 SUBJECT_PREFIX = "Your Daily Brief"
 APP_URL        = "https://dailynews.it.com/app/"
 
@@ -230,12 +227,14 @@ def build_email_html(date_str, cat_data, ordered_ids, prefs):
 def send_brief_emails(date_str=None):
     """
     Main entry point. Pull all users + prefs from Supabase,
-    build a personalised email for each, and send via Gmail.
+    build a personalised email for each, and send via Resend.
     """
-    app_password = os.getenv("GMAIL_APP_PASSWORD")
-    if not app_password:
-        print("  [SKIP] GMAIL_APP_PASSWORD not set — skipping email.")
+    api_key = os.getenv("RESEND_API_KEY")
+    if not api_key:
+        print("  [SKIP] RESEND_API_KEY not set — skipping email.")
         return False
+
+    resend.api_key = api_key
 
     if date_str is None:
         date_str = datetime.now().strftime("%Y-%m-%d")
@@ -267,32 +266,21 @@ def send_brief_emails(date_str=None):
     subject = f"{SUBJECT_PREFIX} — {date_str}"
     sent = 0
 
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(SENDER_EMAIL, app_password)
-            for user in users:
-                try:
-                    ordered_ids, prefs = _fetch_user_prefs(sb, user["id"])
-                    html = build_email_html(date_str, cat_data, ordered_ids, prefs)
+    for user in users:
+        try:
+            ordered_ids, prefs = _fetch_user_prefs(sb, user["id"])
+            html = build_email_html(date_str, cat_data, ordered_ids, prefs)
 
-                    msg = MIMEMultipart("alternative")
-                    msg["Subject"] = subject
-                    msg["From"]    = SENDER_EMAIL
-                    msg["To"]      = user["email"]
-                    msg.attach(MIMEText(html, "html"))
-
-                    server.sendmail(SENDER_EMAIL, [user["email"]], msg.as_string())
-                    print(f"  ✓ {user['email']}")
-                    sent += 1
-                except Exception as e:
-                    print(f"  [ERR] {user['email']}: {e}")
-
-    except smtplib.SMTPAuthenticationError:
-        print("  [ERR] Gmail auth failed — check GMAIL_APP_PASSWORD.")
-        return False
-    except Exception as e:
-        print(f"  [ERR] SMTP: {e}")
-        return False
+            resend.Emails.send({
+                "from":    f"Daily News <{SENDER_EMAIL}>",
+                "to":      [user["email"]],
+                "subject": subject,
+                "html":    html,
+            })
+            print(f"  ✓ {user['email']}")
+            sent += 1
+        except Exception as e:
+            print(f"  [ERR] {user['email']}: {e}")
 
     print(f"--- Email done: {sent}/{len(users)} sent ---\n")
     return sent > 0
