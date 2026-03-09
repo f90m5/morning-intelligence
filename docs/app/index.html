@@ -543,6 +543,23 @@
     .onboard-cat-btn .ob-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .onboard-cat-btn:hover { border-color: var(--muted); color: var(--text); }
 
+    /* ── Referral modal ──────────────────── */
+    #referral-overlay {
+      display: none; position: fixed; inset: 0; z-index: 600;
+      background: rgba(0,0,0,.8); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    #referral-overlay.open { display: flex; }
+    .referral-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px 30px; width: 100%; max-width: 400px; margin: 20px;
+    }
+    .referral-card h2 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .referral-card p  { font-size: 13px; color: var(--muted2); margin-bottom: 20px; line-height: 1.6; }
+
     /* ── Delete confirm modal ────────────── */
     #delete-confirm-overlay {
       display: none; position: fixed; inset: 0; z-index: 600;
@@ -711,16 +728,6 @@
         </div>
       </div>
 
-      <!-- Referral -->
-      <div class="profile-section">
-        <div class="settings-label">Refer a friend</div>
-        <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;">Share your link — we'll track who joined through you for future perks.</div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input id="referral-link-input" readonly class="auth-input" style="flex:1;font-size:11.5px;cursor:pointer;" onclick="this.select()" />
-          <button class="btn btn-ghost" onclick="copyReferralLink()" id="copy-ref-btn" style="flex-shrink:0;padding:8px 12px;">Copy</button>
-        </div>
-      </div>
-
       <!-- Daily digest -->
       <div class="profile-section">
         <div class="settings-label">Daily digest</div>
@@ -749,6 +756,7 @@
 
     </div>
     <div class="settings-foot" style="display:flex;flex-direction:column;gap:7px;">
+      <button class="btn btn-ghost" onclick="openReferral()" style="width:100%;">Refer a friend</button>
       <button class="btn btn-ghost" onclick="signOut()" style="width:100%;">Sign out</button>
       <button class="btn" onclick="openDeleteConfirm()" style="width:100%;background:transparent;color:var(--muted);border:none;font-size:11.5px;padding:4px;cursor:pointer;" onmouseover="this.style.color='#e07070'" onmouseout="this.style.color='var(--muted)'">Delete account</button>
       <div style="text-align:center;font-size:10.5px;color:var(--muted);padding-top:2px;letter-spacing:.04em;">Daily News · v1.0</div>
@@ -775,6 +783,29 @@
     <button class="btn delete-danger-btn" onclick="confirmDeleteAccount()">Yes, delete my account</button>
     <button class="btn btn-ghost" onclick="closeDeleteConfirm()">Cancel</button>
     <div class="auth-msg" id="delete-msg" style="margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- Referral modal -->
+<div id="referral-overlay">
+  <div class="referral-card">
+    <h2>Refer a friend</h2>
+    <p>Share Daily News — we'll track who you brought in for future perks and discounts.</p>
+
+    <div class="settings-label" style="margin-bottom:6px;">Your invite link</div>
+    <div style="display:flex;gap:6px;margin-bottom:20px;">
+      <input id="referral-link-input" readonly class="auth-input" style="flex:1;font-size:11.5px;cursor:pointer;" onclick="this.select()" />
+      <button class="btn btn-accent" onclick="copyReferralLink()" id="copy-ref-btn" style="flex-shrink:0;padding:8px 14px;">Copy</button>
+    </div>
+
+    <div class="settings-label" style="margin-bottom:6px;">Or send an invite by email</div>
+    <div style="display:flex;gap:6px;margin-bottom:6px;">
+      <input type="email" id="referral-email-input" class="auth-input" placeholder="friend@example.com" style="flex:1;" />
+      <button class="btn btn-ghost" onclick="sendReferralEmail()" style="flex-shrink:0;padding:8px 14px;">Send</button>
+    </div>
+    <div class="auth-msg" id="referral-msg" style="margin-bottom:12px;"></div>
+
+    <button class="btn btn-ghost" onclick="closeReferral()" style="width:100%;">Close</button>
   </div>
 </div>
 
@@ -1139,13 +1170,50 @@ function backToEmail() {
 async function signOut() { await sb.auth.signOut(); }
 
 // ── Referral ──────────────────────────────────────────────────
-function copyReferralLink() {
+function getReferralLink() {
+  const code = profileData.referral_code;
+  return code ? `${location.origin}${location.pathname}?ref=${code}` : '';
+}
+
+function openReferral() {
   const input = document.getElementById('referral-link-input');
-  if (!input || !input.value) return;
-  navigator.clipboard.writeText(input.value).then(() => {
+  if (input) input.value = getReferralLink() || 'Loading...';
+  document.getElementById('referral-email-input').value = '';
+  document.getElementById('referral-msg').textContent = '';
+  document.getElementById('referral-msg').className = 'auth-msg';
+  document.getElementById('copy-ref-btn').textContent = 'Copy';
+  document.getElementById('referral-overlay').classList.add('open');
+}
+
+function closeReferral() {
+  document.getElementById('referral-overlay').classList.remove('open');
+}
+
+function copyReferralLink() {
+  const link = getReferralLink();
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(() => {
     const btn = document.getElementById('copy-ref-btn');
     if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
   });
+}
+
+function sendReferralEmail() {
+  const email = document.getElementById('referral-email-input').value.trim();
+  const msg   = document.getElementById('referral-msg');
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'Please enter a valid email address.';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  const link    = getReferralLink();
+  const subject = encodeURIComponent('You\'re invited to Daily News');
+  const body    = encodeURIComponent(
+    `Hey,\n\nI've been using Daily News — a daily AI-powered intelligence brief. Thought you'd like it.\n\nJoin here: ${link}\n\nSee you there!`
+  );
+  window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank');
+  msg.textContent = 'Your email app should open with the invite ready to send.';
+  msg.className = 'auth-msg success';
 }
 
 async function writeReferral(refCode) {
@@ -1502,10 +1570,6 @@ function openProfile() {
     : '—';
   document.getElementById('profile-member-since').textContent = joinDate;
   document.getElementById('digest-toggle').checked = profileData.digest_enabled;
-  const refInput = document.getElementById('referral-link-input');
-  if (refInput) refInput.value = profileData.referral_code
-    ? `${location.origin}${location.pathname}?ref=${profileData.referral_code}`
-    : 'Loading...';
   document.getElementById('email-change-form').style.display = 'none';
   document.getElementById('email-change-msg').style.display  = 'none';
   document.getElementById('digest-msg').style.display        = 'none';
