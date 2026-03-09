@@ -711,6 +711,16 @@
         </div>
       </div>
 
+      <!-- Referral -->
+      <div class="profile-section">
+        <div class="settings-label">Refer a friend</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;">Share your link — we'll track who joined through you for future perks.</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input id="referral-link-input" readonly class="auth-input" style="flex:1;font-size:11.5px;cursor:pointer;" onclick="this.select()" />
+          <button class="btn btn-ghost" onclick="copyReferralLink()" id="copy-ref-btn" style="flex-shrink:0;padding:8px 12px;">Copy</button>
+        </div>
+      </div>
+
       <!-- Daily digest -->
       <div class="profile-section">
         <div class="settings-label">Daily digest</div>
@@ -846,6 +856,9 @@ function defaultPrefs() {
 (async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   applyDensity(localStorage.getItem('density') || 'compact');
+  // Capture referral code from URL and persist across auth
+  const refParam = new URLSearchParams(location.search).get('ref');
+  if (refParam) { localStorage.setItem('ref', refParam); history.replaceState({}, '', location.pathname); }
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session?.user ?? null;
 
@@ -855,6 +868,8 @@ function defaultPrefs() {
     renderHeader();
     if (currentUser && wasGuest) {
       closeAuth();
+      const pendingRef = localStorage.getItem('ref');
+      if (pendingRef) writeReferral(pendingRef);
       Promise.all([loadUserPrefs(), loadUserProfile()]).then(() => {
         if (isFirstRun) { isFirstRun = false; renderFeed(); openOnboarding(); }
         else renderFeed();
@@ -1122,6 +1137,32 @@ function backToEmail() {
 }
 
 async function signOut() { await sb.auth.signOut(); }
+
+// ── Referral ──────────────────────────────────────────────────
+function copyReferralLink() {
+  const input = document.getElementById('referral-link-input');
+  if (!input || !input.value) return;
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.getElementById('copy-ref-btn');
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+  });
+}
+
+async function writeReferral(refCode) {
+  if (!currentUser || !refCode) return;
+  // Look up the referrer by their code
+  const { data: referrer } = await sb.from('user_profile')
+    .select('user_id').eq('referral_code', refCode).maybeSingle();
+  if (!referrer || referrer.user_id === currentUser.id) return;
+  // Write the referral (unique constraint on referred_id prevents duplicates)
+  await sb.from('referrals').insert({
+    referrer_id:   referrer.user_id,
+    referred_id:   currentUser.id,
+    referral_code: refCode,
+  }).then(({ error }) => {
+    if (!error) localStorage.removeItem('ref');
+  });
+}
 
 // ── Settings ──────────────────────────────────────────────────
 function openSettings() {
@@ -1429,9 +1470,16 @@ async function loadUserProfile() {
   if (error) { console.error('Profile load error:', error); return; }
   if (data) {
     profileData = {
-      digest_enabled: data.digest_enabled !== false,
-      digest_emails:  Array.isArray(data.digest_emails) ? data.digest_emails : [],
+      digest_enabled:  data.digest_enabled !== false,
+      digest_emails:   Array.isArray(data.digest_emails) ? data.digest_emails : [],
+      referral_code:   data.referral_code || null,
     };
+    // Generate a referral code if user doesn't have one yet
+    if (!profileData.referral_code) {
+      const code = Math.random().toString(36).substring(2, 10);
+      await sb.from('user_profile').update({ referral_code: code }).eq('user_id', currentUser.id);
+      profileData.referral_code = code;
+    }
   }
 }
 
@@ -1454,6 +1502,10 @@ function openProfile() {
     : '—';
   document.getElementById('profile-member-since').textContent = joinDate;
   document.getElementById('digest-toggle').checked = profileData.digest_enabled;
+  const refInput = document.getElementById('referral-link-input');
+  if (refInput) refInput.value = profileData.referral_code
+    ? `${location.origin}${location.pathname}?ref=${profileData.referral_code}`
+    : 'Loading...';
   document.getElementById('email-change-form').style.display = 'none';
   document.getElementById('email-change-msg').style.display  = 'none';
   document.getElementById('digest-msg').style.display        = 'none';
