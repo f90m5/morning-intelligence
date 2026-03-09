@@ -1340,7 +1340,7 @@ async function sendReferralEmail() {
   msg.className = 'auth-msg';
 
   try {
-    const { error } = await sb.functions.invoke('send-invite', {
+    const { error } = await sb.functions.invoke('smart-handler', {
       body: {
         to:            email,
         referral_link: getReferralLink(),
@@ -1688,12 +1688,15 @@ async function loadUserProfile() {
       referral_code:   data.referral_code || null,
       username:        data.username || null,
     };
-    // Generate a referral code if user doesn't have one yet
-    if (!profileData.referral_code) {
-      const code = Math.random().toString(36).substring(2, 10);
-      await sb.from('user_profile').update({ referral_code: code }).eq('user_id', currentUser.id);
-      profileData.referral_code = code;
-    }
+  }
+  // Generate referral code if missing (works whether row existed or not)
+  if (!profileData.referral_code) {
+    const code = Math.random().toString(36).substring(2, 10);
+    await sb.from('user_profile').upsert(
+      { user_id: currentUser.id, referral_code: code },
+      { onConflict: 'user_id' }
+    );
+    profileData.referral_code = code;
   }
 }
 
