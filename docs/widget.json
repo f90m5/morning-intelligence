@@ -1,14 +1,79 @@
 {
-  "date": "March 08, 2026",
-  "top_stories": [
-    "Iran War Escalation Rocks Global Markets",
-    "Corporate Risk Management Response"
+  "date": "March 8, 2026",
+  "date_iso": "2026-03-08",
+  "stories": [
+    {
+      "category_id": "ai",
+      "category_label": "AI & Machine Learning",
+      "color": "#8892f4",
+      "headline": "OpenAI robotics hardware leader resigns over Pentagon AI partnership concerns.",
+      "teaser": "Caitlin Kalinowski quit March 7 citing inadequate guardrails for Pentagon deal — per TechCrunch",
+      "source": ""
+    },
+    {
+      "category_id": "defense",
+      "category_label": "Defense & Policy",
+      "color": "#d08040",
+      "headline": "Pentagon reports seventh US service member killed in Middle East Iran war.",
+      "teaser": "Army soldier died from injuries in Iranian attack on Saudi Arabia — Fortune March 8",
+      "source": ""
+    },
+    {
+      "category_id": "geopolitics",
+      "category_label": "Geopolitics",
+      "color": "#e07878",
+      "headline": "Iran names Ayatollah Khamenei's son Mojtaba as new supreme leader after father's death.",
+      "teaser": "Assembly of Experts chose Mojtaba Khamenei, 56, as third supreme leader — Iranian state TV",
+      "source": ""
+    },
+    {
+      "category_id": "markets",
+      "category_label": "Markets & Economy",
+      "color": "#52b87a",
+      "headline": "Oil surges past $100 for first time since 2022 as Iran war escalates.",
+      "teaser": "Brent crude hit $114.30, up 23.38% while WTI rose 26.35% to $114.85 — CNBC March 9",
+      "source": ""
+    },
+    {
+      "category_id": "technology",
+      "category_label": "Technology",
+      "color": "#5a96d8",
+      "headline": "Google awards CEO Sundar Pichai $692 million pay package tied to performance metrics.",
+      "teaser": "Package mostly performance-based with stock incentives linked to Waymo, Wing — TechCrunch",
+      "source": ""
+    },
+    {
+      "category_id": "energy",
+      "category_label": "Energy & Commodities",
+      "color": "#d4a23c",
+      "headline": "Oil soars toward $120 as Iran war forces major Middle East production cuts.",
+      "teaser": "Major producers curbed output with Strait of Hormuz remaining closed — Bloomberg March 8",
+      "source": ""
+    },
+    {
+      "category_id": "cybersecurity",
+      "category_label": "Cybersecurity",
+      "color": "#a480e0",
+      "headline": "FBI investigates breach potentially affecting wiretapping and surveillance systems.",
+      "teaser": "Federal bureau probing compromise of systems related to surveillance tools — The Register",
+      "source": ""
+    },
+    {
+      "category_id": "science",
+      "category_label": "Science & Research",
+      "color": "#42b8cc",
+      "headline": "Scientists discover balanced atom breaking nuclear physics rules in molybdenum-84.",
+      "teaser": "Molybdenum-84 shows deformed structure despite equal protons and neutrons — Science Daily March 8",
+      "source": ""
+    },
+    {
+      "category_id": "business",
+      "category_label": "Business & Finance",
+      "color": "#48b090",
+      "headline": "Emirates resumes Dubai flights after Middle East air travel disruption strands Britons.",
+      "teaser": "New UK flights follow days of widespread regional aviation disruption — BBC March 7",
+      "source": ""
+    }
   ],
-  "tech_news": [
-    "Programming accessibility breakthrough: PythoC",
-    "Autonomous driving AI advancement: LatentVLA models are moving beyo...",
-    "Gaming hardware valuation surge: Palmer Luckey's retro gaming start..."
-  ],
-  "watch": "Defense Tech Talent Flight Risk: The resignation of OpenAI's robotics leader over Pentagon AI deal concerns could signal broader unease in Silicon Valley about military applicat...",
-  "updated": "2026-03-08T21:37:47.413245"
+  "updated": "2026-03-09T00:21:24.737874"
 }

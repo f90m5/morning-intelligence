@@ -1,143 +1,128 @@
-// Daily Brief — Scriptable Widget
-const BRIEF_URL = "https://f90m5.github.io/morning-intelligence";
-const WIDGET_JSON = BRIEF_URL + "/widget.json";
-const FULL_PAGE = BRIEF_URL + "/index.html";
+// Morning Intelligence — Scriptable Widget
+// Paste this into Scriptable on your iPhone.
+// Set widget size to Medium or Large for best results.
 
-async function createWidget() {
-  let data;
+const WIDGET_JSON = "https://f90m5.github.io/morning-intelligence/widget.json";
+const FULL_PAGE   = "https://f90m5.github.io/morning-intelligence/app/";
+
+// How many stories to show per widget size
+const MAX_STORIES = config.widgetFamily === "small"  ? 3
+                  : config.widgetFamily === "medium" ? 5
+                  : 8; // large
+
+// ── Fetch data ──────────────────────────────────────────────────────────────
+async function loadData() {
   try {
-    let req = new Request(WIDGET_JSON);
-    data = await req.loadJSON();
+    const req = new Request(WIDGET_JSON);
+    req.timeoutInterval = 10;
+    return await req.loadJSON();
   } catch (e) {
-    return createErrorWidget("Could not load brief");
+    return null;
+  }
+}
+
+// ── Widget builder ───────────────────────────────────────────────────────────
+async function buildWidget(data) {
+  const w = new ListWidget();
+  w.backgroundColor = new Color("#131210");
+  w.url = FULL_PAGE;
+  w.setPadding(14, 16, 14, 16);
+
+  if (!data || !data.stories || data.stories.length === 0) {
+    const msg = w.addText("Morning Intelligence\nNo brief available yet.");
+    msg.font = Font.regularSystemFont(13);
+    msg.textColor = new Color("#888888");
+    msg.centerAlignText();
+    return w;
   }
 
-  let w = new ListWidget();
-  w.backgroundColor = new Color("#0d1117");
-  w.url = FULL_PAGE;
-  w.setPadding(12, 14, 12, 14);
-
-  // ---- Header ----
-  let headerStack = w.addStack();
+  // ── Header ─────────────────────────────────────────────────────────────────
+  const headerStack = w.addStack();
   headerStack.layoutHorizontally();
   headerStack.centerAlignContent();
 
-  let header = headerStack.addText("DONOVAN'S DAILY BRIEF");
-  header.font = Font.boldSystemFont(10);
-  header.textColor = new Color("#f59e0b");
+  const title = headerStack.addText("MORNING INTELLIGENCE");
+  title.font = Font.boldSystemFont(9);
+  title.textColor = new Color("#d4a23c");
 
   headerStack.addSpacer();
 
-  let dateText = headerStack.addText(data.date || "Today");
-  dateText.font = Font.regularSystemFont(10);
-  dateText.textColor = new Color("#484f58");
+  const dateStr = (data.date || "").toUpperCase();
+  const dateEl = headerStack.addText(dateStr);
+  dateEl.font = Font.regularSystemFont(9);
+  dateEl.textColor = new Color("#555550");
 
-  w.addSpacer(8);
+  w.addSpacer(10);
 
-  // ---- TOP STORIES ----
-  let topLabel = w.addText("TOP STORIES");
-  topLabel.font = Font.boldSystemFont(9);
-  topLabel.textColor = new Color("#58a6ff");
-  w.addSpacer(4);
+  // ── Stories ─────────────────────────────────────────────────────────────────
+  const stories = data.stories.slice(0, MAX_STORIES);
 
-  let stories = data.top_stories || [];
   for (let i = 0; i < stories.length; i++) {
-    let row = w.addStack();
+    const s = stories[i];
+    const color = new Color(s.color || "#888888");
+
+    const row = w.addStack();
     row.layoutHorizontally();
     row.topAlignContent();
-    row.spacing = 6;
+    row.spacing = 8;
 
-    let dot = row.addText("▸");
-    dot.font = Font.mediumSystemFont(11);
-    dot.textColor = new Color("#58a6ff");
-    dot.size = new Size(10, 18);
+    // Colored category pill
+    const pill = row.addStack();
+    pill.layoutHorizontally();
+    pill.centerAlignContent();
+    pill.setPadding(2, 5, 2, 5);
+    pill.cornerRadius = 3;
+    pill.backgroundColor = new Color(s.color || "#888888", 0.18);
+    pill.size = new Size(config.widgetFamily === "small" ? 52 : 62, 16);
 
-    let text = row.addText(stories[i]);
-    text.font = Font.mediumSystemFont(12);
-    text.textColor = new Color("#e6edf3");
-    text.lineLimit = 2;
+    const catLabel = pill.addText((s.category_label || s.category_id || "").toUpperCase());
+    catLabel.font = Font.boldSystemFont(7);
+    catLabel.textColor = color;
+    catLabel.lineLimit = 1;
+    catLabel.minimumScaleFactor = 0.7;
 
-    w.addSpacer(3);
-  }
+    // Headline text
+    const textCol = row.addStack();
+    textCol.layoutVertically();
 
-  w.addSpacer(6);
+    const headline = textCol.addText(s.headline || "");
+    headline.font = Font.mediumSystemFont(12);
+    headline.textColor = new Color("#e8e4dc");
+    headline.lineLimit = 2;
 
-  // ---- TECH & ANALYTICS ----
-  let techNews = data.tech_news || [];
-  if (techNews.length > 0) {
-    let techLabel = w.addText("TECH & ANALYTICS");
-    techLabel.font = Font.boldSystemFont(9);
-    techLabel.textColor = new Color("#4ade80");
-    w.addSpacer(4);
-
-    for (let i = 0; i < techNews.length; i++) {
-      let row = w.addStack();
-      row.layoutHorizontally();
-      row.topAlignContent();
-      row.spacing = 6;
-
-      let dot = row.addText("▸");
-      dot.font = Font.mediumSystemFont(11);
-      dot.textColor = new Color("#4ade80");
-      dot.size = new Size(10, 18);
-
-      let text = row.addText(techNews[i]);
-      text.font = Font.mediumSystemFont(12);
-      text.textColor = new Color("#e6edf3");
-      text.lineLimit = 2;
-
-      w.addSpacer(3);
+    // Show teaser on large widget only
+    if (config.widgetFamily === "large" && s.teaser) {
+      const teaser = textCol.addText(s.teaser);
+      teaser.font = Font.regularSystemFont(10);
+      teaser.textColor = new Color("#7a7570");
+      teaser.lineLimit = 1;
     }
 
-    w.addSpacer(6);
+    // Add spacing between stories, but not after the last one
+    if (i < stories.length - 1) {
+      w.addSpacer(config.widgetFamily === "small" ? 6 : 9);
+    }
   }
 
-  // ---- WATCH TODAY ----
-  let watch = data.watch || "";
-  if (watch) {
-    let sep = w.addStack();
-    sep.size = new Size(0, 1);
-    sep.backgroundColor = new Color("#21262d");
-    w.addSpacer(6);
+  w.addSpacer(null); // push footer to bottom
 
-    let watchLabel = w.addText("WATCH TODAY");
-    watchLabel.font = Font.boldSystemFont(9);
-    watchLabel.textColor = new Color("#3fb950");
-    w.addSpacer(3);
-
-    let watchText = w.addText(watch);
-    watchText.font = Font.regularSystemFont(11);
-    watchText.textColor = new Color("#c9d1d9");
-    watchText.lineLimit = 4;
-    watchText.minimumScaleFactor = 0.85;
-  }
-
-  w.addSpacer(null);
-
-  // ---- Footer ----
-  let footer = w.addText("Tap for full brief →");
-  footer.font = Font.regularSystemFont(9);
-  footer.textColor = new Color("#484f58");
+  // ── Footer ──────────────────────────────────────────────────────────────────
+  const footer = w.addText("Tap for full brief →");
+  footer.font = Font.regularSystemFont(8);
+  footer.textColor = new Color("#3a3830");
   footer.rightAlignText();
 
   return w;
 }
 
-function createErrorWidget(message) {
-  let w = new ListWidget();
-  w.backgroundColor = new Color("#0d1117");
-  w.url = FULL_PAGE;
-  let text = w.addText(message);
-  text.font = Font.regularSystemFont(14);
-  text.textColor = new Color("#f85149");
-  text.centerAlignText();
-  return w;
-}
+// ── Run ──────────────────────────────────────────────────────────────────────
+const data = await loadData();
+const widget = await buildWidget(data);
 
-let widget = await createWidget();
 if (config.runsInWidget) {
   Script.setWidget(widget);
 } else {
-  widget.presentLarge();
+  // Preview in app — match the size you plan to use
+  await widget.presentLarge();
 }
 Script.complete();

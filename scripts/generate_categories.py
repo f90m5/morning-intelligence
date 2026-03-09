@@ -346,6 +346,88 @@ def retry_thin_categories(data, articles, thin_categories):
     return data
 
 
+CATEGORY_COLORS = {
+    "ai":            "#8892f4",
+    "geopolitics":   "#e07878",
+    "markets":       "#52b87a",
+    "technology":    "#5a96d8",
+    "energy":        "#d4a23c",
+    "cybersecurity": "#a480e0",
+    "startups":      "#a0aaee",
+    "science":       "#42b8cc",
+    "defense":       "#d08040",
+    "business":      "#48b090",
+    "climate":       "#6ab85a",
+    "healthcare":    "#d478cc",
+}
+
+DOCS_DIR = PROJECT_ROOT / "docs"
+
+
+def generate_widget_json(data, categories, date_str):
+    """
+    Build docs/widget.json from real category data for the Scriptable iPhone widget.
+    Replaces the old markdown-parsing approach with actual pipeline output.
+    """
+    try:
+        DOCS_DIR.mkdir(parents=True, exist_ok=True)
+
+        # Format date nicely e.g. "March 9, 2026"
+        try:
+            d = datetime.strptime(date_str, "%Y-%m-%d")
+            date_display = d.strftime("%B %-d, %Y")
+        except Exception:
+            date_display = date_str
+
+        stories = []
+        for cat in categories:
+            cat_id = cat["id"]
+            cat_data = data.get("categories", {}).get(cat_id, {})
+            if not cat_data.get("has_content", True):
+                continue
+
+            cat_stories = cat_data.get("stories", [])
+            if not cat_stories:
+                continue
+
+            # Take the first real story
+            story = cat_stories[0]
+            if not story or not story.get("headline"):
+                continue
+
+            # First bullet as the teaser (strip leading dash/bullet/em-dash)
+            bullets = story.get("bullets") or []
+            teaser = bullets[0] if bullets else ""
+            teaser = re.sub(r'^[\-–—▸•·\s]+', '', teaser).strip()
+
+            stories.append({
+                "category_id":    cat_id,
+                "category_label": cat.get("label", cat_id),
+                "color":          CATEGORY_COLORS.get(cat_id, "#888888"),
+                "headline":       story.get("headline", "").strip(),
+                "teaser":         teaser[:120] + ("…" if len(teaser) > 120 else ""),
+                "source":         story.get("source", ""),
+            })
+
+        widget = {
+            "date":      date_display,
+            "date_iso":  date_str,
+            "stories":   stories,
+            "updated":   datetime.now().isoformat(),
+        }
+
+        out_path = DOCS_DIR / "widget.json"
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(widget, f, indent=2, ensure_ascii=False)
+
+        print(f"  Widget JSON saved: widget.json ({len(stories)} categories)")
+        return True
+
+    except Exception as e:
+        print(f"  [WARN] widget.json generation failed (non-fatal): {e}")
+        return False
+
+
 def generate_categories(articles):
     """
     Main entry point. Takes ranked articles, generates per-category
@@ -417,6 +499,9 @@ def generate_categories(articles):
 
     # Write to Supabase
     write_to_supabase(data, date_str)
+
+    # Generate widget.json for Scriptable iPhone widget
+    generate_widget_json(data, categories, date_str)
 
     print("--- Category generation complete ---\n")
     return data, out_path
