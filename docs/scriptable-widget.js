@@ -1,4 +1,4 @@
-// Morning Intelligence — Scriptable Widget
+// Daily News — Scriptable Widget
 // Paste this into Scriptable on your iPhone.
 // Set widget size to Medium or Large for best results.
 
@@ -29,26 +29,16 @@ async function buildWidget(data) {
   w.setPadding(14, 16, 14, 16);
 
   if (!data || !data.stories || data.stories.length === 0) {
-    const msg = w.addText("Morning Intelligence\nNo brief available yet.");
+    const msg = w.addText("No brief available yet.");
     msg.font = Font.regularSystemFont(13);
     msg.textColor = new Color("#888888");
     msg.centerAlignText();
     return w;
   }
 
-  // ── Header ─────────────────────────────────────────────────────────────────
-  const headerStack = w.addStack();
-  headerStack.layoutHorizontally();
-  headerStack.centerAlignContent();
-
-  const title = headerStack.addText("MORNING INTELLIGENCE");
-  title.font = Font.boldSystemFont(9);
-  title.textColor = new Color("#d4a23c");
-
-  headerStack.addSpacer();
-
+  // ── Date only — no branding ─────────────────────────────────────────────────
   const dateStr = (data.date || "").toUpperCase();
-  const dateEl = headerStack.addText(dateStr);
+  const dateEl = w.addText(dateStr);
   dateEl.font = Font.regularSystemFont(9);
   dateEl.textColor = new Color("#555550");
 
