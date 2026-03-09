@@ -78,16 +78,15 @@
       overflow: hidden;
     }
 
-    .card-main {
-      padding: 16px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 13px;
+    /* Badge sits at the top, full-width row above stories */
+    .card-header {
+      padding: 12px 16px 0 16px;
     }
 
     .cat-badge {
       font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 5px; flex-shrink: 0; margin-top: 2px;
+      padding: 3px 8px; border-radius: 5px;
+      display: inline-block;
     }
 
     .badge-ai            { background:#1e1b4b; color:#a5b4fc; }
@@ -103,10 +102,13 @@
     .badge-climate       { background:#0a2010; color:#4ade80; }
     .badge-healthcare    { background:#1f0f1f; color:#f0abfc; }
 
-    /* Stories container */
-    .card-stories { flex: 1; display: flex; flex-direction: column; gap: 0; }
+    /* Stories sit below the badge */
+    .card-stories {
+      padding: 10px 16px 14px;
+      display: flex; flex-direction: column; gap: 0;
+    }
 
-    .story-block { padding: 0; }
+    .story-block { }
 
     .story-divider {
       border: none;
@@ -168,12 +170,29 @@
       border-radius: 8px;
       margin-bottom: 5px;
       opacity: 1;
-      transition: opacity .15s;
+      transition: opacity .15s, background .12s, border-color .12s;
       min-height: 42px;
+      user-select: none;
     }
     .cat-row.off { opacity: .4; }
+    .cat-row.drag-over {
+      border-color: var(--accent);
+      background: rgba(245,158,11,.06);
+    }
+    .cat-row.dragging { opacity: .35; }
 
-    /* Colored dot instead of full badge — prevents row height variance */
+    /* Drag handle */
+    .drag-handle {
+      color: var(--muted);
+      cursor: grab;
+      flex-shrink: 0;
+      display: flex; align-items: center; padding: 2px 0;
+      transition: color .12s;
+    }
+    .drag-handle:hover { color: var(--muted2); }
+    .drag-handle:active { cursor: grabbing; }
+
+    /* Colored dot */
     .cat-dot {
       width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
@@ -231,6 +250,9 @@
     .depth-legend { display: flex; gap: 16px; margin-bottom: 14px; }
     .dl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted2); }
     .dl-dot { width: 20px; height: 20px; border-radius: 5px; background: rgba(245,158,11,.15); color: var(--accent); border: 1px solid rgba(245,158,11,.35); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+    /* Reorder hint */
+    .reorder-hint { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
   </style>
 </head>
 <body>
@@ -295,6 +317,10 @@
           <div class="dl-item"><div class="dl-dot">2</div> Top 2 stories</div>
           <div class="dl-item"><div class="dl-dot">3</div> Top 3 stories</div>
         </div>
+        <div class="reorder-hint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Drag to reorder
+        </div>
         <div id="cat-rows"></div>
       </div>
     </div>
@@ -308,6 +334,7 @@
 const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
 
+// Master list — defines available categories and their metadata
 const CATEGORIES = [
   { id:'ai',            label:'AI' },
   { id:'geopolitics',   label:'Geopolitics' },
@@ -322,18 +349,26 @@ const CATEGORIES = [
   { id:'climate',       label:'Climate' },
   { id:'healthcare',    label:'Healthcare' },
 ];
+const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
 let sb, currentUser = null;
 let todayData = [];
 
-// userPrefs.cats: { [catId]: { selected: bool, depth: 1|2|3 } }
-let userPrefs = { cats: defaultCats() };
+/*
+  userPrefs shape:
+  {
+    order: ['ai', 'geopolitics', ...],   // display order
+    cats: { [catId]: { selected: bool, depth: 1|2|3 } }
+  }
+*/
+let userPrefs = defaultPrefs();
 let pendingPrefs = null;
 
-function defaultCats() {
-  const o = {};
-  CATEGORIES.forEach(c => { o[c.id] = { selected: true, depth: 2 }; });
-  return o;
+function defaultPrefs() {
+  return {
+    order: CATEGORIES.map(c => c.id),
+    cats: Object.fromEntries(CATEGORIES.map(c => [c.id, { selected: true, depth: 2 }])),
+  };
 }
 
 // ── Init ─────────────────────────────────────────────────────
@@ -350,7 +385,7 @@ function defaultCats() {
       closeAuth();
       loadUserPrefs().then(renderFeed);
     } else if (!currentUser) {
-      userPrefs = { cats: defaultCats() };
+      userPrefs = defaultPrefs();
       renderFeed();
     }
   });
@@ -365,7 +400,7 @@ function defaultCats() {
 async function loadTodayData() {
   const d = new Date();
   const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const { data, error } = await sb.from('daily_categories').select('*').eq('date', today).order('category');
+  const { data, error } = await sb.from('daily_categories').select('*').eq('date', today);
   if (error) { console.error(error); return; }
   todayData = data || [];
 }
@@ -376,27 +411,36 @@ async function loadUserPrefs() {
   if (error) { console.error(error); return; }
   if (!data || data.length === 0) { await saveUserPrefsToDb(); return; }
 
-  // Rebuild per-category prefs from rows
-  const cats = defaultCats();
+  const prefs = defaultPrefs();
+
+  // Sort rows by order_index to reconstruct user's order
+  const sorted = [...data].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
+  const orderedIds = sorted.map(r => r.category).filter(id => CAT_MAP[id]);
+  // Append any categories missing from DB (new ones added later)
+  CATEGORIES.forEach(c => { if (!orderedIds.includes(c.id)) orderedIds.push(c.id); });
+  prefs.order = orderedIds;
+
+  // Per-category prefs
   data.forEach(row => {
-    if (cats[row.category] !== undefined) {
-      cats[row.category] = {
+    if (prefs.cats[row.category] !== undefined) {
+      prefs.cats[row.category] = {
         selected: row.selected !== false,
         depth: row.depth_level || 2,
       };
     }
   });
-  userPrefs = { cats };
+
+  userPrefs = prefs;
 }
 
 async function saveUserPrefsToDb() {
   if (!currentUser) return;
-  const rows = CATEGORIES.map((cat, i) => ({
+  const rows = userPrefs.order.map((catId, i) => ({
     user_id: currentUser.id,
-    category: cat.id,
-    selected: userPrefs.cats[cat.id]?.selected !== false,
+    category: catId,
+    selected: userPrefs.cats[catId]?.selected !== false,
     order_index: i,
-    depth_level: userPrefs.cats[cat.id]?.depth || 2,
+    depth_level: userPrefs.cats[catId]?.depth || 2,
   }));
   const { error } = await sb.from('user_settings').upsert(rows, { onConflict:'user_id,category' });
   if (error) console.error('Save error:', error);
@@ -421,9 +465,9 @@ function renderHeader() {
 }
 
 function renderFeed() {
-  const feed    = document.getElementById('feed');
-  const datEl   = document.getElementById('brief-date');
-  const metaEl  = document.getElementById('brief-meta');
+  const feed   = document.getElementById('feed');
+  const datEl  = document.getElementById('brief-date');
+  const metaEl = document.getElementById('brief-meta');
   document.getElementById('guest-banner').style.display = currentUser ? 'none' : 'flex';
 
   const now = new Date();
@@ -435,12 +479,21 @@ function renderFeed() {
     return;
   }
 
-  // Guests see all categories at depth 1
-  const rows = todayData.filter(r => {
-    if (r.has_content === false) return false;
-    if (!currentUser) return true;
-    return userPrefs.cats[r.category]?.selected !== false;
-  });
+  // Build a lookup from category id → row
+  const dataMap = Object.fromEntries(todayData.map(r => [r.category, r]));
+
+  // Determine display order
+  const order = currentUser ? userPrefs.order : CATEGORIES.map(c => c.id);
+
+  // Filter and order rows
+  const rows = order
+    .map(id => dataMap[id])
+    .filter(r => {
+      if (!r) return false;
+      if (r.has_content === false) return false;
+      if (!currentUser) return true;
+      return userPrefs.cats[r.category]?.selected !== false;
+    });
 
   metaEl.textContent = `${rows.length} topic${rows.length !== 1 ? 's' : ''}`;
   feed.innerHTML = `<div class="feed">${rows.map(r => buildCard(r)).join('')}</div>`;
@@ -454,9 +507,6 @@ function buildCard(row) {
   const stories = [s1, s2, s3].slice(0, depth).filter(Boolean);
 
   if (stories.length === 0) return '';
-
-  // Badge only shown once at top
-  const badgeHtml = `<span class="cat-badge badge-${id}">${esc(label||id)}</span>`;
 
   const storiesHtml = stories.map((story, i) => {
     const headline = story.headline || '';
@@ -476,10 +526,10 @@ function buildCard(row) {
   }).join('');
 
   return `<div class="cat-card">
-    <div class="card-main">
-      ${badgeHtml}
-      <div class="card-stories">${storiesHtml}</div>
+    <div class="card-header">
+      <span class="cat-badge badge-${id}">${esc(label||id)}</span>
     </div>
+    <div class="card-stories">${storiesHtml}</div>
   </div>`;
 }
 
@@ -518,14 +568,33 @@ async function signOut() { await sb.auth.signOut(); }
 // ── Settings ─────────────────────────────────────────────────
 function openSettings() {
   pendingPrefs = JSON.parse(JSON.stringify(userPrefs));
+  renderCatRows();
+  document.getElementById('settings-overlay').classList.add('open');
+}
 
-  document.getElementById('cat-rows').innerHTML = CATEGORIES.map(cat => {
+function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
+
+function renderCatRows() {
+  const container = document.getElementById('cat-rows');
+  container.innerHTML = pendingPrefs.order.map(catId => {
+    const cat  = CAT_MAP[catId];
+    if (!cat) return '';
     const pref = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
     const row  = todayData.find(r => r.category === cat.id);
     const noData = row && row.has_content === false;
     const offCls = pref.selected ? '' : ' off';
 
-    return `<div class="cat-row${offCls}" id="prow-${cat.id}">
+    return `<div class="cat-row${offCls}" id="prow-${cat.id}" draggable="true" data-cat="${cat.id}">
+      <div class="drag-handle" title="Drag to reorder">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="9" cy="5" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="5" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="9" cy="19" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="19" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
       <span class="cat-dot dot-${cat.id}"></span>
       <span class="cat-row-name">${cat.label}${noData?' <span style="color:var(--muted);font-size:10px;">(no coverage)</span>':''}</span>
       <div class="depth-pills">
@@ -538,15 +607,12 @@ function openSettings() {
     </div>`;
   }).join('');
 
-  document.getElementById('settings-overlay').classList.add('open');
+  initDragDrop(container);
 }
 
-function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
-
 function setPendingDepth(catId, d) {
-  if (!pendingPrefs.cats[catId].selected) return; // ignore if off
+  if (!pendingPrefs.cats[catId].selected) return;
   pendingPrefs.cats[catId].depth = d;
-  // Update pill active states
   document.querySelectorAll(`.dp[data-cat="${catId}"]`).forEach(el => {
     el.classList.toggle('active', parseInt(el.dataset.d) === d);
   });
@@ -562,10 +628,63 @@ function togglePendingCat(catId, on) {
 }
 
 async function saveSettings() {
+  // Read current DOM order from cat-rows container
+  const container = document.getElementById('cat-rows');
+  const newOrder = [...container.querySelectorAll('.cat-row[data-cat]')].map(el => el.dataset.cat);
+  pendingPrefs.order = newOrder;
+
   userPrefs = JSON.parse(JSON.stringify(pendingPrefs));
   closeSettings();
   renderFeed();
   if (currentUser) await saveUserPrefsToDb();
+}
+
+// ── Drag-and-drop reordering ──────────────────────────────────
+function initDragDrop(container) {
+  let dragging = null;
+
+  container.querySelectorAll('.cat-row').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragging = row;
+      // Small delay so the element isn't hidden before screenshot
+      setTimeout(() => row.classList.add('dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', row.dataset.cat);
+    });
+
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      container.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+      dragging = null;
+    });
+
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (!dragging || dragging === row) return;
+
+      // Determine whether to insert before or after
+      const rect = row.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      container.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+
+      if (e.clientY < midY) {
+        container.insertBefore(dragging, row);
+      } else {
+        container.insertBefore(dragging, row.nextSibling);
+      }
+    });
+
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over');
+    });
+
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+    });
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────
