@@ -437,6 +437,86 @@
 
     .profile-danger { margin-top: 8px; }
 
+    /* ── Compact density ─────────────────── */
+    body.compact .feed         { gap: 10px; }
+    body.compact .card-header  { padding: 10px 15px 8px; }
+    body.compact .card-stories { padding: 9px 15px 12px; }
+    body.compact .card-headline { font-size: 13px; line-height: 1.44; }
+    body.compact .card-bullets  { gap: 2px; margin-top: 5px; }
+    body.compact .card-bullets li { font-size: 11.5px; line-height: 1.55; }
+    body.compact .card-sources  { margin-top: 6px; font-size: 10.5px; }
+    body.compact .story-divider { margin: 8px 0; }
+    body.compact .brief-header  { margin-bottom: 20px; }
+    body.compact .brief-title   { font-size: 19px; }
+
+    /* Density toggle pills */
+    .density-pills { display: flex; gap: 4px; }
+    .density-pill {
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 6px 16px; border-radius: 6px;
+      border: 1px solid var(--border2); background: var(--bg); color: var(--muted2);
+      cursor: pointer; transition: all .12s; flex: 1;
+    }
+    .density-pill:hover { color: var(--text); border-color: var(--muted); }
+    .density-pill.active { background: var(--accent-d); color: var(--accent); border-color: rgba(112,144,200,.4); }
+
+    /* ── Onboarding modal ────────────────── */
+    #onboard-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    #onboard-overlay.open { display: flex; }
+    .onboard-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      width: 100%; max-width: 500px; margin: 20px;
+      max-height: 90dvh; overflow-y: auto;
+    }
+    .onboard-card h2 { font-size: 19px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+    .onboard-card p  { font-size: 13px; color: var(--muted2); margin-bottom: 20px; line-height: 1.5; }
+    .onboard-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .onboard-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 18px;
+    }
+    .onboard-cat-btn {
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 11px 8px; border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg); color: var(--muted2);
+      cursor: pointer; text-align: center;
+      transition: border-color .12s, color .12s, background .12s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .onboard-cat-btn .ob-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .onboard-cat-btn:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── Delete confirm modal ────────────── */
+    #delete-confirm-overlay {
+      display: none; position: fixed; inset: 0; z-index: 600;
+      background: rgba(0,0,0,.8); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    #delete-confirm-overlay.open { display: flex; }
+    .delete-confirm-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid #e07070;
+      border-radius: var(--radius);
+      padding: 28px 30px; width: 100%; max-width: 380px; margin: 20px;
+    }
+    .delete-confirm-card h2 { font-size: 17px; font-weight: 800; color: #e07070; margin-bottom: 8px; }
+    .delete-confirm-card p  { font-size: 13px; color: var(--muted2); margin-bottom: 20px; line-height: 1.6; }
+    .delete-confirm-card .btn { width: 100%; padding: 10px; margin-bottom: 7px; }
+    .delete-danger-btn {
+      background: rgba(220,100,100,.12); color: #e07070;
+      border: 1px solid rgba(220,100,100,.3);
+    }
+    .delete-danger-btn:hover { background: rgba(220,100,100,.2); opacity: 1; }
+
     /* ── Mobile ──────────────────────────── */
     @media (max-width: 500px) {
       header { padding: 0 16px; }
@@ -540,9 +620,32 @@
       </div>
 
     </div>
-    <div class="settings-foot">
-      <button class="btn btn-ghost" onclick="signOut()" style="width:100%;color:#e07070;border-color:rgba(220,100,100,.25);">Sign out</button>
+    <div class="settings-foot" style="display:flex;flex-direction:column;gap:7px;">
+      <button class="btn btn-ghost" onclick="signOut()" style="width:100%;">Sign out</button>
+      <button class="btn" onclick="openDeleteConfirm()" style="width:100%;background:transparent;color:var(--muted);border:none;font-size:11.5px;padding:4px;cursor:pointer;" onmouseover="this.style.color='#e07070'" onmouseout="this.style.color='var(--muted)'">Delete account</button>
     </div>
+  </div>
+</div>
+
+<!-- Onboarding -->
+<div id="onboard-overlay">
+  <div class="onboard-card">
+    <div class="onboard-eyebrow">Welcome to Daily News</div>
+    <h2>Choose your topics</h2>
+    <p>Select the categories you want in your morning brief. You can change these anytime in Settings.</p>
+    <div class="onboard-grid" id="onboard-cats"></div>
+    <button class="btn btn-accent" id="onboard-btn" onclick="completeOnboarding()" style="width:100%;padding:11px;" disabled>Start reading →</button>
+  </div>
+</div>
+
+<!-- Delete account confirm -->
+<div id="delete-confirm-overlay">
+  <div class="delete-confirm-card">
+    <h2>Delete account?</h2>
+    <p>This will permanently remove your account and all your saved preferences. There's no way to undo this.</p>
+    <button class="btn delete-danger-btn" onclick="confirmDeleteAccount()">Yes, delete my account</button>
+    <button class="btn btn-ghost" onclick="closeDeleteConfirm()">Cancel</button>
+    <div class="auth-msg" id="delete-msg" style="margin-top:8px;"></div>
   </div>
 </div>
 
@@ -557,6 +660,14 @@
       </button>
     </div>
     <div class="settings-body">
+      <div class="settings-section">
+        <div class="settings-label">Display density</div>
+        <div class="density-pills">
+          <button class="density-pill" id="d-comfortable" onclick="setDensity('comfortable')">Comfortable</button>
+          <button class="density-pill" id="d-compact"     onclick="setDensity('compact')">Compact</button>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;">
       <div class="settings-section">
         <div class="settings-label">Detail level per category</div>
         <div class="depth-legend">
@@ -601,6 +712,7 @@ let sb, currentUser = null;
 let todayData = [];
 let userPrefs = defaultPrefs();
 let pendingPrefs = null;
+let isFirstRun = false;
 
 function defaultPrefs() {
   return {
@@ -612,6 +724,7 @@ function defaultPrefs() {
 // ── Init ──────────────────────────────────────────────────────
 (async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  applyDensity(localStorage.getItem('density') || 'comfortable');
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session?.user ?? null;
 
@@ -621,7 +734,10 @@ function defaultPrefs() {
     renderHeader();
     if (currentUser && wasGuest) {
       closeAuth();
-      Promise.all([loadUserPrefs(), loadUserProfile()]).then(renderFeed);
+      Promise.all([loadUserPrefs(), loadUserProfile()]).then(() => {
+        if (isFirstRun) { isFirstRun = false; renderFeed(); openOnboarding(); }
+        else renderFeed();
+      });
     } else if (!currentUser) {
       userPrefs = defaultPrefs();
       profileData = { digest_enabled: true, digest_emails: [] };
@@ -648,7 +764,7 @@ async function loadUserPrefs() {
   if (!currentUser) return;
   const { data, error } = await sb.from('user_settings').select('*').eq('user_id', currentUser.id);
   if (error) { console.error(error); return; }
-  if (!data || data.length === 0) { await saveUserPrefsToDb(); return; }
+  if (!data || data.length === 0) { isFirstRun = true; await saveUserPrefsToDb(); return; }
 
   const prefs = defaultPrefs();
   const sorted = [...data].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
@@ -856,6 +972,7 @@ async function signOut() { await sb.auth.signOut(); }
 function openSettings() {
   pendingPrefs = JSON.parse(JSON.stringify(userPrefs));
   renderCatRows();
+  applyDensity(localStorage.getItem('density') || 'comfortable');
   document.getElementById('settings-overlay').classList.add('open');
 }
 
@@ -1048,6 +1165,89 @@ function initDragDrop(container) {
     handle.addEventListener('pointerup',     endDrag);
     handle.addEventListener('pointercancel', endDrag);
   });
+}
+
+// ── Density ───────────────────────────────────────────────────
+function applyDensity(value) {
+  document.body.classList.toggle('compact', value === 'compact');
+  document.getElementById('d-comfortable')?.classList.toggle('active', value !== 'compact');
+  document.getElementById('d-compact')?.classList.toggle('active', value === 'compact');
+}
+
+function setDensity(value) {
+  localStorage.setItem('density', value);
+  applyDensity(value);
+}
+
+// ── Onboarding ────────────────────────────────────────────────
+let onboardSelected = new Set();
+
+function openOnboarding() {
+  onboardSelected.clear();
+  const grid = document.getElementById('onboard-cats');
+  grid.innerHTML = CATEGORIES.map(cat => `
+    <button class="onboard-cat-btn" id="ob-${cat.id}" onclick="toggleOnboardCat('${cat.id}')">
+      <span class="ob-dot" style="background:${cat.color}"></span>
+      ${cat.label}
+    </button>`).join('');
+  document.getElementById('onboard-btn').disabled = true;
+  document.getElementById('onboard-overlay').classList.add('open');
+}
+
+function toggleOnboardCat(catId) {
+  const btn = document.getElementById(`ob-${catId}`);
+  const cat = CAT_MAP[catId];
+  if (onboardSelected.has(catId)) {
+    onboardSelected.delete(catId);
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.style.background = '';
+  } else {
+    onboardSelected.add(catId);
+    btn.style.color = cat.color;
+    btn.style.borderColor = cat.color;
+    const [r,g,b] = [1,3,5].map(i => parseInt(cat.color.slice(i,i+2),16));
+    btn.style.background = `rgba(${r},${g},${b},.09)`;
+  }
+  document.getElementById('onboard-btn').disabled = onboardSelected.size === 0;
+}
+
+async function completeOnboarding() {
+  onboardSelected.forEach(id => {
+    if (userPrefs.cats[id]) userPrefs.cats[id].selected = true;
+  });
+  // Reorder: selected first in original order, then rest
+  const sel  = userPrefs.order.filter(id => onboardSelected.has(id));
+  const rest = userPrefs.order.filter(id => !onboardSelected.has(id));
+  userPrefs.order = [...sel, ...rest];
+  document.getElementById('onboard-overlay').classList.remove('open');
+  renderFeed();
+  if (currentUser) await saveUserPrefsToDb();
+}
+
+// ── Delete account ────────────────────────────────────────────
+function openDeleteConfirm() {
+  closeProfile();
+  document.getElementById('delete-msg').style.display = 'none';
+  document.getElementById('delete-confirm-overlay').classList.add('open');
+}
+
+function closeDeleteConfirm() {
+  document.getElementById('delete-confirm-overlay').classList.remove('open');
+}
+
+async function confirmDeleteAccount() {
+  const msgEl = document.getElementById('delete-msg');
+  msgEl.style.display = 'none';
+  const { error } = await sb.rpc('delete_account');
+  if (error) {
+    msgEl.textContent = 'Something went wrong. Please try again.';
+    msgEl.className = 'auth-msg err';
+    msgEl.style.display = 'block';
+    return;
+  }
+  await sb.auth.signOut();
+  closeDeleteConfirm();
 }
 
 // ── Profile ───────────────────────────────────────────────────
