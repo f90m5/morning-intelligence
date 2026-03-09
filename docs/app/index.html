@@ -32,18 +32,9 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Top accent bar ──────────────────── */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; height: 3px;
-      background: var(--accent);
-      z-index: 9999;
-    }
-
     /* ── Header ──────────────────────────── */
     header {
-      position: sticky; top: 3px; z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       background: rgba(19,18,16,0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -106,20 +97,21 @@
 
     /* Category section label */
     .card-header {
-      padding: 15px 18px 0;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
     }
 
     .cat-label {
-      font-size: 10px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: .13em;
+      letter-spacing: .04em;
       text-transform: uppercase;
       /* color set inline */
     }
 
     /* Stories */
     .card-stories {
-      padding: 9px 18px 18px;
+      padding: 14px 18px 18px;
     }
 
     /* Headline — the most important element */
@@ -376,18 +368,18 @@ const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
 
 const CATEGORIES = [
-  { id:'ai',            label:'AI',            color:'#8892f4' },
-  { id:'geopolitics',   label:'Geopolitics',   color:'#e07878' },
-  { id:'markets',       label:'Markets',       color:'#52b87a' },
-  { id:'technology',    label:'Technology',    color:'#5a96d8' },
-  { id:'energy',        label:'Energy',        color:'#d4a23c' },
-  { id:'cybersecurity', label:'Cybersecurity', color:'#a480e0' },
-  { id:'startups',      label:'Startups',      color:'#a0aaee' },
-  { id:'science',       label:'Science',       color:'#42b8cc' },
-  { id:'defense',       label:'Defense',       color:'#d08040' },
-  { id:'business',      label:'Business',      color:'#48b090' },
-  { id:'climate',       label:'Climate',       color:'#6ab85a' },
-  { id:'healthcare',    label:'Healthcare',    color:'#d478cc' },
+  { id:'ai',            label:'AI',            color:'#7e9ee8' },
+  { id:'geopolitics',   label:'Geopolitics',   color:'#c97272' },
+  { id:'markets',       label:'Markets',       color:'#5aaa7c' },
+  { id:'technology',    label:'Technology',    color:'#6090c8' },
+  { id:'energy',        label:'Energy',        color:'#c49840' },
+  { id:'cybersecurity', label:'Cybersecurity', color:'#9272c8' },
+  { id:'startups',      label:'Startups',      color:'#7e8ec4' },
+  { id:'science',       label:'Science',       color:'#4aaab8' },
+  { id:'defense',       label:'Defense',       color:'#bc7840' },
+  { id:'business',      label:'Business',      color:'#48a890' },
+  { id:'climate',       label:'Climate',       color:'#62aa52' },
+  { id:'healthcare',    label:'Healthcare',    color:'#bc70b0' },
 ];
 const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 

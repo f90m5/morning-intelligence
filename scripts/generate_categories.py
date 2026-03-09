@@ -347,18 +347,18 @@ def retry_thin_categories(data, articles, thin_categories):
 
 
 CATEGORY_COLORS = {
-    "ai":            "#8892f4",
-    "geopolitics":   "#e07878",
-    "markets":       "#52b87a",
-    "technology":    "#5a96d8",
-    "energy":        "#d4a23c",
-    "cybersecurity": "#a480e0",
-    "startups":      "#a0aaee",
-    "science":       "#42b8cc",
-    "defense":       "#d08040",
-    "business":      "#48b090",
-    "climate":       "#6ab85a",
-    "healthcare":    "#d478cc",
+    "ai":            "#7e9ee8",
+    "geopolitics":   "#c97272",
+    "markets":       "#5aaa7c",
+    "technology":    "#6090c8",
+    "energy":        "#c49840",
+    "cybersecurity": "#9272c8",
+    "startups":      "#7e8ec4",
+    "science":       "#4aaab8",
+    "defense":       "#bc7840",
+    "business":      "#48a890",
+    "climate":       "#62aa52",
+    "healthcare":    "#bc70b0",
 }
 
 DOCS_DIR = PROJECT_ROOT / "docs"
