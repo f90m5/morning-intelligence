@@ -327,6 +327,46 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .empty { text-align: center; padding: 60px 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
 
+    /* ── Guest preview card ──────────────── */
+    .preview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .preview-header {
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .preview-story {
+      display: flex; align-items: baseline; gap: 12px;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .preview-cat-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+      flex-shrink: 0; width: 88px;
+    }
+    .preview-headline {
+      font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.5;
+    }
+    .preview-cta {
+      padding: 20px 18px; text-align: center;
+    }
+    .preview-cta-text {
+      font-size: 12.5px; color: var(--muted2); margin-bottom: 14px; line-height: 1.65;
+    }
+
+    /* ── Empty feed (signed in, no cats selected) ── */
+    .empty-feed {
+      text-align: center; padding: 64px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .empty-feed-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .empty-feed-sub { font-size: 13px; color: var(--muted2); line-height: 1.65; max-width: 260px; }
+
     /* ── Mobile ──────────────────────────── */
     @media (max-width: 500px) {
       header { padding: 0 16px; }
@@ -349,10 +389,6 @@
     <div class="brief-meta" id="brief-meta"></div>
   </div>
   <hr class="brief-rule" />
-  <div id="guest-banner" class="guest-banner" style="display:none;">
-    <span class="guest-banner-text">Sign in to customise your feed and unlock full depth</span>
-    <button class="btn btn-accent" onclick="openAuth()" style="padding:5px 13px;font-size:12px;">Sign in</button>
-  </div>
   <div id="feed">
     <div class="spinner-wrap"><div class="spinner"></div><span>Loading</span></div>
   </div>
@@ -439,7 +475,7 @@ let pendingPrefs = null;
 function defaultPrefs() {
   return {
     order: CATEGORIES.map(c => c.id),
-    cats: Object.fromEntries(CATEGORIES.map(c => [c.id, { selected: true, depth: 2 }])),
+    cats: Object.fromEntries(CATEGORIES.map(c => [c.id, { selected: false, depth: 2 }])),
   };
 }
 
@@ -532,10 +568,16 @@ function renderFeed() {
   const feed   = document.getElementById('feed');
   const datEl  = document.getElementById('brief-date');
   const metaEl = document.getElementById('brief-meta');
-  document.getElementById('guest-banner').style.display = currentUser ? 'none' : 'flex';
 
   const now = new Date();
   datEl.textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Guest — show teaser preview only
+  if (!currentUser) {
+    metaEl.textContent = '';
+    feed.innerHTML = buildGuestPreview();
+    return;
+  }
 
   if (todayData.length === 0) {
     feed.innerHTML = `<div class="empty">No brief yet for today.<br>Check back after the morning run.</div>`;
@@ -544,19 +586,62 @@ function renderFeed() {
   }
 
   const dataMap = Object.fromEntries(todayData.map(r => [r.category, r]));
-  const order = currentUser ? userPrefs.order : CATEGORIES.map(c => c.id);
-
-  const rows = order
+  const rows = userPrefs.order
     .map(id => dataMap[id])
     .filter(r => {
       if (!r) return false;
       if (r.has_content === false) return false;
-      if (!currentUser) return true;
       return userPrefs.cats[r.category]?.selected !== false;
     });
 
+  // Signed in but no categories turned on yet
+  if (rows.length === 0) {
+    metaEl.textContent = '';
+    feed.innerHTML = `
+      <div class="empty-feed">
+        <div class="empty-feed-title">Your feed is empty</div>
+        <div class="empty-feed-sub">Open Settings to choose which categories to follow.</div>
+        <button class="btn btn-accent" onclick="openSettings()" style="margin-top:6px;">Open Settings</button>
+      </div>`;
+    return;
+  }
+
   metaEl.textContent = `${rows.length} topic${rows.length !== 1 ? 's' : ''}`;
   feed.innerHTML = `<div class="feed">${rows.map(r => buildCard(r)).join('')}</div>`;
+}
+
+function buildGuestPreview() {
+  if (todayData.length === 0) {
+    return `<div class="empty">No brief yet for today.<br>Check back after the morning run.</div>`;
+  }
+
+  const dataMap = Object.fromEntries(todayData.map(r => [r.category, r]));
+  const stories = [];
+
+  for (const cat of CATEGORIES) {
+    if (stories.length >= 3) break;
+    const row = dataMap[cat.id];
+    if (!row || row.has_content === false) continue;
+    const s1 = row.depth_1;
+    if (!s1?.headline) continue;
+    stories.push({ label: row.category_label || cat.label, headline: s1.headline, color: cat.color });
+  }
+
+  const storiesHtml = stories.map(s => `
+    <div class="preview-story">
+      <span class="preview-cat-label" style="color:${s.color}">${esc(s.label)}</span>
+      <span class="preview-headline">${esc(s.headline)}</span>
+    </div>`).join('');
+
+  return `
+    <div class="preview-card">
+      <div class="preview-header">Today's Top Stories</div>
+      <div class="preview-stories">${storiesHtml}</div>
+      <div class="preview-cta">
+        <div class="preview-cta-text">Sign in to customise your feed<br>and read full coverage</div>
+        <button class="btn btn-accent" onclick="openAuth()">Sign in</button>
+      </div>
+    </div>`;
 }
 
 function buildCard(row) {
