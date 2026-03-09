@@ -33,7 +33,7 @@ from scripts.generate_brief import generate_brief
 from scripts.generate_categories import generate_categories
 from scripts.publish_html import publish_brief_html
 from scripts.history import save_today
-from scripts.emailer import send_brief_email
+from scripts.emailer import send_brief_emails
 
 
 def setup_logging():
@@ -134,10 +134,10 @@ def run():
     except Exception as e:
         logger.warning(f"History save failed (non-fatal): {e}")
 
-    # Step 6: Send email digest
+    # Step 6: Send personalised email digest to all users
     try:
-        send_brief_email(markdown, today)
-        logger.info("Email sent")
+        send_brief_emails(today)
+        logger.info("Emails sent")
     except Exception as e:
         logger.warning(f"Email send failed (non-fatal): {e}")
 
