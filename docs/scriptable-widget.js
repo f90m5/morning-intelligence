@@ -2,8 +2,8 @@
 // Paste this into Scriptable on your iPhone.
 // Set widget size to Medium or Large for best results.
 
-const WIDGET_JSON = "https://f90m5.github.io/morning-intelligence/widget.json";
-const FULL_PAGE   = "https://f90m5.github.io/morning-intelligence/app/";
+const WIDGET_JSON = "https://dailynews.it.com/widget.json";
+const FULL_PAGE   = "https://dailynews.it.com/app/";
 
 // How many stories to show per widget size
 const MAX_STORIES = config.widgetFamily === "small"  ? 3

@@ -31,7 +31,7 @@ load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 SENDER_EMAIL   = "donovanquinn22@gmail.com"
 SUBJECT_PREFIX = "Your Daily Brief"
-APP_URL        = "https://f90m5.github.io/morning-intelligence/app/"
+APP_URL        = "https://dailynews.it.com/app/"
 
 # Category metadata — must stay in sync with index.html
 CATEGORIES = [
