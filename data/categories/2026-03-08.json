@@ -6,14 +6,38 @@
       "category_label": "AI & Machine Learning",
       "stories": [
         {
-          "headline": "OpenAI robotics leader resigns over Pentagon AI deal guardrail concerns.",
+          "headline": "OpenAI robotics hardware leader resigns over Pentagon AI partnership concerns.",
           "bullets": [
-            "Senior OpenAI robotics team member quit March 8 over undefined AI guardrails — per NPR",
-            "Resignation follows OpenAI's announced Pentagon agreement for defense applications",
-            "Controversy may discourage other startups from federal government work — per TechCrunch"
+            "Caitlin Kalinowski quit March 7 citing inadequate guardrails for Pentagon deal — per TechCrunch",
+            "Kalinowski criticized OpenAI's haste in military partnership without proper oversight — NPR",
+            "OpenAI told Engadget no plans to replace departing robotics hardware executive"
           ],
           "sources": [
+            "TechCrunch",
             "NPR",
+            "Engadget"
+          ]
+        },
+        {
+          "headline": "Anthropic discovers 22 Firefox vulnerabilities using Claude Opus 4.6 AI model.",
+          "bullets": [
+            "AI found 14 high-severity, 7 moderate, 1 low-severity bugs over two weeks — The Hacker News",
+            "Mozilla fixed all vulnerabilities in Firefox 148 released late February — The Hacker News",
+            "Security partnership demonstrates AI's capability in automated vulnerability discovery"
+          ],
+          "sources": [
+            "The Hacker News"
+          ]
+        },
+        {
+          "headline": "OpenAI delays ChatGPT 'adult mode' launch indefinitely to focus on core features.",
+          "bullets": [
+            "Adult content feature postponed again after December delay — per Sources' Alex Heath",
+            "Company prioritizing intelligence gains, personality improvements over adult mode — Engadget",
+            "Feature would give verified adults access to erotica and explicit content — TechCrunch"
+          ],
+          "sources": [
+            "Engadget",
             "TechCrunch"
           ]
         }
@@ -25,36 +49,40 @@
       "category_label": "Geopolitics",
       "stories": [
         {
-          "headline": "Mojtaba Khamenei becomes Iran's new supreme leader as conflict escalates.",
+          "headline": "Iran names Ayatollah Khamenei's son Mojtaba as new supreme leader after father's death.",
           "bullets": [
-            "Ali Khamenei's son Mojtaba appointed Iran's supreme leader March 9 — per Financial Times",
-            "Leadership change occurs amid ongoing Iran war affecting global markets",
-            "Stock markets tumbled following oil price surge from conflict uncertainty"
+            "Assembly of Experts chose Mojtaba Khamenei, 56, as third supreme leader — Iranian state TV",
+            "First hereditary succession since 1979 revolution overthrew Pahlavi monarchy — Fortune",
+            "Selection seen as act of defiance during US-Israeli war — Financial Times"
           ],
           "sources": [
+            "Al Jazeera",
+            "Fortune",
             "Financial Times"
           ]
         },
         {
-          "headline": "Cyprus protests UK military bases after RAF Akrotiri drone strike.",
+          "headline": "US weighs sending special forces to secure Iran's nuclear stockpile during war.",
           "bullets": [
-            "Cypriot protesters demand 'British Bases Out' after RAF Akrotiri targeted March 8 — per BBC",
-            "Drone strike on UK airbase fuels debate over British military presence in Cyprus",
-            "Anti-base sentiment grows as Middle East conflict spreads to Cyprus"
+            "US-Israel discussed special forces mission to seize 450kg of 60%-enriched uranium — Axios",
+            "Material convertible to weapons grade within weeks — four sources confirmed to Axios",
+            "Operation would target preventing Iran from ever obtaining nuclear weapon — Axios"
           ],
           "sources": [
-            "BBC News"
+            "Axios Pro Rata"
           ]
         },
         {
-          "headline": "Israeli strikes kill 83 children in Lebanon attacks targeting Iranian commanders.",
+          "headline": "Explosion investigated as potential terrorism at US Embassy in Oslo.",
           "bullets": [
-            "Israel struck Iranian commanders in Beirut March 8, killing 83 children — per France24",
-            "Nearly 400 people dead after days of Israeli attacks in Lebanese capital",
-            "Schools and stadiums converted to emergency shelters for displaced Lebanese"
+            "Blast caused minor damage to embassy building early March 8 — BBC News",
+            "Norwegian police investigating terrorism motive after initial explosion — DW News",
+            "No injuries reported in Sunday morning incident — NPR"
           ],
           "sources": [
-            "France24"
+            "BBC News",
+            "DW News",
+            "NPR"
           ]
         }
       ],
@@ -65,37 +93,40 @@
       "category_label": "Markets & Economy",
       "stories": [
         {
-          "headline": "Oil surges above $100 per barrel as Iran war forces production cuts.",
+          "headline": "Oil surges past $100 for first time since 2022 as Iran war escalates.",
           "bullets": [
-            "Crude oil hit $100 March 9 for first time since 2022 — per Bloomberg",
-            "Major Middle East producers cut output as Strait of Hormuz remains closed",
-            "U.S. stock futures fell Sunday on fears of Iran conflict economic effects — per MarketWatch"
+            "Brent crude hit $114.30, up 23.38% while WTI rose 26.35% to $114.85 — CNBC March 9",
+            "Prices crossed $100 Sunday for first time in nearly four years — multiple sources",
+            "Strait of Hormuz closure and production cuts driving supply concerns — Bloomberg"
+          ],
+          "sources": [
+            "CNBC",
+            "Bloomberg",
+            "Financial Times"
+          ]
+        },
+        {
+          "headline": "Dow futures plunge over 1,000 points as Middle East conflict roils global markets.",
+          "bullets": [
+            "US stock futures fell Sunday with oil surge above $100 barrel — MarketWatch",
+            "Emerging market stocks down 10% from recent peak amid risk-off sentiment — Bloomberg",
+            "South Korean equities and Indonesian markets slumped on war risks — Bloomberg"
+          ],
+          "sources": [
+            "MarketWatch",
+            "Bloomberg"
+          ]
+        },
+        {
+          "headline": "China inflation jumps to three-year high as oil rally adds pressure.",
+          "bullets": [
+            "Consumer prices accelerated to fastest growth in over three years — Bloomberg March 9",
+            "Factory deflation moderated again amid energy market rally — CNBC",
+            "Lunar New Year holiday spending boom contributed to price increases — Bloomberg"
           ],
           "sources": [
             "Bloomberg",
-            "MarketWatch"
-          ]
-        },
-        {
-          "headline": "Asian stock markets plunge on Middle East tensions and oil spike.",
-          "bullets": [
-            "Korean stocks fell as global funds sold on Iran war risks March 9 — per Bloomberg",
-            "Japanese stocks dropped most since April on oil price fears March 8",
-            "South Korean equities hit by escalating tensions and rising oil prices"
-          ],
-          "sources": [
-            "Bloomberg"
-          ]
-        },
-        {
-          "headline": "Dollar strengthens as haven demand rises amid Middle East crisis.",
-          "bullets": [
-            "Dollar gained against all major peers March 8 on Middle East war — per Bloomberg",
-            "Haven bid boosted dollar as oil prices surged above $100 per barrel",
-            "Stocks and Treasuries fell while crude oil hit 2022 highs on shipping strains"
-          ],
-          "sources": [
-            "Bloomberg"
+            "CNBC"
           ]
         }
       ],
@@ -106,14 +137,36 @@
       "category_label": "Technology",
       "stories": [
         {
-          "headline": "Palmer Luckey's ModRetro gaming startup seeks $1B valuation funding.",
+          "headline": "Google awards CEO Sundar Pichai $692 million pay package tied to performance metrics.",
           "bullets": [
-            "ModRetro reportedly raising funds at $1 billion valuation March 8 — per TechCrunch",
-            "Company launched Game Boy-style Chromatic handheld device in 2024",
-            "Palmer Luckey's retro gaming venture targets nostalgic gaming market"
+            "Package mostly performance-based with stock incentives linked to Waymo, Wing — TechCrunch",
+            "New compensation structure ties pay to autonomous driving and drone delivery success",
+            "Award announced March 8 as part of executive compensation restructuring — TechCrunch"
           ],
           "sources": [
             "TechCrunch"
+          ]
+        },
+        {
+          "headline": "Indonesia announces social media ban for anyone under 16 starting March 28.",
+          "bullets": [
+            "High-risk platforms must delete accounts from users under 16 — Minister Meutya Hafid",
+            "Implementation begins March 28 with YouTube, TikTok, Facebook — Engadget",
+            "Country follows Australia's approach to child social media restrictions"
+          ],
+          "sources": [
+            "Engadget"
+          ]
+        },
+        {
+          "headline": "LibreOffice Writer adds native Markdown support in version 26.2 release.",
+          "bullets": [
+            "Document Foundation announced Markdown compatibility February 4 — Hacker News",
+            "Feature allows direct import and export of Markdown files in Writer",
+            "Addition addresses long-standing user requests for native Markdown handling"
+          ],
+          "sources": [
+            "Hacker News"
           ]
         }
       ],
@@ -124,14 +177,37 @@
       "category_label": "Energy & Commodities",
       "stories": [
         {
-          "headline": "Brent crude reaches highest price since Russia's 2022 Ukraine invasion.",
+          "headline": "Oil soars toward $120 as Iran war forces major Middle East production cuts.",
           "bullets": [
-            "Brent crude hit highest level since February 2022 invasion March 9 — per NPR",
-            "U.S. gasoline prices expected to continue rising amid Iran conflict",
-            "Markets lose hope for quick Iran war resolution driving oil surge"
+            "Major producers curbed output with Strait of Hormuz remaining closed — Bloomberg March 8",
+            "WTI crude trading at $114.85, up from around $90 before conflict began",
+            "Gulf Arab producers cutting production due to storage space shortage — CNBC"
           ],
           "sources": [
-            "NPR"
+            "Bloomberg",
+            "CNBC"
+          ]
+        },
+        {
+          "headline": "Crop prices jump as Middle East conflict disrupts trade and threatens supplies.",
+          "bullets": [
+            "Soybean oil surged over 4% while wheat neared two-year peak — Bloomberg March 9",
+            "Energy and fertilizer cost increases driving agricultural market concerns",
+            "Trade route disruptions threaten to tighten global food supply chains"
+          ],
+          "sources": [
+            "Bloomberg"
+          ]
+        },
+        {
+          "headline": "Europe faces new gas crisis with storage below 30% and QatarEnergy facility shutdown.",
+          "bullets": [
+            "EU gas storage levels dropped below 30% as benchmark prices hit year highs — OilPrice.com",
+            "QatarEnergy shut down world's biggest LNG production facility — OilPrice.com March 8",
+            "Gas prices gained 60% since US-Israel bombing of Iran began Saturday"
+          ],
+          "sources": [
+            "OilPrice.com"
           ]
         }
       ],
@@ -140,51 +216,97 @@
     "cybersecurity": {
       "category": "cybersecurity",
       "category_label": "Cybersecurity",
-      "stories": [],
-      "has_content": false
+      "stories": [
+        {
+          "headline": "FBI investigates breach potentially affecting wiretapping and surveillance systems.",
+          "bullets": [
+            "Federal bureau probing compromise of systems related to surveillance tools — The Register",
+            "Breach may have impacted law enforcement wiretapping capabilities",
+            "Investigation ongoing with full scope of compromise still being assessed"
+          ],
+          "sources": [
+            "The Register"
+          ]
+        },
+        {
+          "headline": "OpenAI launches Codex Security agent finding 10,561 high-severity vulnerabilities.",
+          "bullets": [
+            "AI security agent scanned 1.2 million commits in research preview — The Hacker News",
+            "Available to ChatGPT Pro, Enterprise, Business, Edu customers via web interface",
+            "Tool identifies, validates, and proposes fixes for code vulnerabilities"
+          ],
+          "sources": [
+            "The Hacker News"
+          ]
+        },
+        {
+          "headline": "Microsoft reports hackers increasingly using AI across all cyberattack stages.",
+          "bullets": [
+            "Threat actors using AI to accelerate attacks and scale malicious activity — Bleeping Computer",
+            "North Korea taking advantage of AI agents for managing attack workflows",
+            "AI helps outsource 'janitorial work' needed for cyberattack planning — Microsoft"
+          ],
+          "sources": [
+            "Bleeping Computer",
+            "The Register"
+          ]
+        }
+      ],
+      "has_content": true
     },
     "startups": {
       "category": "startups",
       "category_label": "Startups & Venture",
       "stories": [
         {
-          "headline": "ModRetro seeks $1B valuation as gaming hardware startup raises funding.",
+          "headline": "Palmer Luckey's retro gaming startup ModRetro seeks $1 billion valuation funding.",
           "bullets": [
-            "Palmer Luckey's retro gaming company targets $1 billion valuation March 8 — per TechCrunch",
-            "Startup launched Chromatic Game Boy-style handheld in 2024",
-            "Funding round highlights investor interest in nostalgic gaming hardware"
+            "Company launched Game Boy-style Chromatic handheld device in 2024 — TechCrunch",
+            "ModRetro reportedly pursuing new investment round at unicorn valuation",
+            "Startup focuses on retro gaming hardware with modern technology integration"
           ],
           "sources": [
             "TechCrunch"
           ]
         }
       ],
-      "has_content": true
+      "has_content": false
     },
     "science": {
       "category": "science",
       "category_label": "Science & Research",
       "stories": [
         {
-          "headline": "Molybdenum-84 atom breaks nuclear physics rules in balanced nucleus discovery.",
+          "headline": "Scientists discover balanced atom breaking nuclear physics rules in molybdenum-84.",
           "bullets": [
-            "Molybdenum-84 shows deformed structure despite equal protons-neutrons March 8 — per Science Daily",
-            "Discovery reveals new 'Island of Inversion' in unexpected balanced nuclei",
-            "Challenges decades-old theory limiting deformation to neutron-rich isotopes"
+            "Molybdenum-84 shows deformed structure despite equal protons and neutrons — Science Daily March 8",
+            "Discovery reveals new 'Island of Inversion' in unexpected location",
+            "Findings challenge decades-old assumptions about nuclear stability patterns"
           ],
           "sources": [
             "Science Daily"
           ]
         },
         {
-          "headline": "Monthly HIV injection treatment shows effectiveness in mental illness patients.",
+          "headline": "AI identifies liquid-like ion flow signal enabling faster solid-state battery development.",
           "bullets": [
-            "Long-lasting HIV injections suppress virus in challenging patients March 8 — per Nature",
-            "Monthly treatment offers alternative to daily tablets for adherence issues",
-            "Particularly effective for people with mental illness and other conditions"
+            "Machine learning pipeline predicts Raman spectra for ion movement detection — Science Daily",
+            "Low-frequency signal indicates rapid ion motion disrupting crystal symmetry",
+            "Approach could dramatically accelerate solid-state battery material discovery"
           ],
           "sources": [
-            "Nature News"
+            "Science Daily"
+          ]
+        },
+        {
+          "headline": "NASA DART mission reveals asteroids exchange material through 'cosmic snowballs.'",
+          "bullets": [
+            "Images show faint streaks on Dimorphos from debris drifting from Didymos — Science Daily",
+            "First direct visual proof sunlight spins asteroids fast enough to shed debris",
+            "Discovery shows near-Earth asteroids more active than previously believed"
+          ],
+          "sources": [
+            "Science Daily"
           ]
         }
       ],
@@ -195,25 +317,36 @@
       "category_label": "Defense & Policy",
       "stories": [
         {
-          "headline": "OpenAI robotics leader quits over Pentagon AI partnership guardrail concerns.",
+          "headline": "Pentagon reports seventh US service member killed in Middle East Iran war.",
           "bullets": [
-            "Senior robotics team member resigned over undefined AI guardrails March 8 — per NPR",
-            "Exit follows OpenAI's announced Pentagon agreement for defense applications",
-            "Controversy highlights ongoing debate over AI military applications"
+            "Army soldier died from injuries in Iranian attack on Saudi Arabia — Fortune March 8",
+            "All seven war casualties were Army soldiers, six reservists killed March 1 in Kuwait",
+            "Deaths occurred during Iranian retaliation for US-Israeli strikes on Iran"
           ],
           "sources": [
-            "NPR"
+            "Fortune"
           ]
         },
         {
-          "headline": "Trump discusses potential Iran military action stance amid escalating conflict.",
+          "headline": "Pentagon and FAA to conduct anti-drone laser tests after Texas airspace closures.",
           "bullets": [
-            "Trump's Iran military approach discussed on Bloomberg March 8 — per Bloomberg",
-            "Political dynamics surrounding U.S. foreign policy response analyzed",
-            "Implications for military intervention policy under potential administration"
+            "Tests follow two Texas airspace closures in past month from laser deployments — Fortune",
+            "Lawmakers concerned about lack of coordination between Pentagon and FAA",
+            "CBP used anti-drone laser in February without notifying aviation authorities"
           ],
           "sources": [
-            "Bloomberg"
+            "Fortune"
+          ]
+        },
+        {
+          "headline": "Trump announces missile makers agree to quadruple production capacity.",
+          "bullets": [
+            "Defense companies committed to major production increases — Defense One March 7",
+            "Announcement follows months of White House pressure for faster weapons manufacturing",
+            "Move aimed at addressing munitions shortages amid Iran conflict escalation"
+          ],
+          "sources": [
+            "Defense One"
           ]
         }
       ],
@@ -224,25 +357,36 @@
       "category_label": "Business & Finance",
       "stories": [
         {
-          "headline": "Gulf businesses purchase political violence insurance as Middle East conflict spreads.",
+          "headline": "Emirates resumes Dubai flights after Middle East air travel disruption strands Britons.",
           "bullets": [
-            "Data centers, energy projects and hotels buy coverage March 8 — per Financial Times",
-            "Companies move to limit potential losses from escalating regional conflict",
-            "Political violence insurance demand surges across Gulf business sector"
+            "New UK flights follow days of widespread regional aviation disruption — BBC March 7",
+            "Service resumption helps British travelers previously stranded in Middle East",
+            "Flights restored as some Gulf airspace reopens amid ongoing Iran conflict"
+          ],
+          "sources": [
+            "BBC News"
+          ]
+        },
+        {
+          "headline": "Gulf businesses purchase political violence insurance as regional conflict spreads.",
+          "bullets": [
+            "Data centers, energy projects, hotels move to limit potential losses — Financial Times",
+            "Insurance purchases surge as Iran war threatens regional business operations",
+            "Companies seeking coverage for conflict-related property and operational risks"
           ],
           "sources": [
             "Financial Times"
           ]
         },
         {
-          "headline": "Iran war threatens UK economy with incoming inflation wave.",
+          "headline": "Federal judge voids Kari Lake's year-long tenure leading Voice of America operations.",
           "bullets": [
-            "BBC economics editor warns of Iran conflict economic consequences March 7 — per BBC",
-            "Inflation concerns rise as Middle East tensions affect global supply chains",
-            "UK economy faces potential disruption from prolonged regional conflict"
+            "Judge declared all Lake's actions null and void including 1,000+ layoffs — NPR March 8",
+            "Court ruled Lake's appointment to US Agency for Global Media was unlawful",
+            "Decision invalidates spending cuts and broadcaster policy changes under Lake"
           ],
           "sources": [
-            "BBC News"
+            "NPR"
           ]
         }
       ],
@@ -251,7 +395,20 @@
     "climate": {
       "category": "climate",
       "category_label": "Climate & Environment",
-      "stories": [],
+      "stories": [
+        {
+          "headline": "Tehran residents warned of acid rain after oil storage facility attacks.",
+          "bullets": [
+            "Iran's Red Crescent Society tells locals avoid exposure as capital engulfed in smoke — FT",
+            "Toxic rain falling over city from burning oil depot fires — France24 March 8",
+            "Authorities urge residents stay indoors and avoid breathing polluted air"
+          ],
+          "sources": [
+            "Financial Times",
+            "France24"
+          ]
+        }
+      ],
       "has_content": false
     },
     "healthcare": {
@@ -259,20 +416,31 @@
       "category_label": "Healthcare",
       "stories": [
         {
-          "headline": "Eight existing market drugs identified as potential dementia treatments.",
+          "headline": "Monthly HIV injection treatments show potent alternative to daily tablets.",
           "bullets": [
-            "Real-world testing confirms eight drugs could fight dementia March 8 — per MarketWatch",
-            "Already-approved medications show promise for dementia treatment applications",
-            "Findings offer hope for faster dementia treatment using existing pharmaceutical options"
+            "Long-lasting treatment suppresses HIV in patients with mental illness — Nature March 8",
+            "Injectable therapy addresses adherence challenges with standard daily treatments",
+            "Clinical results demonstrate effectiveness for difficult-to-treat patient populations"
           ],
           "sources": [
-            "MarketWatch"
+            "Nature News"
+          ]
+        },
+        {
+          "headline": "FDA official Vinay Prasad's controversial tenure ends after attracting sustained criticism.",
+          "bullets": [
+            "Prasad's ability to attract criticism led to departure despite presidential support — STAT",
+            "Tenure marked by conflicts over medical evidence standards and drug approvals",
+            "Five key lessons identified from turbulent FDA leadership experience"
+          ],
+          "sources": [
+            "STAT News"
           ]
         }
       ],
-      "has_content": true
+      "has_content": false
     }
   },
-  "generated_at": "2026-03-08T23:03:06.658588",
-  "article_count": 25
+  "generated_at": "2026-03-08T23:10:21.430160",
+  "article_count": 295
 }

@@ -333,6 +333,14 @@ def fetch_and_rank_articles():
     # 7. Save processed (top articles for brief)
     save_articles(top, stage="processed")
 
+    # 8. Save full ranked pool for category generation
+    today = datetime.now().strftime("%Y-%m-%d")
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    all_path = PROCESSED_DIR / f"{today}_all.json"
+    with open(all_path, "w", encoding="utf-8") as f:
+        json.dump(ranked, f, indent=2, ensure_ascii=False)
+    print(f"  Full pool saved: {len(ranked)} articles → {all_path.name}")
+
     print("--- Fetch complete ---\n")
     return top, ranked
 

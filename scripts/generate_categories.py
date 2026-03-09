@@ -348,17 +348,25 @@ if __name__ == "__main__":
     sys.path.insert(0, str(PROJECT_ROOT))
 
     today = datetime.now().strftime("%Y-%m-%d")
-    processed_path = PROJECT_ROOT / "data" / "processed" / f"{today}.json"
+    all_path  = PROJECT_ROOT / "data" / "processed" / f"{today}_all.json"
+    top_path  = PROJECT_ROOT / "data" / "processed" / f"{today}.json"
 
-    if not processed_path.exists():
+    # Prefer the full ranked pool; fall back to top-25 brief selection
+    if all_path.exists():
+        load_path = all_path
+    elif top_path.exists():
+        load_path = top_path
+        print(f"  [WARN] Full pool not found — using top-25 brief selection only.")
+        print(f"         Run fetch.py or main.py to generate the full article pool.")
+    else:
         print(f"No processed articles found for {today}.")
         print("Run fetch.py first, or run main.py for the full pipeline.")
         sys.exit(1)
 
-    with open(processed_path, "r", encoding="utf-8") as f:
+    with open(load_path, "r", encoding="utf-8") as f:
         articles = json.load(f)
 
-    print(f"Loaded {len(articles)} articles from {processed_path.name}")
+    print(f"Loaded {len(articles)} articles from {load_path.name}")
     data, path = generate_categories(articles)
 
     if data:

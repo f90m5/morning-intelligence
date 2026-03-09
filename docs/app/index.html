@@ -162,19 +162,35 @@
     /* Per-category row */
     .cat-row {
       display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px;
+      padding: 9px 12px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       opacity: 1;
       transition: opacity .15s;
+      min-height: 42px;
     }
-    .cat-row.off { opacity: .45; }
+    .cat-row.off { opacity: .4; }
 
-    .cat-row-badge { flex-shrink: 0; }
+    /* Colored dot instead of full badge — prevents row height variance */
+    .cat-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .dot-ai            { background:#a5b4fc; }
+    .dot-geopolitics   { background:#fca5a5; }
+    .dot-markets       { background:#86efac; }
+    .dot-technology    { background:#93c5fd; }
+    .dot-energy        { background:#fcd34d; }
+    .dot-cybersecurity { background:#c4b5fd; }
+    .dot-startups      { background:#a5b4fc; }
+    .dot-science       { background:#67e8f9; }
+    .dot-defense       { background:#d97706; }
+    .dot-business      { background:#6ee7b7; }
+    .dot-climate       { background:#4ade80; }
+    .dot-healthcare    { background:#f0abfc; }
 
-    .cat-row-name { font-size: 13px; font-weight: 500; flex: 1; }
+    .cat-row-name { font-size: 13px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* Depth pills inside settings row */
     .depth-pills { display: flex; gap: 4px; flex-shrink: 0; }
@@ -510,7 +526,7 @@ function openSettings() {
     const offCls = pref.selected ? '' : ' off';
 
     return `<div class="cat-row${offCls}" id="prow-${cat.id}">
-      <span class="cat-badge badge-${cat.id} cat-row-badge" style="font-size:9px;">${cat.label}</span>
+      <span class="cat-dot dot-${cat.id}"></span>
       <span class="cat-row-name">${cat.label}${noData?' <span style="color:var(--muted);font-size:10px;">(no coverage)</span>':''}</span>
       <div class="depth-pills">
         ${[1,2,3].map(d => `<button class="dp${pref.depth===d?' active':''}${!pref.selected?' disabled':''}" data-cat="${cat.id}" data-d="${d}" onclick="setPendingDepth('${cat.id}',${d})">${d}</button>`).join('')}

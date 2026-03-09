@@ -63,6 +63,6 @@
 
   ],
   "categories": ["business", "markets", "technology", "ai_data", "world", "geopolitics", "science"],
-  "max_articles_per_feed": 8,
+  "max_articles_per_feed": 15,
   "max_total_articles": 25
 }
