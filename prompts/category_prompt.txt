@@ -63,11 +63,21 @@ CONTENT RULES — apply to every field:
 
 STORIES MUST BE DISTINCT: Each story covers a different event. Do not split one event across 3 stories. If only 1-2 real stories exist for a category today, produce only those and set the remaining story slots to null or omit them. Do not pad with thin or manufactured stories.
 
-CATEGORY BOUNDARIES: Each story must clearly belong to its assigned category. Do not place macro economic data (indices, Fed rates, inflation) in Business — that is Markets. Do not place company-specific earnings or M&A in Markets — that is Business. When a story could fit two categories, assign it to the most specific one and do not repeat it.
+WITHIN-CATEGORY DIVERSITY: The 3 stories in a category must cover meaningfully different developments — not 3 angles on the same underlying event. If multiple stories share the same root cause (e.g., three oil price stories all driven by the same supply shock), pick the single most important one and find other distinct stories to fill the remaining slots. Geographic and topical variety within a category is preferred.
+
+CATEGORY BOUNDARIES: Each story must clearly belong to its assigned category. Do not place macro economic data (indices, Fed rates, inflation) in Business — that is Markets. Do not place company-specific earnings or M&A in Markets — that is Business. When a story could fit two categories, assign it to the most specific one and do not repeat it. Subscriber test: before placing a story in a category, ask "would a subscriber who follows only this topic expect to see this story?" If the answer is no, find a better category or omit it.
+
+HEADLINE STANDARD: The headline must state the single most important specific fact as a complete claim — not just describe what the story is about. A reader should learn something concrete from the headline alone.
+Bad: "Apple announces new chip"
+Good: "Apple's M4 Ultra chip delivers 2.4x faster neural engine than M3 Ultra, per Apple March 9"
+
+BULLETS ADD DEPTH — NOT REPETITION: Each bullet must provide new information not already stated in the headline. The first bullet should give the most important supporting detail, the second should add context or scale, the third (if present) should cover what's next or a notable secondary fact. Never restate the headline in bullet form.
 
 SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), WHEN (date), and source attribution.
 Bad: "AI regulation is increasing"
 Good: "EU AI Act enforcement body formally launched March 9, giving national regulators until August to designate auditors — per Reuters"
+
+RECENCY: Prefer stories published today or yesterday. Older stories may be included only when they represent the single most significant development in a category with no fresher coverage — importance always outweighs recency, but when two stories are otherwise equal, the more recent one wins.
 
 DATE RULE: Every bullet must include a date. If the source article does not state an event date, use its publication date. Format: "per [Source] [Month Day]". Never omit the date.
 
