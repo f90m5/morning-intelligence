@@ -209,10 +209,24 @@
     .auth-msg.err { background: rgba(220,100,100,.1); color: #e07070; border: 1px solid rgba(220,100,100,.25); }
 
     /* ── Settings panel ──────────────────── */
-    #settings-overlay { display: none; position: fixed; inset: 0; z-index: 200; }
-    #settings-overlay.open { display: block; }
-    .settings-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
-    .settings-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 360px; background: var(--surface); border-left: 1px solid var(--border2); display: flex; flex-direction: column; }
+    #settings-overlay { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
+    #settings-overlay.open { pointer-events: auto; }
+    .settings-backdrop {
+      position: absolute; inset: 0; background: rgba(0,0,0,.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    #settings-overlay.open .settings-backdrop,
+    #profile-overlay.open  .settings-backdrop { opacity: 1; pointer-events: auto; }
+    .settings-panel {
+      position: absolute; right: 0; top: 0; bottom: 0; width: 360px;
+      background: var(--surface); border-left: 1px solid var(--border2);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #settings-overlay.open .settings-panel,
+    #profile-overlay.open  .settings-panel { transform: translateX(0); }
     .settings-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .settings-head h3 { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
     .settings-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
@@ -378,8 +392,8 @@
     .empty-feed-sub { font-size: 13px; color: var(--muted2); line-height: 1.65; max-width: 260px; }
 
     /* ── Profile panel ───────────────────── */
-    #profile-overlay { display: none; position: fixed; inset: 0; z-index: 200; }
-    #profile-overlay.open { display: block; }
+    #profile-overlay { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
+    #profile-overlay.open { pointer-events: auto; }
 
     .profile-section { margin-bottom: 20px; }
 
@@ -567,8 +581,21 @@
     @media (max-width: 500px) {
       header { padding: 0 16px; }
       main { padding: 26px 12px 80px; }
-      .settings-panel { width: 100%; border-left: none; top: auto; height: 88dvh; border-top: 1px solid var(--border2); }
+      .settings-panel {
+        width: 100%; border-left: none; top: auto; height: 88dvh;
+        border-top: 1px solid var(--border2);
+        transform: translateY(100%);
+      }
+      #settings-overlay.open .settings-panel,
+      #profile-overlay.open  .settings-panel { transform: translateY(0); }
     }
+
+    /* ── Card entrance animation ─────────── */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .cat-card { animation: cardIn .35s ease both; }
   </style>
 </head>
 <body>
@@ -942,7 +969,7 @@ function renderFeed() {
   }
 
   metaEl.textContent = `${rows.length} topic${rows.length !== 1 ? 's' : ''}`;
-  feed.innerHTML = `<div class="feed">${rows.map(r => buildCard(r)).join('')}</div>`;
+  feed.innerHTML = `<div class="feed">${rows.map((r, i) => buildCard(r, i)).join('')}</div>`;
 }
 
 function buildGuestPreview() {
@@ -982,10 +1009,11 @@ function buildGuestPreview() {
     </div>`;
 }
 
-function buildCard(row) {
+function buildCard(row, idx = 0) {
   const { category: id, category_label: label, depth_1: s1, depth_2: s2, depth_3: s3 } = row;
   const cat   = CAT_MAP[id];
   const color = cat?.color || 'var(--accent)';
+  const delay = `${Math.min(idx * 55, 385)}ms`;
 
   const depth   = currentUser ? (userPrefs.cats[id]?.depth || 1) : 1;
   const stories = [s1, s2, s3].slice(0, depth).filter(Boolean);
@@ -1017,7 +1045,7 @@ function buildCard(row) {
     return `${divider}<div class="story-block">${inner}</div>`;
   }).join('');
 
-  return `<div class="cat-card" style="border-left-color:${color}">
+  return `<div class="cat-card" style="border-left-color:${color};animation-delay:${delay}">
     <div class="card-header">
       <span class="cat-label" style="color:${color}">${esc(label || id)}</span>
     </div>
