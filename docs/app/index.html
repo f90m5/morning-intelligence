@@ -29,157 +29,70 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ───────────────────────────────── */
+    /* ── Header ─────────────────────────── */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(15,17,23,0.92);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.93);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
     }
+    .logo { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .user-email { font-size: 12px; color: var(--muted2); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .logo {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-email {
-      font-size: 12px;
-      color: var(--muted2);
-      max-width: 180px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ── Buttons ──────────────────────────────── */
-    .btn {
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 7px 16px;
-      border-radius: 7px;
-      border: none;
-      cursor: pointer;
-      transition: opacity .15s, background .15s;
-    }
-    .btn:hover { opacity: .85; }
+    /* ── Buttons ────────────────────────── */
+    .btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 7px; border: none; cursor: pointer; transition: opacity .15s; }
+    .btn:hover { opacity: .82; }
     .btn-accent { background: var(--accent); color: #0f1117; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted2);
-      border: 1px solid var(--border2);
-    }
+    .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-
-    .icon-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      width: 34px;
-      height: 34px;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: color .15s, background .15s;
-    }
+    .icon-btn { background: none; border: none; color: var(--muted); width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color .15s, background .15s; }
     .icon-btn:hover { color: var(--text); background: var(--surface2); }
 
-    /* ── Page layout ──────────────────────────── */
-    main {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 36px 20px 100px;
-    }
+    /* ── Main layout ────────────────────── */
+    main { max-width: 700px; margin: 0 auto; padding: 36px 20px 100px; }
 
-    /* ── Date / subheader ─────────────────────── */
     .brief-header { margin-bottom: 28px; }
+    .brief-date { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .brief-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+    .brief-meta { font-size: 13px; color: var(--muted2); margin-top: 4px; }
 
-    .brief-date {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .brief-title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .brief-meta {
-      font-size: 13px;
-      color: var(--muted2);
-      margin-top: 4px;
-    }
-
-    /* ── Guest banner ─────────────────────────── */
+    /* ── Guest banner ───────────────────── */
     .guest-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: rgba(245,158,11,.07);
-      border: 1px solid rgba(245,158,11,.2);
-      border-radius: 9px;
-      padding: 12px 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 9px; padding: 12px 16px; margin-bottom: 24px; flex-wrap: wrap;
     }
     .guest-banner-text { font-size: 13px; color: #c9a555; }
 
-    /* ── Feed ─────────────────────────────────── */
+    /* ── Feed ───────────────────────────── */
     .feed { display: flex; flex-direction: column; gap: 10px; }
 
-    /* ── Category card ────────────────────────── */
+    /* ── Card ───────────────────────────── */
     .cat-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
-      transition: border-color .2s;
     }
-    .cat-card:hover { border-color: var(--border2); }
 
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px 18px 14px;
-      cursor: pointer;
-      user-select: none;
-    }
+    /* depth-1: compact single row */
+    .cat-card.depth-1 { }
+    .cat-card.depth-1 .card-main { padding: 13px 18px; display: flex; align-items: center; gap: 12px; }
+
+    /* depth-2/3: fuller layout */
+    .cat-card.depth-2 .card-main,
+    .cat-card.depth-3 .card-main { padding: 16px 18px 14px; display: flex; align-items: flex-start; gap: 12px; }
 
     .cat-badge {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 5px;
-      flex-shrink: 0;
-      margin-top: 2px;
+      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 5px; flex-shrink: 0;
     }
+    .cat-card.depth-1 .cat-badge { margin-top: 0; }
+    .cat-card.depth-2 .cat-badge,
+    .cat-card.depth-3 .cat-badge { margin-top: 2px; }
 
     .badge-ai            { background:#1e1b4b; color:#a5b4fc; }
     .badge-geopolitics   { background:#2d0f0f; color:#fca5a5; }
@@ -196,298 +109,115 @@
 
     .card-headline {
       flex: 1;
-      font-size: 14px;
       font-weight: 600;
-      line-height: 1.5;
+      line-height: 1.45;
     }
+    .cat-card.depth-1 .card-headline { font-size: 13px; color: var(--text); }
+    .cat-card.depth-2 .card-headline,
+    .cat-card.depth-3 .card-headline { font-size: 14px; }
 
-    .expand-icon {
-      flex-shrink: 0;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      color: var(--muted2);
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 2px;
-      transition: background .15s, color .15s, transform .2s;
-    }
-    .cat-card.expanded .expand-icon {
-      transform: rotate(180deg);
-      background: rgba(245,158,11,.12);
-      color: var(--accent);
-      border-color: rgba(245,158,11,.3);
-    }
+    /* Card body (depth 2+) */
+    .card-body { padding: 0 18px 16px; border-top: 1px solid var(--border); }
 
-    .card-body {
-      display: none;
-      padding: 0 18px 16px;
-      border-top: 1px solid var(--border);
-    }
-    .cat-card.expanded .card-body { display: block; }
+    .card-summary { font-size: 13px; color: var(--muted2); line-height: 1.65; margin-top: 13px; }
 
-    .card-summary {
-      font-size: 13px;
-      color: var(--muted2);
-      line-height: 1.65;
-      margin-top: 14px;
-    }
+    .card-bullets { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+    .card-bullets li { font-size: 13px; color: #b8bccc; padding-left: 16px; position: relative; line-height: 1.55; }
+    .card-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-size: 16px; line-height: 1.3; }
 
-    .card-bullets {
-      list-style: none;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .card-bullets li {
-      font-size: 13px;
-      color: #b8bccc;
-      padding-left: 16px;
-      position: relative;
-      line-height: 1.55;
-    }
-    .card-bullets li::before {
-      content: '›';
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-      font-size: 16px;
-      line-height: 1.3;
-    }
+    /* Depth-3 sections */
+    .d3-block { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .d3-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 7px; }
 
-    .depth3-block {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-    .depth3-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 7px;
-    }
+    /* Sources */
+    .card-sources { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .source-tag { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; }
 
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      gap: 10px;
-    }
-
-    .sources {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      flex: 1;
-    }
-    .source-tag {
-      font-size: 11px;
-      color: var(--muted);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 7px;
-    }
-
-    .depth3-btn {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted2);
-      background: none;
-      border: 1px solid var(--border2);
-      border-radius: 5px;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-family: inherit;
-      white-space: nowrap;
-      transition: color .15s, border-color .15s, background .15s;
-      flex-shrink: 0;
-    }
-    .depth3-btn:hover { color: var(--accent); border-color: rgba(245,158,11,.4); }
-    .depth3-btn.on { color: var(--accent); border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.07); }
-
-    /* ── Auth overlay ─────────────────────────── */
-    #auth-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 300;
-      background: rgba(0,0,0,.72);
-      backdrop-filter: blur(4px);
-      align-items: center;
-      justify-content: center;
-    }
+    /* ── Auth overlay ───────────────────── */
+    #auth-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
     #auth-overlay.open { display: flex; }
 
-    .auth-card {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 14px;
-      padding: 32px 36px;
-      width: 100%;
-      max-width: 400px;
-      margin: 20px;
-    }
+    .auth-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 32px 36px; width: 100%; max-width: 400px; margin: 20px; }
     .auth-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
     .auth-card p { font-size: 13px; color: var(--muted2); margin-bottom: 22px; line-height: 1.5; }
 
-    .auth-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      border-radius: 7px;
-      padding: 10px 14px;
-      font-size: 14px;
-      color: var(--text);
-      font-family: inherit;
-      outline: none;
-      margin-bottom: 10px;
-      transition: border-color .15s;
-    }
+    .auth-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 10px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 10px; transition: border-color .15s; }
     .auth-input:focus { border-color: var(--accent); }
-    .auth-input.otp {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: .35em;
-      text-align: center;
-    }
-
+    .auth-input.otp { font-size: 22px; font-weight: 700; letter-spacing: .35em; text-align: center; }
     .auth-card .btn { width: 100%; padding: 10px; margin-bottom: 8px; }
-    .auth-back {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted2);
-      cursor: pointer;
-      margin-top: 4px;
-    }
+    .auth-back { text-align: center; font-size: 12px; color: var(--muted2); cursor: pointer; margin-top: 4px; }
     .auth-back:hover { color: var(--text); }
-
-    .auth-msg {
-      font-size: 12px;
-      border-radius: 6px;
-      padding: 9px 12px;
-      margin-top: 8px;
-      display: none;
-    }
+    .auth-msg { font-size: 12px; border-radius: 6px; padding: 9px 12px; margin-top: 8px; display: none; }
     .auth-msg.ok  { background:#052e16; color:#4ade80; border:1px solid #16a34a; }
     .auth-msg.err { background:#2d0f0f; color:#f87171; border:1px solid #b91c1c; }
 
-    /* ── Settings panel ───────────────────────── */
+    /* ── Settings panel ─────────────────── */
     #settings-overlay { display: none; position: fixed; inset: 0; z-index: 200; }
     #settings-overlay.open { display: block; }
-
     .settings-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
-
-    .settings-panel {
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      width: 320px;
-      background: var(--surface);
-      border-left: 1px solid var(--border2);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .settings-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-    }
+    .settings-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 360px; background: var(--surface); border-left: 1px solid var(--border2); display: flex; flex-direction: column; }
+    .settings-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .settings-head h3 { font-size: 15px; font-weight: 700; }
+    .settings-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+    .settings-section { margin-bottom: 10px; }
+    .settings-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; padding-top: 6px; }
 
-    .settings-body { flex: 1; overflow-y: auto; padding: 20px; }
-    .settings-section { margin-bottom: 26px; }
-    .settings-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .depth-pills { display: flex; gap: 6px; }
-    .depth-pill {
-      flex: 1;
-      padding: 8px 4px;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      border-radius: 7px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-    }
-    .depth-pill.active { border-color: var(--accent); background: rgba(245,158,11,.08); }
-    .depth-pill-name { display: block; font-size: 12px; font-weight: 600; }
-    .depth-pill-sub  { display: block; font-size: 10px; color: var(--muted2); margin-top: 2px; }
-
-    .cat-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 12px;
+    /* Per-category row */
+    .cat-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 7px;
-      margin-bottom: 5px;
-      cursor: pointer;
-      user-select: none;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      opacity: 1;
+      transition: opacity .15s;
     }
-    .cat-toggle:hover { border-color: var(--border2); }
-    .cat-toggle-left { display: flex; align-items: center; gap: 9px; }
-    .cat-toggle-name { font-size: 13px; font-weight: 500; }
+    .cat-row.off { opacity: .45; }
 
+    .cat-row-badge { flex-shrink: 0; }
+
+    .cat-row-name { font-size: 13px; font-weight: 500; flex: 1; }
+
+    /* Depth pills inside settings row */
+    .depth-pills { display: flex; gap: 4px; flex-shrink: 0; }
+    .dp {
+      font-size: 11px; font-weight: 600;
+      width: 28px; height: 24px;
+      border-radius: 5px;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--muted2);
+      cursor: pointer;
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .12s, color .12s, border-color .12s;
+    }
+    .dp:hover { color: var(--text); border-color: var(--muted); }
+    .dp.active { background: rgba(245,158,11,.15); color: var(--accent); border-color: rgba(245,158,11,.4); }
+    .dp.disabled { pointer-events: none; opacity: .3; }
+
+    /* Toggle switch */
     .sw { position: relative; width: 34px; height: 18px; flex-shrink: 0; }
     .sw input { opacity: 0; width: 0; height: 0; }
-    .sw-track {
-      position: absolute; inset: 0;
-      background: var(--border2);
-      border-radius: 18px;
-      transition: background .2s;
-    }
-    .sw-track::before {
-      content: '';
-      position: absolute;
-      width: 12px; height: 12px;
-      left: 3px; top: 3px;
-      background: white;
-      border-radius: 50%;
-      transition: transform .2s;
-    }
+    .sw-track { position: absolute; inset: 0; background: var(--border2); border-radius: 18px; transition: background .2s; }
+    .sw-track::before { content: ''; position: absolute; width: 12px; height: 12px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform .2s; }
     .sw input:checked + .sw-track { background: var(--accent); }
     .sw input:checked + .sw-track::before { transform: translateX(16px); }
 
-    .settings-foot { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .settings-foot { padding: 16px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
     .settings-foot .btn { width: 100%; }
 
-    /* ── Spinner / empty ──────────────────────── */
-    .spinner-wrap {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 14px; padding: 80px 0;
-      color: var(--muted); font-size: 13px;
-    }
-    .spinner {
-      width: 26px; height: 26px;
-      border: 2px solid var(--border2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
+    /* ── Spinner / empty ────────────────── */
+    .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px 0; color: var(--muted); font-size: 13px; }
+    .spinner { width: 26px; height: 26px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .empty { text-align: center; padding: 60px 0; color: var(--muted); font-size: 14px; }
+
+    /* ── Depth legend ───────────────────── */
+    .depth-legend { display: flex; gap: 16px; margin-bottom: 14px; }
+    .dl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted2); }
+    .dl-dot { width: 20px; height: 20px; border-radius: 5px; background: rgba(245,158,11,.15); color: var(--accent); border: 1px solid rgba(245,158,11,.35); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
@@ -504,7 +234,7 @@
     <div class="brief-meta" id="brief-meta"></div>
   </div>
   <div id="guest-banner" class="guest-banner" style="display:none;">
-    <span class="guest-banner-text">Sign in to save your preferences &amp; unlock full depth</span>
+    <span class="guest-banner-text">Sign in to customise your feed and unlock full depth</span>
     <button class="btn btn-accent" onclick="openAuth()" style="padding:6px 14px;font-size:12px;">Sign in</button>
   </div>
   <div id="feed">
@@ -539,32 +269,20 @@
   <div class="settings-backdrop" onclick="closeSettings()"></div>
   <div class="settings-panel">
     <div class="settings-head">
-      <h3>Preferences</h3>
+      <h3>Customise feed</h3>
       <button class="icon-btn" onclick="closeSettings()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="settings-body">
       <div class="settings-section">
-        <div class="settings-label">Default detail level</div>
-        <div class="depth-pills">
-          <div class="depth-pill" data-d="1" onclick="setPendingDepth(1)">
-            <span class="depth-pill-name">Scan</span>
-            <span class="depth-pill-sub">Headlines only</span>
-          </div>
-          <div class="depth-pill" data-d="2" onclick="setPendingDepth(2)">
-            <span class="depth-pill-name">Brief</span>
-            <span class="depth-pill-sub">+ Summary</span>
-          </div>
-          <div class="depth-pill" data-d="3" onclick="setPendingDepth(3)">
-            <span class="depth-pill-name">Deep</span>
-            <span class="depth-pill-sub">+ Analysis</span>
-          </div>
+        <div class="settings-label">Detail level per category</div>
+        <div class="depth-legend">
+          <div class="dl-item"><div class="dl-dot">1</div> Headline only</div>
+          <div class="dl-item"><div class="dl-dot">2</div> + Summary</div>
+          <div class="dl-item"><div class="dl-dot">3</div> + Analysis</div>
         </div>
-      </div>
-      <div class="settings-section">
-        <div class="settings-label">Categories</div>
-        <div id="cat-toggles"></div>
+        <div id="cat-rows"></div>
       </div>
     </div>
     <div class="settings-foot">
@@ -594,10 +312,18 @@ const CATEGORIES = [
 
 let sb, currentUser = null;
 let todayData = [];
-let cardDepths = {}; // catId → 0 (collapsed) | 2 (brief) | 3 (deep)
-let userPrefs = { depth: 1, selected_categories: CATEGORIES.map(c => c.id) };
+
+// userPrefs.cats: { [catId]: { selected: bool, depth: 1|2|3 } }
+let userPrefs = { cats: defaultCats() };
 let pendingPrefs = null;
 
+function defaultCats() {
+  const o = {};
+  CATEGORIES.forEach(c => { o[c.id] = { selected: true, depth: 2 }; });
+  return o;
+}
+
+// ── Init ─────────────────────────────────────────────────────
 (async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   const { data:{ session } } = await sb.auth.getSession();
@@ -611,7 +337,7 @@ let pendingPrefs = null;
       closeAuth();
       loadUserPrefs().then(renderFeed);
     } else if (!currentUser) {
-      userPrefs = { depth: 1, selected_categories: CATEGORIES.map(c => c.id) };
+      userPrefs = { cats: defaultCats() };
       renderFeed();
     }
   });
@@ -622,7 +348,7 @@ let pendingPrefs = null;
   renderFeed();
 })();
 
-// ── Data ──────────────────────────────────────────────────────
+// ── Data ─────────────────────────────────────────────────────
 async function loadTodayData() {
   const d = new Date();
   const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -636,11 +362,18 @@ async function loadUserPrefs() {
   const { data, error } = await sb.from('user_settings').select('*').eq('user_id', currentUser.id);
   if (error) { console.error(error); return; }
   if (!data || data.length === 0) { await saveUserPrefsToDb(); return; }
-  const selected = data.filter(r => r.selected).map(r => r.category);
-  userPrefs = {
-    depth: data[0]?.depth_level ?? 1,
-    selected_categories: selected.length > 0 ? selected : CATEGORIES.map(c => c.id),
-  };
+
+  // Rebuild per-category prefs from rows
+  const cats = defaultCats();
+  data.forEach(row => {
+    if (cats[row.category] !== undefined) {
+      cats[row.category] = {
+        selected: row.selected !== false,
+        depth: row.depth_level || 2,
+      };
+    }
+  });
+  userPrefs = { cats };
 }
 
 async function saveUserPrefsToDb() {
@@ -648,21 +381,21 @@ async function saveUserPrefsToDb() {
   const rows = CATEGORIES.map((cat, i) => ({
     user_id: currentUser.id,
     category: cat.id,
-    selected: userPrefs.selected_categories.includes(cat.id),
+    selected: userPrefs.cats[cat.id]?.selected !== false,
     order_index: i,
-    depth_level: userPrefs.depth,
+    depth_level: userPrefs.cats[cat.id]?.depth || 2,
   }));
   const { error } = await sb.from('user_settings').upsert(rows, { onConflict:'user_id,category' });
-  if (error) console.error('Save prefs error:', error);
+  if (error) console.error('Save error:', error);
 }
 
-// ── Render ────────────────────────────────────────────────────
+// ── Render ───────────────────────────────────────────────────
 function renderHeader() {
   const el = document.getElementById('header-right');
   if (currentUser) {
     el.innerHTML = `
       <span class="user-email">${currentUser.email}</span>
-      <button class="icon-btn" onclick="openSettings()" title="Preferences">
+      <button class="icon-btn" onclick="openSettings()" title="Customise feed">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -675,9 +408,9 @@ function renderHeader() {
 }
 
 function renderFeed() {
-  const feed = document.getElementById('feed');
-  const datEl = document.getElementById('brief-date');
-  const metaEl = document.getElementById('brief-meta');
+  const feed    = document.getElementById('feed');
+  const datEl   = document.getElementById('brief-date');
+  const metaEl  = document.getElementById('brief-meta');
   document.getElementById('guest-banner').style.display = currentUser ? 'none' : 'flex';
 
   const now = new Date();
@@ -689,78 +422,64 @@ function renderFeed() {
     return;
   }
 
-  const rows = todayData.filter(r =>
-    userPrefs.selected_categories.includes(r.category) && r.has_content !== false
-  );
-  metaEl.textContent = `${rows.length} topics`;
+  // Guests see all categories at depth 1
+  const rows = todayData.filter(r => {
+    if (r.has_content === false) return false;
+    if (!currentUser) return true;
+    return userPrefs.cats[r.category]?.selected !== false;
+  });
 
-  // Initialise card depths to collapsed (0)
-  rows.forEach(r => { if (cardDepths[r.category] === undefined) cardDepths[r.category] = 0; });
-
+  metaEl.textContent = `${rows.length} topic${rows.length !== 1 ? 's' : ''}`;
   feed.innerHTML = `<div class="feed">${rows.map(r => buildCard(r)).join('')}</div>`;
 }
 
 function buildCard(row) {
   const { category: id, category_label: label, depth_1: d1, depth_2: d2, depth_3: d3, sources } = row;
-  const depth = cardDepths[id] || 0;
+
+  // Guests get depth 1 only
+  const depth = currentUser ? (userPrefs.cats[id]?.depth || 2) : 1;
   const headline = (d1 || {}).headline || '';
-  const expanded = depth > 0;
 
-  let body = '';
-  if (expanded) {
-    const summary = (d2 || {}).summary || '';
-    const bullets = (d2 || {}).bullets || [];
-    if (summary) body += `<p class="card-summary">${esc(summary)}</p>`;
-    if (bullets.length) body += `<ul class="card-bullets">${bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`;
-
-    if (depth >= 3) {
-      const why   = (d3 || {}).why_it_matters || '';
-      const watch = (d3 || {}).what_to_watch  || [];
-      if (why) body += `<div class="depth3-block"><div class="depth3-label">Why it matters</div><p class="card-summary" style="margin-top:0">${esc(why)}</p></div>`;
-      if (watch.length) body += `<div class="depth3-block"><div class="depth3-label">What to watch</div><ul class="card-bullets">${watch.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`;
-    }
-
-    const srcHtml = (sources||[]).length
-      ? `<div class="sources">${(sources||[]).map(s=>`<span class="source-tag">${esc(typeof s==='object'?s.name:s)}</span>`).join('')}</div>`
-      : '<div></div>';
-
-    const d3on = depth >= 3;
-    body += `<div class="card-footer">
-      ${srcHtml}
-      <button class="depth3-btn${d3on?' on':''}" onclick="toggleD3('${id}',event)">${d3on?'Less':'More detail'}</button>
+  if (depth === 1) {
+    return `<div class="cat-card depth-1">
+      <div class="card-main">
+        <span class="cat-badge badge-${id}">${esc(label||id)}</span>
+        <span class="card-headline">${esc(headline)}</span>
+      </div>
     </div>`;
   }
 
-  return `<div class="cat-card${expanded?' expanded':''}" id="card-${id}">
-    <div class="card-top" onclick="toggleCard('${id}')">
+  // depth 2 or 3
+  const summary = (d2 || {}).summary || '';
+  const bullets = (d2 || {}).bullets || [];
+  const why     = (d3 || {}).why_it_matters || '';
+  const watch   = (d3 || {}).what_to_watch  || [];
+  const srcs    = (sources || []);
+
+  let body = '';
+  if (summary) body += `<p class="card-summary">${esc(summary)}</p>`;
+  if (bullets.length) body += `<ul class="card-bullets">${bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`;
+
+  if (depth >= 3) {
+    if (why) body += `<div class="d3-block"><div class="d3-label">Why it matters</div><p class="card-summary" style="margin-top:0">${esc(why)}</p></div>`;
+    if (watch.length) body += `<div class="d3-block"><div class="d3-label">What to watch</div><ul class="card-bullets">${watch.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`;
+  }
+
+  if (srcs.length) {
+    body += `<div class="card-sources">${srcs.map(s=>`<span class="source-tag">${esc(typeof s==='object'?s.name:s)}</span>`).join('')}</div>`;
+  }
+
+  return `<div class="cat-card depth-${depth}">
+    <div class="card-main">
       <span class="cat-badge badge-${id}">${esc(label||id)}</span>
       <span class="card-headline">${esc(headline)}</span>
-      <span class="expand-icon">▾</span>
     </div>
     <div class="card-body">${body}</div>
   </div>`;
 }
 
-function toggleCard(id) {
-  cardDepths[id] = cardDepths[id] > 0 ? 0 : 2;
-  rerender(id);
-}
-
-function toggleD3(id, e) {
-  e.stopPropagation();
-  cardDepths[id] = cardDepths[id] >= 3 ? 2 : 3;
-  rerender(id);
-}
-
-function rerender(id) {
-  const row = todayData.find(r => r.category === id);
-  const el  = document.getElementById(`card-${id}`);
-  if (row && el) el.outerHTML = buildCard(row);
-}
-
-// ── Auth (OTP) ────────────────────────────────────────────────
+// ── Auth ─────────────────────────────────────────────────────
 let otpEmail = '';
-
 function openAuth()  { document.getElementById('auth-overlay').classList.add('open'); }
 function closeAuth() { document.getElementById('auth-overlay').classList.remove('open'); }
 
@@ -791,44 +510,54 @@ function backToEmail() {
 
 async function signOut() { await sb.auth.signOut(); }
 
-// ── Settings ──────────────────────────────────────────────────
+// ── Settings ─────────────────────────────────────────────────
 function openSettings() {
   pendingPrefs = JSON.parse(JSON.stringify(userPrefs));
-  document.querySelectorAll('.depth-pill').forEach(el =>
-    el.classList.toggle('active', parseInt(el.dataset.d) === pendingPrefs.depth));
-  document.getElementById('cat-toggles').innerHTML = CATEGORIES.map(cat => {
-    const on = pendingPrefs.selected_categories.includes(cat.id);
-    const row = todayData.find(r => r.category === cat.id);
+
+  document.getElementById('cat-rows').innerHTML = CATEGORIES.map(cat => {
+    const pref = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
+    const row  = todayData.find(r => r.category === cat.id);
     const noData = row && row.has_content === false;
-    return `<label class="cat-toggle">
-      <div class="cat-toggle-left">
-        <span class="cat-badge badge-${cat.id}" style="font-size:9px;">${cat.label}</span>
-        <span class="cat-toggle-name">${cat.label}${noData?' <span style="color:var(--muted);font-size:10px;">(no coverage)</span>':''}</span>
+    const offCls = pref.selected ? '' : ' off';
+
+    return `<div class="cat-row${offCls}" id="prow-${cat.id}">
+      <span class="cat-badge badge-${cat.id} cat-row-badge" style="font-size:9px;">${cat.label}</span>
+      <span class="cat-row-name">${cat.label}${noData?' <span style="color:var(--muted);font-size:10px;">(no coverage)</span>':''}</span>
+      <div class="depth-pills">
+        ${[1,2,3].map(d => `<button class="dp${pref.depth===d?' active':''}${!pref.selected?' disabled':''}" data-cat="${cat.id}" data-d="${d}" onclick="setPendingDepth('${cat.id}',${d})">${d}</button>`).join('')}
       </div>
       <label class="sw">
-        <input type="checkbox" ${on?'checked':''} onchange="toggleCat('${cat.id}',this.checked)" />
+        <input type="checkbox" ${pref.selected?'checked':''} onchange="togglePendingCat('${cat.id}',this.checked)" />
         <span class="sw-track"></span>
       </label>
-    </label>`;
+    </div>`;
   }).join('');
+
   document.getElementById('settings-overlay').classList.add('open');
 }
 
 function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
 
-function setPendingDepth(d) {
-  pendingPrefs.depth = d;
-  document.querySelectorAll('.depth-pill').forEach(el => el.classList.toggle('active', parseInt(el.dataset.d) === d));
+function setPendingDepth(catId, d) {
+  if (!pendingPrefs.cats[catId].selected) return; // ignore if off
+  pendingPrefs.cats[catId].depth = d;
+  // Update pill active states
+  document.querySelectorAll(`.dp[data-cat="${catId}"]`).forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.d) === d);
+  });
 }
 
-function toggleCat(id, on) {
-  if (on && !pendingPrefs.selected_categories.includes(id)) pendingPrefs.selected_categories.push(id);
-  else if (!on) pendingPrefs.selected_categories = pendingPrefs.selected_categories.filter(c => c !== id);
+function togglePendingCat(catId, on) {
+  pendingPrefs.cats[catId].selected = on;
+  const row = document.getElementById(`prow-${catId}`);
+  if (row) row.classList.toggle('off', !on);
+  document.querySelectorAll(`.dp[data-cat="${catId}"]`).forEach(el => {
+    el.classList.toggle('disabled', !on);
+  });
 }
 
 async function saveSettings() {
   userPrefs = JSON.parse(JSON.stringify(pendingPrefs));
-  cardDepths = {}; // reset so default depth applies on next render
   closeSettings();
   renderFeed();
   if (currentUser) await saveUserPrefsToDb();
@@ -839,12 +568,10 @@ function showMsg(id, text, type) {
   const el = document.getElementById(id);
   el.textContent = text; el.className = 'auth-msg '+type; el.style.display = 'block';
 }
-
 function esc(s) {
   if (!s) return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (!document.getElementById('auth-overlay').classList.contains('open')) return;
