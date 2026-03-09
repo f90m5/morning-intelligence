@@ -680,11 +680,18 @@ async function loadUserPrefs() {
     .select('*')
     .eq('user_id', currentUser.id);
 
-  if (error || !data || data.length === 0) return;
+  if (error) { console.error('Load prefs error:', error); return; }
+
+  if (!data || data.length === 0) {
+    // First sign-in — write defaults to DB so the table is populated
+    console.log('New user — writing default settings to DB');
+    await saveUserPrefsToDb();
+    return;
+  }
 
   // Reconstruct prefs from rows
   const selected = data.filter(r => r.selected).map(r => r.category);
-  const depthRow  = data[0]; // depth stored per row — just use first
+  const depthRow = data[0];
   userPrefs = {
     depth: depthRow?.depth_level ?? 2,
     selected_categories: selected.length > 0 ? selected : ALL_CATEGORIES.map(c => c.id),
