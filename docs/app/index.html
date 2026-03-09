@@ -749,17 +749,8 @@ function initDragDrop(container) {
       grabOffX = e.clientX - rect.left;
       grabOffY = e.clientY - rect.top;
 
-      // Insert placeholder in the exact spot before hiding the row,
-      // so layout doesn't shift on grab
-      placeholder = document.createElement('div');
-      placeholder.className = 'drag-placeholder';
-      placeholder.style.height = rect.height + 'px';
-      row.parentNode.insertBefore(placeholder, row);
-
-      // Now hide the row — placeholder holds the space
-      row.classList.add('dragging');
-
-      // Build the floating ghost clone
+      // Clone the ghost BEFORE adding the dragging class — otherwise the
+      // clone inherits .dragging and gets display:none, hiding its content
       ghost = row.cloneNode(true);
       ghost.classList.add('drag-ghost');
       ghost.removeAttribute('id');
@@ -768,6 +759,13 @@ function initDragDrop(container) {
       ghost.style.width  = rect.width + 'px';
       ghost.style.height = rect.height + 'px';
       document.body.appendChild(ghost);
+
+      // Insert placeholder in the exact spot, then hide the original row
+      placeholder = document.createElement('div');
+      placeholder.className = 'drag-placeholder';
+      placeholder.style.height = rect.height + 'px';
+      row.parentNode.insertBefore(placeholder, row);
+      row.classList.add('dragging');
     });
 
     handle.addEventListener('pointermove', e => {
