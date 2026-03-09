@@ -19,8 +19,8 @@
       --text:     #edeae0;
       --muted:    #7a7367;
       --muted2:   #a09890;
-      --accent:   #d4a23c;
-      --accent-d: rgba(212,162,60,.1);
+      --accent:   #7090c8;
+      --accent-d: rgba(112,144,200,.1);
       --radius:   8px;
     }
 
@@ -77,7 +77,7 @@
       border-radius: 0 6px 6px 0;
       padding: 11px 16px; margin-bottom: 22px; flex-wrap: wrap;
     }
-    .guest-banner-text { font-size: 12.5px; color: #c8a456; }
+    .guest-banner-text { font-size: 12.5px; color: var(--muted2); }
 
     /* ── Feed ────────────────────────────── */
     .feed { display: flex; flex-direction: column; gap: 18px; }
@@ -211,7 +211,7 @@
 
     .depth-legend { display: flex; gap: 14px; margin-bottom: 12px; }
     .dl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted2); }
-    .dl-dot { width: 20px; height: 20px; border-radius: 4px; background: var(--accent-d); color: var(--accent); border: 1px solid rgba(212,162,60,.3); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .dl-dot { width: 20px; height: 20px; border-radius: 4px; background: var(--accent-d); color: var(--accent); border: 1px solid rgba(112,144,200,.3); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
     .reorder-hint { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
 
@@ -223,13 +223,13 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       margin-bottom: 4px;
-      transition: opacity .15s, border-color .12s;
+      transition: opacity .2s, border-color .12s;
       min-height: 40px;
       user-select: none; -webkit-user-select: none;
     }
-    .cat-row.off { opacity: .35; }
+    .cat-row.off { opacity: .38; }
     .cat-row.drag-over { border-color: var(--accent); }
-    .cat-row.dragging { opacity: .25; }
+    .cat-row.dragging { opacity: .22; }
 
     .drag-handle {
       color: var(--muted);
@@ -243,6 +243,9 @@
     }
     .drag-handle:active { cursor: grabbing; }
     .drag-handle:hover { color: var(--muted2); }
+
+    /* Spacer so OFF rows stay aligned without a drag handle */
+    .drag-handle-spacer { width: 18px; flex-shrink: 0; }
 
     .cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .cat-row-name { font-size: 12.5px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -260,15 +263,23 @@
       transition: background .1s, color .1s, border-color .1s;
     }
     .dp:hover { color: var(--text); border-color: var(--muted); }
-    .dp.active { background: var(--accent-d); color: var(--accent); border-color: rgba(212,162,60,.4); }
+    .dp.active { background: var(--accent-d); color: var(--accent); border-color: rgba(112,144,200,.4); }
     .dp.disabled { pointer-events: none; opacity: .2; }
 
     .sw { position: relative; width: 32px; height: 17px; flex-shrink: 0; }
     .sw input { opacity: 0; width: 0; height: 0; }
     .sw-track { position: absolute; inset: 0; background: var(--border2); border-radius: 17px; cursor: pointer; transition: background .2s; }
     .sw-track::before { content: ''; position: absolute; width: 11px; height: 11px; left: 3px; top: 3px; background: var(--muted); border-radius: 50%; transition: transform .2s, background .2s; }
-    .sw input:checked + .sw-track { background: rgba(212,162,60,.2); }
+    .sw input:checked + .sw-track { background: rgba(112,144,200,.22); }
     .sw input:checked + .sw-track::before { transform: translateX(15px); background: var(--accent); }
+
+    /* Section divider between ON and OFF groups */
+    .cat-section-divider {
+      font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); padding: 14px 2px 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cat-section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     .settings-foot { padding: 14px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
     .settings-foot .btn { width: 100%; }
@@ -352,7 +363,7 @@
         </div>
         <div class="reorder-hint">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          Drag to reorder
+          Drag to reorder active categories
         </div>
         <div id="cat-rows"></div>
       </div>
@@ -589,37 +600,54 @@ function openSettings() {
 
 function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
 
-function renderCatRows() {
-  const container = document.getElementById('cat-rows');
-  container.innerHTML = pendingPrefs.order.map(catId => {
-    const cat  = CAT_MAP[catId];
-    if (!cat) return '';
-    const pref  = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
-    const row   = todayData.find(r => r.category === cat.id);
-    const noData = row && row.has_content === false;
-    const offCls = pref.selected ? '' : ' off';
+// Build a single row's HTML (isOn controls drag handle vs spacer)
+function buildRowHtml(catId, isOn) {
+  const cat = CAT_MAP[catId];
+  if (!cat) return '';
+  const pref   = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
+  const rowData = todayData.find(r => r.category === cat.id);
+  const noData  = rowData && rowData.has_content === false;
 
-    return `<div class="cat-row${offCls}" id="prow-${cat.id}" data-cat="${cat.id}">
-      <div class="drag-handle" title="Drag to reorder">
+  const handleHtml = isOn
+    ? `<div class="drag-handle" title="Drag to reorder">
         <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor">
           <circle cx="3.5" cy="2"  r="1.15"/><circle cx="8.5" cy="2"  r="1.15"/>
           <circle cx="3.5" cy="7"  r="1.15"/><circle cx="8.5" cy="7"  r="1.15"/>
           <circle cx="3.5" cy="12" r="1.15"/><circle cx="8.5" cy="12" r="1.15"/>
         </svg>
-      </div>
-      <span class="cat-dot" style="background:${cat.color}"></span>
-      <span class="cat-row-name">${cat.label}${noData ? ' <span style="color:var(--muted);font-size:10px;">(no data)</span>' : ''}</span>
-      <div class="depth-pills">
-        ${[1,2,3].map(d => `<button class="dp${pref.depth===d?' active':''}${!pref.selected?' disabled':''}" data-cat="${cat.id}" data-d="${d}" onclick="setPendingDepth('${cat.id}',${d})">${d}</button>`).join('')}
-      </div>
-      <label class="sw">
-        <input type="checkbox" ${pref.selected?'checked':''} onchange="togglePendingCat('${cat.id}',this.checked)" />
-        <span class="sw-track"></span>
-      </label>
-    </div>`;
-  }).join('');
+      </div>`
+    : `<div class="drag-handle-spacer"></div>`;
 
-  initDragDrop(container);
+  return `<div class="cat-row${isOn ? '' : ' off'}" id="prow-${cat.id}" data-cat="${cat.id}">
+    ${handleHtml}
+    <span class="cat-dot" style="background:${cat.color}"></span>
+    <span class="cat-row-name">${cat.label}${noData ? ' <span style="color:var(--muted);font-size:10px;">(no data)</span>' : ''}</span>
+    <div class="depth-pills">
+      ${[1,2,3].map(d => `<button class="dp${pref.depth===d?' active':''}${!isOn?' disabled':''}" data-cat="${cat.id}" data-d="${d}" onclick="setPendingDepth('${cat.id}',${d})">${d}</button>`).join('')}
+    </div>
+    <label class="sw">
+      <input type="checkbox" ${isOn?'checked':''} onchange="togglePendingCat('${cat.id}',this.checked)" />
+      <span class="sw-track"></span>
+    </label>
+  </div>`;
+}
+
+function renderCatRows() {
+  const container = document.getElementById('cat-rows');
+
+  const onCats  = pendingPrefs.order.filter(id => CAT_MAP[id] && pendingPrefs.cats[id]?.selected !== false);
+  const offCats = pendingPrefs.order.filter(id => CAT_MAP[id] && pendingPrefs.cats[id]?.selected === false);
+
+  const dividerHtml = offCats.length > 0
+    ? `<div class="cat-section-divider">Hidden</div>`
+    : '';
+
+  container.innerHTML =
+    `<div id="on-group">${onCats.map(id => buildRowHtml(id, true)).join('')}</div>` +
+    dividerHtml +
+    `<div id="off-group">${offCats.map(id => buildRowHtml(id, false)).join('')}</div>`;
+
+  initDragDrop(document.getElementById('on-group'));
 }
 
 function setPendingDepth(catId, d) {
@@ -631,18 +659,37 @@ function setPendingDepth(catId, d) {
 }
 
 function togglePendingCat(catId, on) {
+  // Capture current DOM order of ON rows before re-rendering
+  const onGroup = document.getElementById('on-group');
+  const currentOnOrder = onGroup
+    ? [...onGroup.querySelectorAll('.cat-row[data-cat]')].map(el => el.dataset.cat)
+    : pendingPrefs.order.filter(id => pendingPrefs.cats[id]?.selected !== false);
+
   pendingPrefs.cats[catId].selected = on;
-  const row = document.getElementById(`prow-${catId}`);
-  if (row) row.classList.toggle('off', !on);
-  document.querySelectorAll(`.dp[data-cat="${catId}"]`).forEach(el => {
-    el.classList.toggle('disabled', !on);
-  });
+
+  let newOnOrder, newOffOrder;
+  if (on) {
+    // Toggling ON → append to end of active group
+    newOnOrder  = [...currentOnOrder.filter(id => id !== catId), catId];
+    newOffOrder = pendingPrefs.order.filter(id => !newOnOrder.includes(id));
+  } else {
+    // Toggling OFF → remove from active group, keep at top of hidden group
+    newOnOrder = currentOnOrder.filter(id => id !== catId);
+    const currentOffOrder = pendingPrefs.order.filter(id => !currentOnOrder.includes(id));
+    newOffOrder = [catId, ...currentOffOrder.filter(id => id !== catId)];
+  }
+
+  pendingPrefs.order = [...newOnOrder, ...newOffOrder];
+  renderCatRows();
 }
 
 async function saveSettings() {
-  const container = document.getElementById('cat-rows');
-  const newOrder = [...container.querySelectorAll('.cat-row[data-cat]')].map(el => el.dataset.cat);
-  pendingPrefs.order = newOrder;
+  // Read final order from both DOM groups
+  const onGroup  = document.getElementById('on-group');
+  const offGroup = document.getElementById('off-group');
+  const onOrder  = [...(onGroup  ? onGroup.querySelectorAll('.cat-row[data-cat]')  : [])].map(el => el.dataset.cat);
+  const offOrder = [...(offGroup ? offGroup.querySelectorAll('.cat-row[data-cat]') : [])].map(el => el.dataset.cat);
+  pendingPrefs.order = [...onOrder, ...offOrder];
   userPrefs = JSON.parse(JSON.stringify(pendingPrefs));
   closeSettings();
   renderFeed();
@@ -650,7 +697,9 @@ async function saveSettings() {
 }
 
 // ── Drag-and-drop (Pointer Events — mouse + touch) ────────────
+// Only called on the ON group — OFF rows are never draggable
 function initDragDrop(container) {
+  if (!container) return;
   let dragging = null;
 
   container.querySelectorAll('.drag-handle').forEach(handle => {
