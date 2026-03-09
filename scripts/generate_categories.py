@@ -29,7 +29,8 @@ from dotenv import load_dotenv
 from supabase import create_client
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROMPT_PATH = PROJECT_ROOT / "prompts" / "category_prompt.txt"
+PROMPT_PATH       = PROJECT_ROOT / "prompts" / "category_prompt.txt"
+RETRY_PROMPT_PATH = PROJECT_ROOT / "prompts" / "category_retry_prompt.txt"
 CATEGORIES_CONFIG_PATH = PROJECT_ROOT / "config" / "categories.json"
 OUTPUT_DIR = PROJECT_ROOT / "data" / "categories"
 
@@ -273,6 +274,78 @@ def write_to_supabase(data, date_str):
         return False
 
 
+def find_thin_categories(data, categories, min_stories=2):
+    """Return categories with has_content=False or fewer than min_stories real stories."""
+    thin = []
+    for cat in categories:
+        cat_data = data.get("categories", {}).get(cat["id"], {})
+        stories = [s for s in cat_data.get("stories", []) if s and s.get("headline")]
+        if not cat_data.get("has_content", True) or len(stories) < min_stories:
+            thin.append(cat)
+    return thin
+
+
+def retry_thin_categories(data, articles, thin_categories):
+    """
+    Second Claude pass for categories with thin or no coverage.
+    Uses a broader prompt that allows adjacent content.
+    Merges results back into data in-place, returns updated data.
+    """
+    if not thin_categories:
+        return data
+
+    thin_ids = [c["id"] for c in thin_categories]
+    print(f"  [RETRY] Running second pass for: {', '.join(thin_ids)}")
+
+    # Build retry prompt
+    with open(RETRY_PROMPT_PATH, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    today = datetime.now().strftime("%B %d, %Y")
+    articles_text = format_articles_for_prompt(articles)
+    categories_text = format_categories_for_prompt(thin_categories)
+
+    prompt = template.replace("{date}", today)
+    prompt = prompt.replace("{articles}", articles_text)
+    prompt = prompt.replace("{categories}", categories_text)
+
+    raw = call_claude(prompt)
+    if not raw:
+        print("  [RETRY] No response — keeping original thin results")
+        return data
+
+    # Save raw retry response for debugging
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    retry_debug = OUTPUT_DIR / f"{date_str}_retry_raw.txt"
+    with open(retry_debug, "w", encoding="utf-8") as f:
+        f.write(raw)
+
+    try:
+        retry_data = json.loads(extract_json_from_response(raw))
+        merged = 0
+        for cat_id, cat_result in retry_data.get("categories", {}).items():
+            retry_stories = [s for s in cat_result.get("stories", []) if s and s.get("headline")]
+            if retry_stories:
+                # Only replace if retry found more stories than original
+                orig = data.get("categories", {}).get(cat_id, {})
+                orig_stories = [s for s in orig.get("stories", []) if s and s.get("headline")]
+                if len(retry_stories) > len(orig_stories):
+                    data.setdefault("categories", {})[cat_id] = cat_result
+                    print(f"  [RETRY] {cat_id}: upgraded {len(orig_stories)} → {len(retry_stories)} stories")
+                    merged += 1
+                else:
+                    print(f"  [RETRY] {cat_id}: no improvement ({len(retry_stories)} stories, keeping original)")
+            else:
+                print(f"  [RETRY] {cat_id}: still no content")
+        if merged == 0:
+            print("  [RETRY] No improvements found")
+    except (json.JSONDecodeError, Exception) as e:
+        print(f"  [RETRY] Parse failed ({e}) — keeping original results")
+
+    return data
+
+
 def generate_categories(articles):
     """
     Main entry point. Takes ranked articles, generates per-category
@@ -326,6 +399,13 @@ def generate_categories(articles):
             print(f"    - {issue}")
     else:
         print(f"  Validation passed — all {len(categories)} categories present")
+
+    # Retry pass — second Claude call for any category with < 2 stories
+    thin = find_thin_categories(data, categories, min_stories=2)
+    if thin:
+        data = retry_thin_categories(data, articles, thin)
+    else:
+        print(f"  All categories have sufficient coverage — skipping retry")
 
     # Add metadata
     data["generated_at"] = datetime.now().isoformat()

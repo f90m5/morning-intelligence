@@ -40,26 +40,48 @@
 
     {"name": "Nature News",                "url": "https://www.nature.com/nature.rss",                     "category": "science",   "tier": 3},
     {"name": "Science Daily",              "url": "https://www.sciencedaily.com/rss/all.xml",              "category": "science",   "tier": 2},
+    {"name": "New Scientist",              "url": "https://www.newscientist.com/feed/home/",               "category": "science",   "tier": 2},
+    {"name": "Phys.org",                   "url": "https://phys.org/rss-feed/",                            "category": "science",   "tier": 1},
 
     {"name": "Krebs on Security",          "url": "https://krebsonsecurity.com/feed/",                     "category": "cybersecurity", "tier": 3},
     {"name": "The Hacker News",            "url": "https://feeds.feedburner.com/TheHackersNews",           "category": "cybersecurity", "tier": 2},
     {"name": "Bleeping Computer",          "url": "https://www.bleepingcomputer.com/feed/",                "category": "cybersecurity", "tier": 2},
     {"name": "Dark Reading",               "url": "https://www.darkreading.com/rss.xml",                   "category": "cybersecurity", "tier": 2},
+    {"name": "SecurityWeek",               "url": "https://feeds.feedburner.com/Securityweek",             "category": "cybersecurity", "tier": 2},
+    {"name": "Infosecurity Magazine",      "url": "https://www.infosecurity-magazine.com/rss/news/",       "category": "cybersecurity", "tier": 1},
 
     {"name": "Defense One",                "url": "https://www.defenseone.com/rss/all/",                   "category": "defense",   "tier": 3},
     {"name": "Breaking Defense",           "url": "https://breakingdefense.com/feed/",                    "category": "defense",   "tier": 2},
+    {"name": "The War Zone",               "url": "https://www.thedrive.com/the-war-zone/rss",             "category": "defense",   "tier": 2},
+    {"name": "Defense News",               "url": "https://www.defensenews.com/arc/outboundfeeds/rss/",   "category": "defense",   "tier": 2},
 
-    {"name": "STAT News",                  "url": "https://www.statnews.com/feed/",                       "category": "healthcare","tier": 3},
-    {"name": "Kaiser Health News",         "url": "https://khn.org/feed/",                                "category": "healthcare","tier": 3},
+    {"name": "STAT News",                  "url": "https://www.statnews.com/feed/",                        "category": "healthcare","tier": 3},
+    {"name": "Kaiser Health News",         "url": "https://khn.org/feed/",                                 "category": "healthcare","tier": 3},
+    {"name": "Fierce Healthcare",          "url": "https://www.fiercehealthcare.com/rss/xml",              "category": "healthcare","tier": 2},
+    {"name": "MedPage Today",              "url": "https://www.medpagetoday.com/rss/headlines.xml",        "category": "healthcare","tier": 2},
+    {"name": "Health Affairs Blog",        "url": "https://www.healthaffairs.org/rss/blog_feed.xml",       "category": "healthcare","tier": 3},
+    {"name": "Reuters - Health",           "url": "https://feeds.reuters.com/reuters/healthNews",          "category": "healthcare","tier": 3},
 
-    {"name": "OilPrice.com",               "url": "https://oilprice.com/rss/main",                        "category": "energy",    "tier": 2},
-    {"name": "Energy Monitor",             "url": "https://www.energymonitor.ai/feed/",                   "category": "energy",    "tier": 2},
+    {"name": "OilPrice.com",               "url": "https://oilprice.com/rss/main",                         "category": "energy",    "tier": 2},
+    {"name": "Energy Monitor",             "url": "https://www.energymonitor.ai/feed/",                    "category": "energy",    "tier": 2},
+    {"name": "Electrek",                   "url": "https://electrek.co/feed/",                             "category": "energy",    "tier": 2},
+    {"name": "CleanTechnica",              "url": "https://cleantechnica.com/feed/",                       "category": "energy",    "tier": 1},
+    {"name": "Utility Dive",               "url": "https://www.utilitydive.com/feeds/news/",               "category": "energy",    "tier": 2},
+    {"name": "S&P Global - Energy",        "url": "https://www.spglobal.com/commodityinsights/en/rss-feed/energy", "category": "energy", "tier": 3},
 
-    {"name": "Carbon Brief",               "url": "https://www.carbonbrief.org/feed/",                    "category": "climate",   "tier": 3},
+    {"name": "Carbon Brief",               "url": "https://www.carbonbrief.org/feed/",                     "category": "climate",   "tier": 3},
     {"name": "Yale Climate Connections",   "url": "https://yaleclimateconnections.org/feed/",              "category": "climate",   "tier": 2},
+    {"name": "Inside Climate News",        "url": "https://insideclimatenews.org/feed/",                   "category": "climate",   "tier": 3},
+    {"name": "The Guardian - Environment", "url": "https://www.theguardian.com/environment/rss",           "category": "climate",   "tier": 2},
+    {"name": "Climate Home News",          "url": "https://www.climatechangenews.com/feed/",               "category": "climate",   "tier": 2},
+    {"name": "E&E News",                   "url": "https://www.eenews.net/rss/1",                          "category": "climate",   "tier": 2},
 
-    {"name": "Crunchbase News",            "url": "https://news.crunchbase.com/feed/",                    "category": "startups",  "tier": 2},
-    {"name": "Axios Pro Rata",             "url": "https://www.axios.com/feeds/feed.rss",                 "category": "startups",  "tier": 2}
+    {"name": "Crunchbase News",            "url": "https://news.crunchbase.com/feed/",                     "category": "startups",  "tier": 2},
+    {"name": "Axios Pro Rata",             "url": "https://www.axios.com/feeds/feed.rss",                  "category": "startups",  "tier": 2},
+    {"name": "VentureBeat",               "url": "https://venturebeat.com/feed/",                         "category": "startups",  "tier": 2},
+    {"name": "TechCrunch - Startups",      "url": "https://techcrunch.com/category/startups/feed/",        "category": "startups",  "tier": 2},
+    {"name": "Inc. Magazine",              "url": "https://www.inc.com/rss",                               "category": "startups",  "tier": 1},
+    {"name": "Sifted",                     "url": "https://sifted.eu/feed",                                "category": "startups",  "tier": 2}
 
   ],
   "categories": ["business", "markets", "technology", "ai_data", "world", "geopolitics", "science"],
