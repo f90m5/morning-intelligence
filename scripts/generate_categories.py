@@ -141,8 +141,8 @@ def recover_partial_json(text, categories):
 
 def validate_structure(data, categories):
     """
-    Basic validation that the response has all expected categories
-    and required depth levels. Returns (is_valid, list_of_issues).
+    Validate that the response has all expected categories and
+    at least one story per category. Returns (is_valid, list_of_issues).
     """
     issues = []
     expected_ids = {cat["id"] for cat in categories}
@@ -153,12 +153,11 @@ def validate_structure(data, categories):
         issues.append(f"Missing categories: {', '.join(sorted(missing))}")
 
     for cat_id, cat_data in data.get("categories", {}).items():
-        depths = cat_data.get("depths", {})
-        for level in ["1", "2", "3"]:
-            if level not in depths:
-                issues.append(f"{cat_id}: missing depth {level}")
-            elif "headline" not in depths[level]:
-                issues.append(f"{cat_id} depth {level}: missing headline")
+        stories = cat_data.get("stories", [])
+        if not stories:
+            issues.append(f"{cat_id}: no stories returned")
+        elif not stories[0].get("headline"):
+            issues.append(f"{cat_id} story 1: missing headline")
 
     return len(issues) == 0, issues
 
@@ -240,16 +239,24 @@ def write_to_supabase(data, date_str):
         rows = []
 
         for cat_id, cat_data in categories.items():
-            depths = cat_data.get("depths", {})
+            stories = cat_data.get("stories", [])
+            # Pad to 3 slots so columns are always populated
+            while len(stories) < 3:
+                stories.append(None)
+            # Collect all sources across stories
+            all_sources = []
+            for s in stories:
+                if s:
+                    all_sources.extend(s.get("sources", []))
             rows.append({
                 "date": date_str,
                 "category": cat_id,
                 "category_label": cat_data.get("category_label", cat_id),
-                "headline": depths.get("1", {}).get("headline", ""),
-                "depth_1": depths.get("1", {}),
-                "depth_2": depths.get("2", {}),
-                "depth_3": depths.get("3", {}),
-                "sources": cat_data.get("sources", []),
+                "headline": (stories[0] or {}).get("headline", ""),
+                "depth_1": stories[0],   # story 1 (always shown)
+                "depth_2": stories[1],   # story 2 (shown at depth 2+)
+                "depth_3": stories[2],   # story 3 (shown at depth 3)
+                "sources": all_sources,
                 "has_content": cat_data.get("has_content", True),
             })
 
@@ -358,9 +365,11 @@ if __name__ == "__main__":
         cats = data.get("categories", {})
         print(f"\n=== PREVIEW ({len(cats)} categories) ===")
         for cat_id, cat_data in list(cats.items())[:3]:
-            headline = cat_data.get("depths", {}).get("1", {}).get("headline", "N/A")
+            stories = cat_data.get("stories", [])
+            headline = (stories[0] or {}).get("headline", "N/A") if stories else "N/A"
             has_content = cat_data.get("has_content", True)
-            flag = "" if has_content else " [limited coverage]"
-            print(f"  {cat_id}: {headline}{flag}")
+            story_count = len([s for s in stories if s])
+            flag = f" [{story_count} stories]" if has_content else " [no coverage]"
+            print(f"  {cat_id}: {headline[:70]}{flag}")
         if len(cats) > 3:
             print(f"  ... and {len(cats) - 3} more categories")

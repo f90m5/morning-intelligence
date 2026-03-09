@@ -8,7 +8,7 @@ Here are today's top news articles:
 
 ---
 
-Your task: For each of the 12 categories below, synthesize the most important development from today's articles. If an article is relevant to multiple categories, use it for each — but each category entry must be independently written and add distinct value.
+Your task: For each of the 12 categories below, identify the top 3 most important distinct stories from today's articles. Each story is a separate development — not different levels of detail on the same event. If a category has fewer than 3 distinct stories in today's coverage, produce as many as the articles support and set has_content accordingly.
 
 Categories to cover:
 {categories}
@@ -25,35 +25,32 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
     "<category_id>": {{
       "category": "<category_id>",
       "category_label": "<category_label>",
-      "depths": {{
-        "1": {{
-          "headline": "One sentence. The single most important development in this category today. Specific, sourced, dated."
-        }},
-        "2": {{
-          "headline": "Same headline as depth 1.",
-          "summary": "2-3 sentences expanding on the headline. Include key figures, named entities, and source attribution.",
+      "stories": [
+        {{
+          "headline": "One sentence. The most important development. Specific, sourced, dated. Under 160 characters.",
           "bullets": [
-            "Bullet 1 — specific fact with source and date",
-            "Bullet 2 — specific fact with source and date",
-            "Bullet 3 — specific fact with source and date"
-          ]
-        }},
-        "3": {{
-          "headline": "Same headline as depth 1.",
-          "summary": "Same summary as depth 2.",
-          "bullets": [
-            "Bullet 1 — specific fact with source and date",
-            "Bullet 2 — specific fact with source and date",
-            "Bullet 3 — specific fact with source and date",
-            "Bullet 4 — specific fact with source and date",
-            "Bullet 5 — specific fact with source and date"
+            "Specific fact with named entity, figure, source, and date — under 120 characters",
+            "Specific fact with named entity, figure, source, and date — under 120 characters",
+            "Specific fact with named entity, figure, source, and date — under 120 characters"
           ],
-          "why_it_matters": "2-3 sentences on real-world consequences. Forward-looking. Who is affected and how.",
-          "what_to_watch": "1-2 sentences. The specific signal or event to monitor next, with a timeframe."
+          "sources": ["Source Name"]
+        }},
+        {{
+          "headline": "Second distinct story headline. Different event from story 1.",
+          "bullets": [
+            "Bullet 1",
+            "Bullet 2"
+          ],
+          "sources": ["Source Name"]
+        }},
+        {{
+          "headline": "Third distinct story headline. Different event from stories 1 and 2.",
+          "bullets": [
+            "Bullet 1",
+            "Bullet 2"
+          ],
+          "sources": ["Source Name"]
         }}
-      }},
-      "sources": [
-        {{"name": "Source Name", "url": "https://...", "published": "YYYY-MM-DD"}}
       ],
       "has_content": true
     }}
@@ -64,18 +61,18 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
 
 CONTENT RULES — apply to every field:
 
-SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), WHEN (date), and WHERE (source attribution).
-Bad headline: "AI regulation is increasing"
-Good headline: "EU's AI Act enforcement body formally launched on March 9, per Reuters, giving national regulators until August to designate AI system auditors"
+STORIES MUST BE DISTINCT: Each story covers a different event. Do not split one event across 3 stories. If only 1-2 real stories exist for a category today, produce only those and set the remaining story slots to null or omit them. Do not pad with thin or manufactured stories.
 
-SOURCING: Attribute every claim. Use "per Reuters", "according to Bloomberg", "the BLS reported on March 6". Do not write unsourced assertions.
+SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), WHEN (date), and source attribution.
+Bad: "AI regulation is increasing"
+Good: "EU AI Act enforcement body formally launched March 9, giving national regulators until August to designate auditors — per Reuters"
 
-BULLETS: Each bullet is a standalone fact a reader could cite in a meeting. No vague observations. No repeated facts across bullets. Keep each bullet under 120 characters — be dense, not verbose.
+SOURCING: Attribute every claim. Use "per Reuters", "according to Bloomberg", "BLS reported March 6". No unsourced assertions.
 
-DEPTH CONSISTENCY: depth 1 headline must be identical across all three depth levels. depth 2 summary must be identical in depth 3.
+BULLETS: Each bullet is a standalone fact. No vague observations. No repeated facts across bullets in the same story. Keep each bullet under 120 characters.
 
-NO SPECULATION: Report what happened. Do not write "could", "may", "might", or "is expected to" unless directly quoting an analyst or official forecast with attribution.
+NO SPECULATION: Report confirmed events only. Do not write "could", "may", "might", or "is expected to" unless directly quoting a named source.
 
-LIMITED ARTICLES: If today's articles contain little or no coverage of a category, set "has_content": false and still produce the best depth-1 headline you can from general knowledge, but keep depth 2 and 3 minimal and note the sourcing gap.
+LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false and produce 1 story with what you can. Do not fabricate stories.
 
-SOURCES ARRAY: List only sources actually used. Include URL if available from the articles. If URL is unavailable, omit the url field.
+SOURCES: Only list sources actually used for that specific story.
