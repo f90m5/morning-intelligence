@@ -74,7 +74,7 @@ RULE: Before including a story, ask: "Has this topic already appeared in the rec
 If YES — apply this two-tier test:
 
   TIER 1 — MAJOR ONGOING SITUATIONS (conflicts, central bank cycles, elections, major trials, geopolitical crises):
-  These may be repeated ONLY when today's articles contain a concrete, datable new development — a ceasefire, a rate decision, a verdict, an escalation, a key vote, a new figure. "Continued fighting" or "tensions remain high" is NOT a new development. The test: could you write a new, factually distinct headline? If not, skip it.
+  These may be repeated when today's articles contain a concrete, datable new development — a ceasefire, a rate decision, a verdict, an escalation, a key vote, a new named figure, updated data or figures, or an incremental but meaningful change. "Continued fighting" or "tensions remain high" is NOT a new development. The test: could you write a new, factually distinct headline that adds something a reader didn't learn yesterday? If yes, include it. If not, skip it.
 
   TIER 2 — SMALLER OR SELF-CONTAINED STORIES (company earnings, product launches, policy announcements, one-day market moves, minor appointments):
   Do not repeat these. If the same company, policy, or event appeared in the recent history, skip it entirely and find a fresher story for that slot. There will almost always be something new to cover.
