@@ -4,21 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Morning Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0f1117;
-      --surface: #181b24;
-      --surface2:#1e2130;
-      --border:  #252836;
-      --border2: #2e3347;
-      --text:    #e4e6f0;
-      --muted:   #5a6178;
-      --muted2:  #8890a8;
-      --accent:  #f59e0b;
-      --radius:  12px;
+      --bg:       #0c0d10;
+      --surface:  #111318;
+      --surface2: #161921;
+      --border:   #1e2130;
+      --border2:  #272d3c;
+      --text:     #ede9df;
+      --muted:    #5c6070;
+      --muted2:   #8e929e;
+      --accent:   #c9a84c;
+      --accent-d: rgba(201,168,76,0.10);
+      --radius:   4px;
     }
 
     body {
@@ -29,194 +33,260 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ─────────────────────────── */
+    /* ── Accent stripe ───────────────────── */
+    body::before {
+      content: '';
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      z-index: 9999;
+    }
+
+    /* ── Header / Masthead ───────────────── */
     header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(15,17,23,0.93);
-      backdrop-filter: blur(12px);
+      position: sticky; top: 3px; z-index: 100;
+      background: rgba(12,13,16,0.96);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px; height: 56px;
+      padding: 0 28px; height: 58px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .logo { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+    .logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px; font-weight: 800;
+      letter-spacing: .04em;
+      color: var(--text);
+    }
+    .logo-accent { color: var(--accent); }
+
     .header-right { display: flex; align-items: center; gap: 10px; }
-    .user-email { font-size: 12px; color: var(--muted2); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-email { font-size: 11px; color: var(--muted2); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: .01em; }
 
     /* ── Buttons ────────────────────────── */
-    .btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 7px; border: none; cursor: pointer; transition: opacity .15s; }
+    .btn { font-family: 'Inter', inherit; font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: var(--radius); border: none; cursor: pointer; transition: opacity .15s; letter-spacing: .03em; }
     .btn:hover { opacity: .82; }
-    .btn-accent { background: var(--accent); color: #0f1117; }
+    .btn-accent { background: var(--accent); color: #0c0d10; }
     .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-    .icon-btn { background: none; border: none; color: var(--muted); width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color .15s, background .15s; }
+    .icon-btn { background: none; border: none; color: var(--muted); width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color .15s, background .15s; }
     .icon-btn:hover { color: var(--text); background: var(--surface2); }
 
     /* ── Main layout ────────────────────── */
-    main { max-width: 700px; margin: 0 auto; padding: 36px 20px 100px; }
+    main { max-width: 680px; margin: 0 auto; padding: 40px 20px 100px; }
 
-    .brief-header { margin-bottom: 28px; }
-    .brief-date { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-    .brief-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
-    .brief-meta { font-size: 13px; color: var(--muted2); margin-top: 4px; }
+    /* ── Brief header ───────────────────── */
+    .brief-header { margin-bottom: 32px; }
+    .brief-date {
+      font-size: 11px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .brief-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 30px; font-weight: 800;
+      letter-spacing: -.01em; line-height: 1.15;
+      color: var(--text);
+    }
+    .brief-meta { font-size: 12px; color: var(--muted); margin-top: 6px; letter-spacing: .04em; }
+    .brief-rule {
+      border: none; border-top: 1px solid var(--border2);
+      margin: 20px 0 28px;
+    }
 
     /* ── Guest banner ───────────────────── */
     .guest-banner {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
-      border-radius: 9px; padding: 12px 16px; margin-bottom: 24px; flex-wrap: wrap;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-d);
+      padding: 12px 16px; margin-bottom: 24px; flex-wrap: wrap;
     }
-    .guest-banner-text { font-size: 13px; color: #c9a555; }
+    .guest-banner-text { font-size: 12px; color: #c8a860; letter-spacing: .02em; }
 
     /* ── Feed ───────────────────────────── */
-    .feed { display: flex; flex-direction: column; gap: 10px; }
+    .feed { display: flex; flex-direction: column; gap: 8px; }
 
     /* ── Card ───────────────────────────── */
     .cat-card {
       background: var(--surface);
       border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); /* overridden per card inline */
       border-radius: var(--radius);
       overflow: hidden;
     }
 
-    /* Badge sits at the top, full-width row above stories */
     .card-header {
-      padding: 12px 16px 0 16px;
+      padding: 12px 16px 0;
     }
 
-    .cat-badge {
-      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 5px;
-      display: inline-block;
+    /* Category label — editorial section style, no background pill */
+    .cat-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      /* color set inline per category */
     }
 
-    .badge-ai            { background:#1e1b4b; color:#a5b4fc; }
-    .badge-geopolitics   { background:#2d0f0f; color:#fca5a5; }
-    .badge-markets       { background:#052e16; color:#86efac; }
-    .badge-technology    { background:#0f2340; color:#93c5fd; }
-    .badge-energy        { background:#2d1b00; color:#fcd34d; }
-    .badge-cybersecurity { background:#1a1030; color:#c4b5fd; }
-    .badge-startups      { background:#1c1c2e; color:#a5b4fc; }
-    .badge-science       { background:#0c2332; color:#67e8f9; }
-    .badge-defense       { background:#1c1008; color:#d97706; }
-    .badge-business      { background:#0f1f0f; color:#6ee7b7; }
-    .badge-climate       { background:#0a2010; color:#4ade80; }
-    .badge-healthcare    { background:#1f0f1f; color:#f0abfc; }
-
-    /* Stories sit below the badge */
+    /* Stories sit below the label */
     .card-stories {
-      padding: 10px 16px 14px;
-      display: flex; flex-direction: column; gap: 0;
+      padding: 8px 16px 14px;
+      display: flex;
+      flex-direction: column;
     }
 
     .story-block { }
 
+    /* Editorial section divider: centered dots */
     .story-divider {
-      border: none;
-      border-top: 1px solid var(--border);
+      text-align: center;
       margin: 12px 0;
+      color: var(--border2);
+      font-size: 12px;
+      letter-spacing: 6px;
+      user-select: none;
     }
 
     .card-headline {
       display: block;
-      font-size: 14px;
-      font-weight: 600;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
       line-height: 1.45;
       color: var(--text);
+      margin-top: 6px;
     }
 
-    .card-bullets { list-style: none; margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
-    .card-bullets li { font-size: 13px; color: #b8bccc; padding-left: 16px; position: relative; line-height: 1.55; }
-    .card-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-size: 16px; line-height: 1.3; }
+    .card-bullets {
+      list-style: none;
+      margin-top: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .card-bullets li {
+      font-size: 12.5px;
+      color: var(--muted2);
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.6;
+    }
+    .card-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.9;
+    }
 
-    /* Sources */
-    .card-sources { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-    .source-tag { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; }
+    /* Sources — byline style, not pills */
+    .card-sources {
+      margin-top: 10px;
+      font-size: 11px;
+      font-style: italic;
+      color: var(--muted);
+      letter-spacing: .02em;
+    }
 
     /* ── Auth overlay ───────────────────── */
-    #auth-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+    #auth-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.78); backdrop-filter: blur(6px); align-items: center; justify-content: center; }
     #auth-overlay.open { display: flex; }
 
-    .auth-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 32px 36px; width: 100%; max-width: 400px; margin: 20px; }
-    .auth-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      width: 100%; max-width: 400px;
+      margin: 20px;
+    }
+    .auth-card h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px; font-weight: 800;
+      margin-bottom: 6px;
+    }
     .auth-card p { font-size: 13px; color: var(--muted2); margin-bottom: 22px; line-height: 1.5; }
 
-    .auth-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 10px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 10px; transition: border-color .15s; }
+    .auth-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 10px; transition: border-color .15s; }
     .auth-input:focus { border-color: var(--accent); }
-    .auth-input.otp { font-size: 22px; font-weight: 700; letter-spacing: .35em; text-align: center; }
+    .auth-input.otp { font-size: 22px; font-weight: 700; letter-spacing: .35em; text-align: center; font-family: 'Inter', monospace; }
     .auth-card .btn { width: 100%; padding: 10px; margin-bottom: 8px; }
     .auth-back { text-align: center; font-size: 12px; color: var(--muted2); cursor: pointer; margin-top: 4px; }
     .auth-back:hover { color: var(--text); }
-    .auth-msg { font-size: 12px; border-radius: 6px; padding: 9px 12px; margin-top: 8px; display: none; }
-    .auth-msg.ok  { background:#052e16; color:#4ade80; border:1px solid #16a34a; }
-    .auth-msg.err { background:#2d0f0f; color:#f87171; border:1px solid #b91c1c; }
+    .auth-msg { font-size: 12px; border-radius: var(--radius); padding: 9px 12px; margin-top: 8px; display: none; }
+    .auth-msg.ok  { background: rgba(74,168,117,.12); color: #4aa875; border: 1px solid rgba(74,168,117,.3); }
+    .auth-msg.err { background: rgba(224,112,112,.1); color: #e07070; border: 1px solid rgba(224,112,112,.3); }
 
     /* ── Settings panel ─────────────────── */
     #settings-overlay { display: none; position: fixed; inset: 0; z-index: 200; }
     #settings-overlay.open { display: block; }
-    .settings-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
+    .settings-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.55); }
     .settings-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 360px; background: var(--surface); border-left: 1px solid var(--border2); display: flex; flex-direction: column; }
     .settings-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .settings-head h3 { font-size: 15px; font-weight: 700; }
+    .settings-head h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 16px; font-weight: 700;
+    }
     .settings-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
     .settings-section { margin-bottom: 10px; }
-    .settings-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; padding-top: 6px; }
+    .settings-label {
+      font-size: 9.5px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 10px; padding-top: 4px;
+    }
+
+    /* Depth legend */
+    .depth-legend { display: flex; gap: 14px; margin-bottom: 12px; }
+    .dl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted2); }
+    .dl-dot { width: 20px; height: 20px; border-radius: 3px; background: var(--accent-d); color: var(--accent); border: 1px solid rgba(201,168,76,.3); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+    .reorder-hint { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
 
     /* Per-category row */
     .cat-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px;
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 11px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 5px;
-      opacity: 1;
-      transition: opacity .15s, background .12s, border-color .12s;
+      border-radius: var(--radius);
+      margin-bottom: 4px;
+      transition: opacity .15s, border-color .15s;
       min-height: 42px;
       user-select: none;
+      -webkit-user-select: none;
     }
-    .cat-row.off { opacity: .4; }
-    .cat-row.drag-over {
-      border-color: var(--accent);
-      background: rgba(245,158,11,.06);
-    }
-    .cat-row.dragging { opacity: .35; }
+    .cat-row.off { opacity: .38; }
+    .cat-row.drag-over { border-color: var(--accent); }
+    .cat-row.dragging { opacity: .3; }
 
-    /* Drag handle */
     .drag-handle {
       color: var(--muted);
-      cursor: grab;
       flex-shrink: 0;
-      display: flex; align-items: center; padding: 2px 0;
+      display: flex; align-items: center;
+      padding: 4px 2px;
+      cursor: grab;
+      touch-action: none;
       transition: color .12s;
+      -webkit-user-drag: none;
     }
-    .drag-handle:hover { color: var(--muted2); }
     .drag-handle:active { cursor: grabbing; }
+    .drag-handle:hover { color: var(--muted2); }
 
-    /* Colored dot */
     .cat-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
     }
-    .dot-ai            { background:#a5b4fc; }
-    .dot-geopolitics   { background:#fca5a5; }
-    .dot-markets       { background:#86efac; }
-    .dot-technology    { background:#93c5fd; }
-    .dot-energy        { background:#fcd34d; }
-    .dot-cybersecurity { background:#c4b5fd; }
-    .dot-startups      { background:#a5b4fc; }
-    .dot-science       { background:#67e8f9; }
-    .dot-defense       { background:#d97706; }
-    .dot-business      { background:#6ee7b7; }
-    .dot-climate       { background:#4ade80; }
-    .dot-healthcare    { background:#f0abfc; }
 
-    .cat-row-name { font-size: 13px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-row-name { font-size: 12.5px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .01em; }
 
-    /* Depth pills inside settings row */
-    .depth-pills { display: flex; gap: 4px; flex-shrink: 0; }
+    /* Depth pills */
+    .depth-pills { display: flex; gap: 3px; flex-shrink: 0; }
     .dp {
       font-size: 11px; font-weight: 600;
-      width: 28px; height: 24px;
-      border-radius: 5px;
+      width: 26px; height: 22px;
+      border-radius: 3px;
       border: 1px solid var(--border2);
       background: var(--surface2);
       color: var(--muted2);
@@ -226,39 +296,39 @@
       transition: background .12s, color .12s, border-color .12s;
     }
     .dp:hover { color: var(--text); border-color: var(--muted); }
-    .dp.active { background: rgba(245,158,11,.15); color: var(--accent); border-color: rgba(245,158,11,.4); }
-    .dp.disabled { pointer-events: none; opacity: .3; }
+    .dp.active { background: var(--accent-d); color: var(--accent); border-color: rgba(201,168,76,.4); }
+    .dp.disabled { pointer-events: none; opacity: .25; }
 
-    /* Toggle switch */
-    .sw { position: relative; width: 34px; height: 18px; flex-shrink: 0; }
+    /* Toggle */
+    .sw { position: relative; width: 32px; height: 17px; flex-shrink: 0; }
     .sw input { opacity: 0; width: 0; height: 0; }
-    .sw-track { position: absolute; inset: 0; background: var(--border2); border-radius: 18px; transition: background .2s; }
-    .sw-track::before { content: ''; position: absolute; width: 12px; height: 12px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform .2s; }
-    .sw input:checked + .sw-track { background: var(--accent); }
-    .sw input:checked + .sw-track::before { transform: translateX(16px); }
+    .sw-track { position: absolute; inset: 0; background: var(--border2); border-radius: 17px; transition: background .2s; cursor: pointer; }
+    .sw-track::before { content: ''; position: absolute; width: 11px; height: 11px; left: 3px; top: 3px; background: var(--muted); border-radius: 50%; transition: transform .2s, background .2s; }
+    .sw input:checked + .sw-track { background: rgba(201,168,76,.25); }
+    .sw input:checked + .sw-track::before { transform: translateX(15px); background: var(--accent); }
 
-    .settings-foot { padding: 16px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .settings-foot { padding: 14px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
     .settings-foot .btn { width: 100%; }
 
     /* ── Spinner / empty ────────────────── */
-    .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px 0; color: var(--muted); font-size: 13px; }
-    .spinner { width: 26px; height: 26px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+    .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px 0; color: var(--muted); font-size: 12px; letter-spacing: .05em; }
+    .spinner { width: 24px; height: 24px; border: 1.5px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .empty { text-align: center; padding: 60px 0; color: var(--muted); font-size: 14px; }
+    .empty { text-align: center; padding: 60px 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
 
-    /* ── Depth legend ───────────────────── */
-    .depth-legend { display: flex; gap: 16px; margin-bottom: 14px; }
-    .dl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted2); }
-    .dl-dot { width: 20px; height: 20px; border-radius: 5px; background: rgba(245,158,11,.15); color: var(--accent); border: 1px solid rgba(245,158,11,.35); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-
-    /* Reorder hint */
-    .reorder-hint { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+    /* ── Mobile ─────────────────────────── */
+    @media (max-width: 480px) {
+      header { padding: 0 16px; }
+      main { padding: 28px 14px 80px; }
+      .brief-title { font-size: 24px; }
+      .settings-panel { width: 100%; border-left: none; border-top: 1px solid var(--border2); top: auto; height: 90dvh; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Morning Intelligence</div>
+  <div class="logo">Morning <span class="logo-accent">Intelligence</span></div>
   <div class="header-right" id="header-right"></div>
 </header>
 
@@ -268,12 +338,13 @@
     <div class="brief-title">Your Morning Brief</div>
     <div class="brief-meta" id="brief-meta"></div>
   </div>
+  <hr class="brief-rule" />
   <div id="guest-banner" class="guest-banner" style="display:none;">
     <span class="guest-banner-text">Sign in to customise your feed and unlock full depth</span>
-    <button class="btn btn-accent" onclick="openAuth()" style="padding:6px 14px;font-size:12px;">Sign in</button>
+    <button class="btn btn-accent" onclick="openAuth()" style="padding:5px 13px;">Sign in</button>
   </div>
   <div id="feed">
-    <div class="spinner-wrap"><div class="spinner"></div><span>Loading...</span></div>
+    <div class="spinner-wrap"><div class="spinner"></div><span>Loading</span></div>
   </div>
 </main>
 
@@ -306,7 +377,7 @@
     <div class="settings-head">
       <h3>Customise feed</h3>
       <button class="icon-btn" onclick="closeSettings()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="settings-body">
@@ -314,11 +385,11 @@
         <div class="settings-label">Detail level per category</div>
         <div class="depth-legend">
           <div class="dl-item"><div class="dl-dot">1</div> Top story</div>
-          <div class="dl-item"><div class="dl-dot">2</div> Top 2 stories</div>
-          <div class="dl-item"><div class="dl-dot">3</div> Top 3 stories</div>
+          <div class="dl-item"><div class="dl-dot">2</div> Top 2</div>
+          <div class="dl-item"><div class="dl-dot">3</div> Top 3</div>
         </div>
         <div class="reorder-hint">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           Drag to reorder
         </div>
         <div id="cat-rows"></div>
@@ -334,33 +405,25 @@
 const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
 
-// Master list — defines available categories and their metadata
 const CATEGORIES = [
-  { id:'ai',            label:'AI' },
-  { id:'geopolitics',   label:'Geopolitics' },
-  { id:'markets',       label:'Markets' },
-  { id:'technology',    label:'Technology' },
-  { id:'energy',        label:'Energy' },
-  { id:'cybersecurity', label:'Cybersecurity' },
-  { id:'startups',      label:'Startups' },
-  { id:'science',       label:'Science' },
-  { id:'defense',       label:'Defense' },
-  { id:'business',      label:'Business' },
-  { id:'climate',       label:'Climate' },
-  { id:'healthcare',    label:'Healthcare' },
+  { id:'ai',            label:'AI',            color:'#7c8cf0' },
+  { id:'geopolitics',   label:'Geopolitics',   color:'#e07070' },
+  { id:'markets',       label:'Markets',       color:'#4aa875' },
+  { id:'technology',    label:'Technology',    color:'#5a8fd4' },
+  { id:'energy',        label:'Energy',        color:'#d4a843' },
+  { id:'cybersecurity', label:'Cybersecurity', color:'#9c7cd4' },
+  { id:'startups',      label:'Startups',      color:'#a0aae8' },
+  { id:'science',       label:'Science',       color:'#4ab8c8' },
+  { id:'defense',       label:'Defense',       color:'#c87a3a' },
+  { id:'business',      label:'Business',      color:'#4aab8a' },
+  { id:'climate',       label:'Climate',       color:'#6ab85a' },
+  { id:'healthcare',    label:'Healthcare',    color:'#d47acc' },
 ];
 const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
 let sb, currentUser = null;
 let todayData = [];
 
-/*
-  userPrefs shape:
-  {
-    order: ['ai', 'geopolitics', ...],   // display order
-    cats: { [catId]: { selected: bool, depth: 1|2|3 } }
-  }
-*/
 let userPrefs = defaultPrefs();
 let pendingPrefs = null;
 
@@ -412,15 +475,11 @@ async function loadUserPrefs() {
   if (!data || data.length === 0) { await saveUserPrefsToDb(); return; }
 
   const prefs = defaultPrefs();
-
-  // Sort rows by order_index to reconstruct user's order
   const sorted = [...data].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
   const orderedIds = sorted.map(r => r.category).filter(id => CAT_MAP[id]);
-  // Append any categories missing from DB (new ones added later)
   CATEGORIES.forEach(c => { if (!orderedIds.includes(c.id)) orderedIds.push(c.id); });
   prefs.order = orderedIds;
 
-  // Per-category prefs
   data.forEach(row => {
     if (prefs.cats[row.category] !== undefined) {
       prefs.cats[row.category] = {
@@ -429,7 +488,6 @@ async function loadUserPrefs() {
       };
     }
   });
-
   userPrefs = prefs;
 }
 
@@ -453,12 +511,12 @@ function renderHeader() {
     el.innerHTML = `
       <span class="user-email">${currentUser.email}</span>
       <button class="icon-btn" onclick="openSettings()" title="Customise feed">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
-      <button class="btn btn-ghost" onclick="signOut()" style="font-size:12px;padding:5px 12px;">Sign out</button>`;
+      <button class="btn btn-ghost" onclick="signOut()" style="font-size:11px;padding:5px 11px;">Sign out</button>`;
   } else {
     el.innerHTML = `<button class="btn btn-accent" onclick="openAuth()">Sign in</button>`;
   }
@@ -479,13 +537,9 @@ function renderFeed() {
     return;
   }
 
-  // Build a lookup from category id → row
   const dataMap = Object.fromEntries(todayData.map(r => [r.category, r]));
-
-  // Determine display order
   const order = currentUser ? userPrefs.order : CATEGORIES.map(c => c.id);
 
-  // Filter and order rows
   const rows = order
     .map(id => dataMap[id])
     .filter(r => {
@@ -501,11 +555,11 @@ function renderFeed() {
 
 function buildCard(row) {
   const { category: id, category_label: label, depth_1: s1, depth_2: s2, depth_3: s3 } = row;
+  const cat = CAT_MAP[id];
+  const color = cat?.color || 'var(--accent)';
 
-  // depth = number of stories to show; guests see 1
   const depth = currentUser ? (userPrefs.cats[id]?.depth || 1) : 1;
   const stories = [s1, s2, s3].slice(0, depth).filter(Boolean);
-
   if (stories.length === 0) return '';
 
   const storiesHtml = stories.map((story, i) => {
@@ -515,19 +569,20 @@ function buildCard(row) {
 
     let inner = `<span class="card-headline">${esc(headline)}</span>`;
     if (bullets.length) {
-      inner += `<ul class="card-bullets">${bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`;
+      inner += `<ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`;
     }
     if (srcs.length) {
-      inner += `<div class="card-sources">${srcs.map(s=>`<span class="source-tag">${esc(typeof s==='object'?s.name:s)}</span>`).join('')}</div>`;
+      const srcNames = srcs.map(s => esc(typeof s === 'object' ? s.name : s)).join(' · ');
+      inner += `<div class="card-sources">${srcNames}</div>`;
     }
 
-    const divider = i > 0 ? '<div class="story-divider"></div>' : '';
+    const divider = i > 0 ? '<div class="story-divider">· · ·</div>' : '';
     return `${divider}<div class="story-block">${inner}</div>`;
   }).join('');
 
-  return `<div class="cat-card">
+  return `<div class="cat-card" style="border-left-color:${color}">
     <div class="card-header">
-      <span class="cat-badge badge-${id}">${esc(label||id)}</span>
+      <span class="cat-label" style="color:${color}">${esc(label || id)}</span>
     </div>
     <div class="card-stories">${storiesHtml}</div>
   </div>`;
@@ -540,8 +595,8 @@ function closeAuth() { document.getElementById('auth-overlay').classList.remove(
 
 async function sendOtp() {
   const email = document.getElementById('auth-email').value.trim();
-  if (!email) { showMsg('msg1','Please enter your email.','err'); return; }
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true } });
+  if (!email) { showMsg('msg1', 'Please enter your email.', 'err'); return; }
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
   if (error) { showMsg('msg1', error.message, 'err'); return; }
   otpEmail = email;
   document.getElementById('otp-email').textContent = email;
@@ -551,10 +606,10 @@ async function sendOtp() {
 }
 
 async function verifyOtp() {
-  const token = document.getElementById('auth-otp').value.trim().replace(/\D/g,'');
-  if (token.length < 6) { showMsg('msg2','Enter the code from your email.','err'); return; }
-  const { error } = await sb.auth.verifyOtp({ email: otpEmail, token, type:'email' });
-  if (error) { showMsg('msg2','Invalid or expired code — try again.','err'); return; }
+  const token = document.getElementById('auth-otp').value.trim().replace(/\D/g, '');
+  if (token.length < 6) { showMsg('msg2', 'Enter the code from your email.', 'err'); return; }
+  const { error } = await sb.auth.verifyOtp({ email: otpEmail, token, type: 'email' });
+  if (error) { showMsg('msg2', 'Invalid or expired code — try again.', 'err'); return; }
 }
 
 function backToEmail() {
@@ -579,29 +634,26 @@ function renderCatRows() {
   container.innerHTML = pendingPrefs.order.map(catId => {
     const cat  = CAT_MAP[catId];
     if (!cat) return '';
-    const pref = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
-    const row  = todayData.find(r => r.category === cat.id);
+    const pref  = pendingPrefs.cats[cat.id] || { selected: true, depth: 2 };
+    const row   = todayData.find(r => r.category === cat.id);
     const noData = row && row.has_content === false;
     const offCls = pref.selected ? '' : ' off';
 
-    return `<div class="cat-row${offCls}" id="prow-${cat.id}" draggable="true" data-cat="${cat.id}">
+    return `<div class="cat-row${offCls}" id="prow-${cat.id}" data-cat="${cat.id}">
       <div class="drag-handle" title="Drag to reorder">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <circle cx="9" cy="5" r="1.2" fill="currentColor" stroke="none"/>
-          <circle cx="15" cy="5" r="1.2" fill="currentColor" stroke="none"/>
-          <circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-          <circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-          <circle cx="9" cy="19" r="1.2" fill="currentColor" stroke="none"/>
-          <circle cx="15" cy="19" r="1.2" fill="currentColor" stroke="none"/>
+        <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor">
+          <circle cx="3.5" cy="2" r="1.2"/><circle cx="8.5" cy="2" r="1.2"/>
+          <circle cx="3.5" cy="7" r="1.2"/><circle cx="8.5" cy="7" r="1.2"/>
+          <circle cx="3.5" cy="12" r="1.2"/><circle cx="8.5" cy="12" r="1.2"/>
         </svg>
       </div>
-      <span class="cat-dot dot-${cat.id}"></span>
-      <span class="cat-row-name">${cat.label}${noData?' <span style="color:var(--muted);font-size:10px;">(no coverage)</span>':''}</span>
+      <span class="cat-dot" style="background:${cat.color}"></span>
+      <span class="cat-row-name">${cat.label}${noData ? ' <span style="color:var(--muted);font-size:10px;">(no data)</span>' : ''}</span>
       <div class="depth-pills">
         ${[1,2,3].map(d => `<button class="dp${pref.depth===d?' active':''}${!pref.selected?' disabled':''}" data-cat="${cat.id}" data-d="${d}" onclick="setPendingDepth('${cat.id}',${d})">${d}</button>`).join('')}
       </div>
       <label class="sw">
-        <input type="checkbox" ${pref.selected?'checked':''} onchange="togglePendingCat('${cat.id}',this.checked)" />
+        <input type="checkbox" ${pref.selected ? 'checked' : ''} onchange="togglePendingCat('${cat.id}',this.checked)" />
         <span class="sw-track"></span>
       </label>
     </div>`;
@@ -628,73 +680,70 @@ function togglePendingCat(catId, on) {
 }
 
 async function saveSettings() {
-  // Read current DOM order from cat-rows container
   const container = document.getElementById('cat-rows');
   const newOrder = [...container.querySelectorAll('.cat-row[data-cat]')].map(el => el.dataset.cat);
   pendingPrefs.order = newOrder;
-
   userPrefs = JSON.parse(JSON.stringify(pendingPrefs));
   closeSettings();
   renderFeed();
   if (currentUser) await saveUserPrefsToDb();
 }
 
-// ── Drag-and-drop reordering ──────────────────────────────────
+// ── Drag-and-drop (Pointer Events — works on mobile + desktop) ─
 function initDragDrop(container) {
   let dragging = null;
 
-  container.querySelectorAll('.cat-row').forEach(row => {
-    row.addEventListener('dragstart', e => {
-      dragging = row;
-      // Small delay so the element isn't hidden before screenshot
-      setTimeout(() => row.classList.add('dragging'), 0);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', row.dataset.cat);
-    });
-
-    row.addEventListener('dragend', () => {
-      row.classList.remove('dragging');
-      container.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
-      dragging = null;
-    });
-
-    row.addEventListener('dragover', e => {
+  container.querySelectorAll('.drag-handle').forEach(handle => {
+    handle.addEventListener('pointerdown', e => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      if (!dragging || dragging === row) return;
+      const row = handle.closest('.cat-row');
+      if (!row) return;
+      dragging = row;
+      row.classList.add('dragging');
+      handle.setPointerCapture(e.pointerId);
+    });
 
-      // Determine whether to insert before or after
-      const rect = row.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      container.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
-      row.classList.add('drag-over');
+    handle.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      e.preventDefault();
 
-      if (e.clientY < midY) {
-        container.insertBefore(dragging, row);
-      } else {
-        container.insertBefore(dragging, row.nextSibling);
+      // Find which row the pointer is over (excluding the dragging one)
+      const rows = [...container.querySelectorAll('.cat-row')].filter(r => r !== dragging);
+      for (const row of rows) {
+        row.classList.remove('drag-over');
+        const rect = row.getBoundingClientRect();
+        if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          row.classList.add('drag-over');
+          if (e.clientY < rect.top + rect.height / 2) {
+            container.insertBefore(dragging, row);
+          } else {
+            container.insertBefore(dragging, row.nextSibling);
+          }
+          break;
+        }
       }
     });
 
-    row.addEventListener('dragleave', () => {
-      row.classList.remove('drag-over');
-    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging.classList.remove('dragging');
+      container.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+      dragging = null;
+    };
 
-    row.addEventListener('drop', e => {
-      e.preventDefault();
-      row.classList.remove('drag-over');
-    });
+    handle.addEventListener('pointerup', endDrag);
+    handle.addEventListener('pointercancel', endDrag);
   });
 }
 
 // ── Helpers ───────────────────────────────────────────────────
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
-  el.textContent = text; el.className = 'auth-msg '+type; el.style.display = 'block';
+  el.textContent = text; el.className = 'auth-msg ' + type; el.style.display = 'block';
 }
 function esc(s) {
   if (!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
