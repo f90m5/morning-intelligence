@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 SENDER_EMAIL   = "brief@dailynews.it.com"
-SUBJECT_PREFIX = "Your Daily Brief"
+SUBJECT_PREFIX = "Your Daily News"
 APP_URL        = "https://dailynews.it.com/app/"
 
 # Category metadata — must stay in sync with index.html
@@ -199,7 +199,7 @@ def build_email_html(date_str, cat_data, ordered_ids, prefs):
       <div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
                   color:#7a7367;margin-bottom:6px;">{date_display}</div>
       <div style="font-size:22px;font-weight:800;color:#edeae0;letter-spacing:-.02em;">
-        Your Daily Brief
+        Your Daily News
       </div>
       <div style="font-size:12px;color:#7a7367;margin-top:4px;">
         {n} topic{"s" if n != 1 else ""}
