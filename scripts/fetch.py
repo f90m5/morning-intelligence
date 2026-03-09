@@ -287,12 +287,17 @@ def fetch_and_rank_articles():
     """
     Main entry point. Runs the full pipeline:
         fetch → filter recent → deduplicate → rank (with history) → save → return top N
+
+    Returns a tuple: (top_articles, all_ranked_articles)
+      - top_articles: balanced selection of max_total for the personal brief
+      - all_ranked_articles: full deduplicated + ranked set for category generation
+        (gives each of the 12 product categories enough articles to work with)
     """
     from scripts.history import load_history
 
     print("\n--- Fetching articles ---")
     sources = load_sources()
-    max_total = sources.get("max_total_articles", 20)
+    max_total = sources.get("max_total_articles", 25)
 
     # Load 7-day history for staleness checks
     history = load_history()
@@ -320,15 +325,16 @@ def fetch_and_rank_articles():
     if stale_count:
         print(f"  {stale_count} articles penalized as stale (similar to recent briefs)")
 
-    # 6. Select balanced mix across categories
+    # 6. Select balanced mix for personal brief
     top = select_balanced(ranked, max_total, sources)
-    print(f"  Top {len(top)} articles selected (balanced across categories)")
+    print(f"  Top {len(top)} articles selected for brief (balanced across categories)")
+    print(f"  Full pool: {len(ranked)} articles available for category generation")
 
-    # 7. Save processed
+    # 7. Save processed (top articles for brief)
     save_articles(top, stage="processed")
 
     print("--- Fetch complete ---\n")
-    return top
+    return top, ranked
 
 
 # Allow running standalone for testing

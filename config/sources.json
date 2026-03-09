@@ -39,7 +39,27 @@
     {"name": "DW News",                    "url": "https://rss.dw.com/rdf/rss-en-all",                     "category": "geopolitics", "tier": 2},
 
     {"name": "Nature News",                "url": "https://www.nature.com/nature.rss",                     "category": "science",   "tier": 3},
-    {"name": "Science Daily",              "url": "https://www.sciencedaily.com/rss/all.xml",              "category": "science",   "tier": 2}
+    {"name": "Science Daily",              "url": "https://www.sciencedaily.com/rss/all.xml",              "category": "science",   "tier": 2},
+
+    {"name": "Krebs on Security",          "url": "https://krebsonsecurity.com/feed/",                     "category": "cybersecurity", "tier": 3},
+    {"name": "The Hacker News",            "url": "https://feeds.feedburner.com/TheHackersNews",           "category": "cybersecurity", "tier": 2},
+    {"name": "Bleeping Computer",          "url": "https://www.bleepingcomputer.com/feed/",                "category": "cybersecurity", "tier": 2},
+    {"name": "Dark Reading",               "url": "https://www.darkreading.com/rss.xml",                   "category": "cybersecurity", "tier": 2},
+
+    {"name": "Defense One",                "url": "https://www.defenseone.com/rss/all/",                   "category": "defense",   "tier": 3},
+    {"name": "Breaking Defense",           "url": "https://breakingdefense.com/feed/",                    "category": "defense",   "tier": 2},
+
+    {"name": "STAT News",                  "url": "https://www.statnews.com/feed/",                       "category": "healthcare","tier": 3},
+    {"name": "Kaiser Health News",         "url": "https://khn.org/feed/",                                "category": "healthcare","tier": 3},
+
+    {"name": "OilPrice.com",               "url": "https://oilprice.com/rss/main",                        "category": "energy",    "tier": 2},
+    {"name": "Energy Monitor",             "url": "https://www.energymonitor.ai/feed/",                   "category": "energy",    "tier": 2},
+
+    {"name": "Carbon Brief",               "url": "https://www.carbonbrief.org/feed/",                    "category": "climate",   "tier": 3},
+    {"name": "Yale Climate Connections",   "url": "https://yaleclimateconnections.org/feed/",              "category": "climate",   "tier": 2},
+
+    {"name": "Crunchbase News",            "url": "https://news.crunchbase.com/feed/",                    "category": "startups",  "tier": 2},
+    {"name": "Axios Pro Rata",             "url": "https://www.axios.com/feeds/feed.rss",                 "category": "startups",  "tier": 2}
 
   ],
   "categories": ["business", "markets", "technology", "ai_data", "world", "geopolitics", "science"],

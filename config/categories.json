@@ -1,0 +1,64 @@
+{
+  "categories": [
+    {
+      "id": "ai",
+      "label": "AI & Machine Learning",
+      "description": "Artificial intelligence, machine learning, large language models, AI products, research, and policy"
+    },
+    {
+      "id": "geopolitics",
+      "label": "Geopolitics",
+      "description": "International conflicts, diplomacy, sanctions, military deployments, great power competition, treaties"
+    },
+    {
+      "id": "markets",
+      "label": "Markets & Economy",
+      "description": "Stock markets, economic indicators, Fed policy, inflation, jobs data, earnings, sector moves"
+    },
+    {
+      "id": "technology",
+      "label": "Technology",
+      "description": "Big tech companies, software platforms, hardware, consumer tech, enterprise technology news"
+    },
+    {
+      "id": "energy",
+      "label": "Energy & Commodities",
+      "description": "Oil, gas, renewables, commodity prices, energy policy, pipelines, and infrastructure"
+    },
+    {
+      "id": "cybersecurity",
+      "label": "Cybersecurity",
+      "description": "Data breaches, ransomware, vulnerabilities, security policy, nation-state attacks, zero-days"
+    },
+    {
+      "id": "startups",
+      "label": "Startups & Venture",
+      "description": "Funding rounds, IPOs, acquisitions, founder news, venture capital trends, valuations"
+    },
+    {
+      "id": "science",
+      "label": "Science & Research",
+      "description": "Scientific discoveries, research breakthroughs, space exploration, climate science, medicine"
+    },
+    {
+      "id": "defense",
+      "label": "Defense & Policy",
+      "description": "Military spending, weapons development, defense contracts, national security policy, intelligence"
+    },
+    {
+      "id": "business",
+      "label": "Business & Finance",
+      "description": "Corporate earnings, mergers and acquisitions, executive moves, industry trends, supply chain"
+    },
+    {
+      "id": "climate",
+      "label": "Climate & Environment",
+      "description": "Climate policy, extreme weather events, sustainability initiatives, environmental regulation"
+    },
+    {
+      "id": "healthcare",
+      "label": "Healthcare",
+      "description": "Drug approvals, health policy, medical research, biotech, public health, insurance"
+    }
+  ]
+}

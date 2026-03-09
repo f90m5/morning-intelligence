@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning Intelligence</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --border:    #2a2d3a;
+      --text:      #e8eaf0;
+      --muted:     #6b7280;
+      --accent:    #f59e0b;
+      --accent-dim:#7c4f00;
+      --blue:      #3b82f6;
+      --green:     #10b981;
+      --red:       #ef4444;
+      --radius:    10px;
+      --font:      'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    #app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary { background: var(--accent); color: #0f1117; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    .icon-btn:hover { color: var(--text); background: var(--border); }
+
+    main {
+      flex: 1;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    /* ── Auth Screen ──────────────────────────────────────── */
+    #auth-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      gap: 24px;
+      text-align: center;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .auth-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 12px;
+    }
+    .auth-input:focus { border-color: var(--accent); }
+
+    .auth-card .btn { width: 100%; padding: 10px; font-size: 14px; }
+
+    .auth-msg {
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 12px;
+      display: none;
+    }
+    .auth-msg.success { background: #052e16; color: #4ade80; border: 1px solid #16a34a; }
+    .auth-msg.error   { background: #2d0f0f; color: #f87171; border: 1px solid #b91c1c; }
+
+    /* ── Date Bar ─────────────────────────────────────────── */
+    .date-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .date-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .guest-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* ── Category Grid ────────────────────────────────────── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .category-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .category-card:hover { border-color: #3a3d4a; }
+
+    .category-card.no-content { opacity: 0.45; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px 10px;
+    }
+
+    .cat-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Category label colors */
+    .cat-ai          { background: #1e1b4b; color: #a5b4fc; }
+    .cat-geopolitics { background: #2d0f0f; color: #fca5a5; }
+    .cat-markets     { background: #052e16; color: #86efac; }
+    .cat-technology  { background: #1e3a5f; color: #93c5fd; }
+    .cat-energy      { background: #2d1b00; color: #fcd34d; }
+    .cat-cybersecurity { background: #1a1a2e; color: #c4b5fd; }
+    .cat-startups    { background: #1f2937; color: #9ca3af; }
+    .cat-science     { background: #0c2332; color: #67e8f9; }
+    .cat-defense     { background: #1c1008; color: #d97706; }
+    .cat-business    { background: #0f1f0f; color: #6ee7b7; }
+    .cat-climate     { background: #0a2010; color: #4ade80; }
+    .cat-healthcare  { background: #1f0f1f; color: #f0abfc; }
+
+    .card-headline {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    /* Depth 2 extras */
+    .card-summary {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 0 18px 10px;
+      line-height: 1.6;
+    }
+
+    .card-bullets {
+      padding: 0 18px 14px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-bullets li {
+      font-size: 13px;
+      color: #c8cad4;
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .card-bullets li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 11px;
+      top: 2px;
+    }
+
+    /* Depth 3 extras */
+    .card-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 10px 18px 4px;
+    }
+
+    .card-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 8px 18px;
+    }
+
+    .card-sources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 18px 14px;
+    }
+
+    .source-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+    }
+
+    /* ── Settings Panel ───────────────────────────────────── */
+    #settings-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+    }
+
+    #settings-overlay.open { display: block; }
+
+    .settings-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .settings-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 360px;
+      height: 100%;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .settings-header h3 { font-size: 15px; font-weight: 700; }
+
+    .settings-body { padding: 20px; flex: 1; overflow-y: auto; }
+
+    .settings-section { margin-bottom: 28px; }
+
+    .settings-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* Depth selector */
+    .depth-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .depth-option {
+      flex: 1;
+      padding: 12px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .depth-option.active {
+      border-color: var(--accent);
+      background: rgba(245,158,11,0.08);
+    }
+
+    .depth-option-name {
+      font-size: 13px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .depth-option-desc {
+      font-size: 11px;
+      color: var(--muted);
+      display: block;
+    }
+
+    /* Category toggles */
+    .category-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      user-select: none;
+    }
+
+    .category-toggle:hover { border-color: var(--muted); }
+
+    .toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-name { font-size: 13px; font-weight: 500; }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .switch-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+
+    .switch-slider::before {
+      content: '';
+      position: absolute;
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .switch input:checked + .switch-slider { background: var(--accent); }
+    .switch input:checked + .switch-slider::before { transform: translateX(16px); }
+
+    .settings-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .settings-footer .btn { width: 100%; }
+
+    /* ── Loading / Empty ──────────────────────────────────── */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 80px 0;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── User pill ────────────────────────────────────────── */
+    .user-pill {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (min-width: 640px) {
+      .categories-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Header ───────────────────────────────────────────── -->
+  <header>
+    <div class="logo">Morning Intelligence</div>
+    <div class="header-right" id="header-right">
+      <!-- Populated by JS -->
+    </div>
+  </header>
+
+  <!-- ── Auth Screen ──────────────────────────────────────── -->
+  <div id="auth-screen" style="display:none;">
+    <div class="auth-card">
+      <h2>Sign in</h2>
+      <p>Enter your email and we'll send you a magic link — no password needed.</p>
+      <input type="email" id="auth-email" class="auth-input" placeholder="you@example.com" />
+      <button class="btn btn-primary" onclick="sendMagicLink()">Send Magic Link</button>
+      <div class="auth-msg" id="auth-msg"></div>
+    </div>
+  </div>
+
+  <!-- ── Main Feed ────────────────────────────────────────── -->
+  <main id="main-feed" style="display:none;">
+
+    <div class="date-bar">
+      <div class="date-label" id="date-label">Loading...</div>
+      <div id="guest-banner" class="guest-banner" style="display:none;">
+        ✦ Sign in to unlock full depth &amp; save your preferences
+        <button class="btn btn-primary" onclick="showAuth()" style="padding:4px 10px;font-size:11px;">Sign in</button>
+      </div>
+    </div>
+
+    <div id="feed-container">
+      <div class="loading"><div class="spinner"></div><span>Loading today's brief...</span></div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ── Settings Panel ──────────────────────────────────────── -->
+<div id="settings-overlay">
+  <div class="settings-backdrop" onclick="closeSettings()"></div>
+  <div class="settings-panel">
+
+    <div class="settings-header">
+      <h3>Preferences</h3>
+      <button class="icon-btn" onclick="closeSettings()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="settings-body">
+
+      <!-- Depth -->
+      <div class="settings-section">
+        <div class="settings-section-title">Detail level</div>
+        <div class="depth-options">
+          <div class="depth-option" data-depth="1" onclick="setDepth(1)">
+            <span class="depth-option-name">Scan</span>
+            <span class="depth-option-desc">Headline only</span>
+          </div>
+          <div class="depth-option" data-depth="2" onclick="setDepth(2)">
+            <span class="depth-option-name">Brief</span>
+            <span class="depth-option-desc">+ Summary &amp; bullets</span>
+          </div>
+          <div class="depth-option" data-depth="3" onclick="setDepth(3)">
+            <span class="depth-option-name">Deep</span>
+            <span class="depth-option-desc">+ Why it matters</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="settings-section">
+        <div class="settings-section-title">Categories</div>
+        <div id="category-toggles"><!-- populated by JS --></div>
+      </div>
+
+    </div>
+
+    <div class="settings-footer">
+      <button class="btn btn-primary" onclick="saveSettings()">Save preferences</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
+
+const ALL_CATEGORIES = [
+  { id: 'ai',            label: 'AI' },
+  { id: 'geopolitics',   label: 'Geopolitics' },
+  { id: 'markets',       label: 'Markets' },
+  { id: 'technology',    label: 'Technology' },
+  { id: 'energy',        label: 'Energy' },
+  { id: 'cybersecurity', label: 'Cybersecurity' },
+  { id: 'startups',      label: 'Startups' },
+  { id: 'science',       label: 'Science' },
+  { id: 'defense',       label: 'Defense' },
+  { id: 'business',      label: 'Business' },
+  { id: 'climate',       label: 'Climate' },
+  { id: 'healthcare',    label: 'Healthcare' },
+];
+
+// ── State ─────────────────────────────────────────────────────
+let sb, currentUser = null;
+let todayData = [];
+let userPrefs = {
+  depth: 2,
+  selected_categories: ALL_CATEGORIES.map(c => c.id),
+};
+let pendingPrefs = null; // working copy while settings panel is open
+
+// ── Init ──────────────────────────────────────────────────────
+(async function init() {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Handle magic link session on page load
+  const { data: { session } } = await sb.auth.getSession();
+  currentUser = session?.user ?? null;
+
+  // Listen for auth state changes (catches magic link callback)
+  sb.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user ?? null;
+    renderHeader();
+    if (currentUser) {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('main-feed').style.display = 'block';
+      loadUserPrefs().then(renderFeed);
+    }
+  });
+
+  await loadTodayData();
+  renderHeader();
+  renderApp();
+})();
+
+// ── Data Loading ──────────────────────────────────────────────
+async function loadTodayData() {
+  // Use local date, not UTC — toISOString() can be a day ahead in US timezones at night
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const { data, error } = await sb
+    .from('daily_categories')
+    .select('*')
+    .eq('date', today)
+    .order('category');
+
+  if (error) { console.error('Feed load error:', error); todayData = []; return; }
+  todayData = data || [];
+  console.log(`Loaded ${todayData.length} categories for ${today}`);
+}
+
+async function loadUserPrefs() {
+  if (!currentUser) return;
+  const { data, error } = await sb
+    .from('user_settings')
+    .select('*')
+    .eq('user_id', currentUser.id);
+
+  if (error || !data || data.length === 0) return;
+
+  // Reconstruct prefs from rows
+  const selected = data.filter(r => r.selected).map(r => r.category);
+  const depthRow  = data[0]; // depth stored per row — just use first
+  userPrefs = {
+    depth: depthRow?.depth_level ?? 2,
+    selected_categories: selected.length > 0 ? selected : ALL_CATEGORIES.map(c => c.id),
+  };
+}
+
+async function saveUserPrefsToDb() {
+  if (!currentUser) return;
+  const rows = ALL_CATEGORIES.map((cat, i) => ({
+    user_id: currentUser.id,
+    category: cat.id,
+    selected: userPrefs.selected_categories.includes(cat.id),
+    order_index: i,
+    depth_level: userPrefs.depth,
+  }));
+
+  const { error } = await sb
+    .from('user_settings')
+    .upsert(rows, { onConflict: 'user_id,category' });
+
+  if (error) console.error('Save prefs error:', error);
+}
+
+// ── Render ────────────────────────────────────────────────────
+function renderApp() {
+  if (currentUser) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-feed').style.display = 'block';
+    renderFeed();
+  } else {
+    // Guest: show feed with depth-1 only
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-feed').style.display = 'block';
+    renderFeed();
+  }
+}
+
+function renderHeader() {
+  const right = document.getElementById('header-right');
+  if (currentUser) {
+    right.innerHTML = `
+      <span class="user-pill">${currentUser.email}</span>
+      <button class="icon-btn" onclick="openSettings()" title="Preferences">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <button class="btn btn-ghost" onclick="signOut()">Sign out</button>
+    `;
+  } else {
+    right.innerHTML = `
+      <button class="btn btn-primary" onclick="showAuth()">Sign in</button>
+    `;
+  }
+}
+
+function renderFeed() {
+  const container = document.getElementById('feed-container');
+  const dateLabel = document.getElementById('date-label');
+  const guestBanner = document.getElementById('guest-banner');
+
+  // Date label
+  const today = new Date();
+  dateLabel.textContent = today.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // Guest banner
+  guestBanner.style.display = currentUser ? 'none' : 'flex';
+
+  if (todayData.length === 0) {
+    container.innerHTML = `<div class="empty-state">No brief available for today yet.<br>Check back after the morning run.</div>`;
+    return;
+  }
+
+  const depth = currentUser ? userPrefs.depth : 1;
+  const selectedCats = currentUser
+    ? userPrefs.selected_categories
+    : ALL_CATEGORIES.map(c => c.id);
+
+  // Filter and order
+  const rows = todayData.filter(r => selectedCats.includes(r.category));
+
+  container.innerHTML = `<div class="categories-grid">${rows.map(row => renderCard(row, depth)).join('')}</div>`;
+}
+
+function renderCard(row, depth) {
+  const catId = row.category;
+  const d1 = row.depth_1 || {};
+  const d2 = row.depth_2 || {};
+  const d3 = row.depth_3 || {};
+  const label = row.category_label || catId;
+  const hasContent = row.has_content !== false;
+  const sources = row.sources || [];
+
+  let inner = '';
+
+  // Card header (depth 1 — always shown)
+  const headline = d1.headline || 'No headline available';
+  inner += `
+    <div class="card-header">
+      <span class="cat-label cat-${catId}">${label}</span>
+      <span class="card-headline">${escHtml(headline)}</span>
+    </div>
+  `;
+
+  if (!hasContent) {
+    return `<div class="category-card no-content">${inner}</div>`;
+  }
+
+  // Depth 2
+  if (depth >= 2) {
+    const summary = d2.summary || d1.summary || '';
+    const bullets = d2.bullets || d1.bullets || [];
+    if (summary) {
+      inner += `<p class="card-summary">${escHtml(summary)}</p>`;
+    }
+    if (bullets.length > 0) {
+      inner += `<ul class="card-bullets">${bullets.map(b => `<li>${escHtml(b)}</li>`).join('')}</ul>`;
+    }
+  }
+
+  // Depth 3
+  if (depth >= 3) {
+    const why = d3.why_it_matters || '';
+    const watch = d3.what_to_watch || [];
+    if (why) {
+      inner += `<hr class="card-divider"><div class="card-section-label">Why it matters</div><p class="card-summary">${escHtml(why)}</p>`;
+    }
+    if (watch.length > 0) {
+      inner += `<div class="card-section-label">What to watch</div><ul class="card-bullets">${watch.map(w => `<li>${escHtml(w)}</li>`).join('')}</ul>`;
+    }
+  }
+
+  // Sources (each source is {name, published} object)
+  if (depth >= 2 && sources.length > 0) {
+    const sourceTags = sources.map(s => {
+      const name = typeof s === 'object' ? (s.name || s) : s;
+      return `<span class="source-tag">${escHtml(name)}</span>`;
+    }).join('');
+    inner += `<div class="card-sources">${sourceTags}</div>`;
+  }
+
+  return `<div class="category-card">${inner}</div>`;
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+function showAuth() {
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('main-feed').style.display = 'none';
+}
+
+async function sendMagicLink() {
+  const email = document.getElementById('auth-email').value.trim();
+  const msg = document.getElementById('auth-msg');
+  if (!email) { showAuthMsg('Please enter your email.', 'error'); return; }
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.href }
+  });
+
+  if (error) {
+    showAuthMsg('Error: ' + error.message, 'error');
+  } else {
+    showAuthMsg('Magic link sent! Check your inbox.', 'success');
+  }
+}
+
+function showAuthMsg(text, type) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + type;
+  el.style.display = 'block';
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  currentUser = null;
+  userPrefs = { depth: 2, selected_categories: ALL_CATEGORIES.map(c => c.id) };
+  renderHeader();
+  renderFeed();
+}
+
+// ── Settings ──────────────────────────────────────────────────
+function openSettings() {
+  pendingPrefs = JSON.parse(JSON.stringify(userPrefs)); // deep copy
+  renderSettingsPanel();
+  document.getElementById('settings-overlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-overlay').classList.remove('open');
+  pendingPrefs = null;
+}
+
+function renderSettingsPanel() {
+  // Depth options
+  document.querySelectorAll('.depth-option').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.depth) === pendingPrefs.depth);
+  });
+
+  // Category toggles
+  const container = document.getElementById('category-toggles');
+  container.innerHTML = ALL_CATEGORIES.map(cat => {
+    const checked = pendingPrefs.selected_categories.includes(cat.id);
+    return `
+      <label class="category-toggle">
+        <div class="toggle-left">
+          <span class="cat-label cat-${cat.id}">${cat.label}</span>
+          <span class="toggle-name">${cat.label}</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" data-cat="${cat.id}" ${checked ? 'checked' : ''}
+            onchange="toggleCategory('${cat.id}', this.checked)" />
+          <span class="switch-slider"></span>
+        </label>
+      </label>
+    `;
+  }).join('');
+}
+
+function setDepth(d) {
+  pendingPrefs.depth = d;
+  document.querySelectorAll('.depth-option').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.depth) === d);
+  });
+}
+
+function toggleCategory(catId, checked) {
+  if (checked) {
+    if (!pendingPrefs.selected_categories.includes(catId)) {
+      pendingPrefs.selected_categories.push(catId);
+    }
+  } else {
+    pendingPrefs.selected_categories = pendingPrefs.selected_categories.filter(c => c !== catId);
+  }
+}
+
+async function saveSettings() {
+  userPrefs = JSON.parse(JSON.stringify(pendingPrefs));
+  closeSettings();
+  renderFeed();
+  if (currentUser) {
+    await saveUserPrefsToDb();
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Allow Enter key to submit auth
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('auth-screen').style.display !== 'none') {
+    sendMagicLink();
+  }
+});
+</script>
+
+</body>
+</html>

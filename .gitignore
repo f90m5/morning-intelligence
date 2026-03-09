@@ -4,6 +4,8 @@
 # Data files (regenerated daily)
 data/raw/
 data/processed/
+data/categories/*_raw.txt
+data/runs.log
 
 # Outputs (regenerated daily)
 outputs/

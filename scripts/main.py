@@ -29,6 +29,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.fetch import fetch_and_rank_articles
 from scripts.generate_brief import generate_brief
+from scripts.generate_categories import generate_categories
 from scripts.publish_html import publish_brief_html
 from scripts.history import save_today
 from scripts.emailer import send_brief_email
@@ -77,7 +78,7 @@ def run():
 
     # Step 1: Fetch articles
     try:
-        articles = fetch_and_rank_articles()
+        articles, all_articles = fetch_and_rank_articles()
     except Exception as e:
         logger.error(f"Fetch failed: {e}")
         log_run("FAILED", f"Fetch error: {e}")
@@ -88,9 +89,9 @@ def run():
         log_run("FAILED", "No articles fetched")
         return False
 
-    logger.info(f"Fetched {len(articles)} top articles")
+    logger.info(f"Fetched {len(articles)} top articles for brief, {len(all_articles)} total for categories")
 
-    # Step 2: Generate brief
+    # Step 2: Generate brief (uses top 25 for quality + cost control)
     try:
         markdown, out_path = generate_brief(articles)
     except Exception as e:
@@ -106,21 +107,31 @@ def run():
     logger.info(f"Brief saved to: {out_path}")
     logger.info(f"Brief length: {len(markdown)} chars")
 
-    # Step 3: Publish HTML + widget data
+    # Step 3: Generate structured category data (uses full article pool for coverage)
+    try:
+        cat_data, cat_path = generate_categories(all_articles)
+        if cat_data:
+            logger.info(f"Category data saved: {cat_path}")
+        else:
+            logger.warning("Category generation returned empty (non-fatal)")
+    except Exception as e:
+        logger.warning(f"Category generation failed (non-fatal): {e}")
+
+    # Step 4: Publish HTML + widget data
     try:
         html_path = publish_brief_html(markdown, push_to_git=True)
         logger.info(f"HTML published: {html_path}")
     except Exception as e:
         logger.warning(f"HTML publish failed (non-fatal): {e}")
 
-    # Step 4: Save today's brief to history (for dedup on future runs)
+    # Step 5: Save today's brief to history (for dedup on future runs)
     try:
         save_today(markdown)
         logger.info("History updated")
     except Exception as e:
         logger.warning(f"History save failed (non-fatal): {e}")
 
-    # Step 5: Send email digest
+    # Step 6: Send email digest
     try:
         send_brief_email(markdown, today)
         logger.info("Email sent")
