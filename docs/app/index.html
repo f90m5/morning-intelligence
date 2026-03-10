@@ -36,6 +36,10 @@
       --accent:     #9a9a9a;
       --accent-dim: rgba(160,160,160,.07);
       --accent-med: rgba(160,160,160,.13);
+      --blue:       #5b8ad4;
+      --blue-dim:   rgba(91,138,212,.12);
+      --blue-med:   rgba(91,138,212,.22);
+      --blue-border: rgba(91,138,212,.35);
       --red:        #cc6666;
       --green:      #6aaa6a;
       --radius:     12px;
@@ -64,6 +68,10 @@
       --accent:     #555555;
       --accent-dim: rgba(80,80,80,.06);
       --accent-med: rgba(80,80,80,.1);
+      --blue:       #3a6ab8;
+      --blue-dim:   rgba(58,106,184,.1);
+      --blue-med:   rgba(58,106,184,.18);
+      --blue-border: rgba(58,106,184,.35);
       --red:        #c04040;
       --green:      #408040;
       --shadow:     0 2px 12px rgba(0,0,0,.06);
@@ -186,7 +194,7 @@
       cursor: pointer; transition: all .1s;
     }
     .date-option:hover { background: var(--surface2); color: var(--text); }
-    .date-option.active { color: var(--accent); font-weight: 600; }
+    .date-option.active { color: var(--blue); font-weight: 600; }
 
     .jump-today {
       display: none; margin-left: 4px;
@@ -388,8 +396,8 @@
     }
     .density-pill:hover { color: var(--text); border-color: var(--muted); }
     .density-pill.active {
-      background: var(--accent-dim); color: var(--accent);
-      border-color: rgba(160,160,160,.25);
+      background: var(--blue-dim); color: var(--blue);
+      border-color: var(--blue-border);
     }
 
     /* ══════════════════════════════════════
@@ -478,7 +486,7 @@
       font-family: inherit; outline: none; margin-bottom: 10px;
       transition: border-color .15s;
     }
-    .auth-input:focus { border-color: var(--muted); box-shadow: 0 0 0 3px rgba(136,136,136,.1); }
+    .auth-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
     .auth-input.otp {
       font-size: 24px; font-weight: 700; letter-spacing: .4em;
       text-align: center; padding: 14px 16px;
@@ -579,7 +587,7 @@
       position: fixed; z-index: 1000; pointer-events: none;
       border-radius: var(--radius-sm);
       background: var(--surface2);
-      border: 1px solid var(--accent);
+      border: 1px solid var(--blue);
       box-shadow: 0 12px 40px rgba(0,0,0,.6);
       transform: scale(1.02); opacity: .97;
       margin: 0 !important;
@@ -614,8 +622,8 @@
     }
     .dp:hover { color: var(--text); border-color: var(--muted); }
     .dp.active {
-      background: var(--accent-dim); color: var(--accent);
-      border-color: rgba(160,160,160,.25);
+      background: var(--blue-dim); color: var(--blue);
+      border-color: var(--blue-border);
     }
     .dp.disabled { pointer-events: none; opacity: .2; }
 
@@ -631,8 +639,8 @@
       background: var(--muted); border-radius: 50%;
       transition: transform .2s, background .2s;
     }
-    .sw input:checked + .sw-track { background: rgba(160,160,160,.15); }
-    .sw input:checked + .sw-track::before { transform: translateX(16px); background: var(--accent); }
+    .sw input:checked + .sw-track { background: var(--blue-med); }
+    .sw input:checked + .sw-track::before { transform: translateX(16px); background: var(--blue); }
 
     .cat-section-divider {
       font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
@@ -656,7 +664,7 @@
     }
     .spinner {
       width: 28px; height: 28px;
-      border: 2.5px solid var(--border2); border-top-color: var(--accent);
+      border: 2.5px solid var(--border2); border-top-color: var(--blue);
       border-radius: 50%; animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -1160,18 +1168,18 @@ const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
 
 const CATEGORIES = [
-  { id:'ai',            label:'AI',            color:'#a8a8b0' },
-  { id:'geopolitics',   label:'Geopolitics',   color:'#b0a0a0' },
-  { id:'markets',       label:'Markets',       color:'#96a8a0' },
-  { id:'technology',    label:'Technology',    color:'#9ca4b0' },
-  { id:'energy',        label:'Energy',        color:'#b0a898' },
-  { id:'cybersecurity', label:'Cybersecurity', color:'#a4a0b0' },
-  { id:'startups',      label:'Startups',      color:'#a0a4ac' },
-  { id:'science',       label:'Science',       color:'#98a8ac' },
-  { id:'defense',       label:'Defense',       color:'#aca49c' },
-  { id:'business',      label:'Business',      color:'#98a8a0' },
-  { id:'climate',       label:'Climate',       color:'#a0a898' },
-  { id:'healthcare',    label:'Healthcare',    color:'#a8a0a8' },
+  { id:'ai',            label:'AI',            color:'#8b9fd4' },
+  { id:'geopolitics',   label:'Geopolitics',   color:'#c48a82' },
+  { id:'markets',       label:'Markets',       color:'#6eaa88' },
+  { id:'technology',    label:'Technology',    color:'#8088c0' },
+  { id:'energy',        label:'Energy',        color:'#c4a060' },
+  { id:'cybersecurity', label:'Cybersecurity', color:'#9878c0' },
+  { id:'startups',      label:'Startups',      color:'#60a8b0' },
+  { id:'science',       label:'Science',       color:'#6898c0' },
+  { id:'defense',       label:'Defense',       color:'#a89060' },
+  { id:'business',      label:'Business',      color:'#7a9878' },
+  { id:'climate',       label:'Climate',       color:'#6aaa6a' },
+  { id:'healthcare',    label:'Healthcare',    color:'#c08090' },
 ];
 const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
