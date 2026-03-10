@@ -1018,6 +1018,17 @@ async function loadTodayData() {
     const { data, error } = await sb.from('daily_categories').select('*').eq('date', selectedDate);
     if (error) throw error;
     todayData = data || [];
+
+    // If no data for selectedDate, fall back to the most recent available date
+    if (todayData.length === 0) {
+      const { data: latest } = await sb.from('daily_categories')
+        .select('date').order('date', { ascending: false }).limit(1);
+      if (latest && latest.length && latest[0].date !== selectedDate) {
+        selectedDate = latest[0].date;
+        const { data: fallback } = await sb.from('daily_categories').select('*').eq('date', selectedDate);
+        todayData = fallback || [];
+      }
+    }
   } catch (e) {
     console.error(e);
     feedError = true;
