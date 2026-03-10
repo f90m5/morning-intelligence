@@ -10,6 +10,7 @@ import json
 import os
 import re
 import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from difflib import SequenceMatcher
@@ -304,6 +305,62 @@ def select_balanced(ranked_articles, max_total, sources_config):
     return selected
 
 
+def fetch_og_image(url, timeout=4):
+    """
+    Fetch og:image meta tag from an article URL.
+    Returns image URL string or None. Fails silently.
+    """
+    try:
+        resp = requests.get(
+            url, timeout=timeout,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; DailyNewsBot/1.0)"},
+            allow_redirects=True,
+        )
+        # Search for og:image in both attribute orderings
+        html = resp.text[:25000]  # only read first 25kb — head is all we need
+        match = re.search(
+            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+            html
+        ) or re.search(
+            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+            html
+        )
+        if match:
+            img = match.group(1).strip()
+            return img if img.startswith("http") else None
+    except Exception:
+        pass
+    return None
+
+
+def enrich_images(articles, max_workers=20):
+    """
+    For articles missing an image_url, attempt to scrape og:image from the article page.
+    Done in parallel. Modifies articles in-place. Returns count of images added.
+    """
+    missing = [a for a in articles if not a.get("image_url") and a.get("link")]
+    if not missing:
+        return 0
+
+    print(f"  Fetching og:image for {len(missing)} articles without images...")
+
+    added = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as pool:
+        futures = {pool.submit(fetch_og_image, a["link"]): a for a in missing}
+        for future in as_completed(futures):
+            article = futures[future]
+            try:
+                img = future.result()
+                if img:
+                    article["image_url"] = img
+                    added += 1
+            except Exception:
+                pass
+
+    print(f"  og:image enrichment: +{added} images ({added}/{len(missing)} fetched)")
+    return added
+
+
 def save_articles(articles, stage="raw"):
     """Save articles to a JSON file with today's date."""
     today = datetime.now().strftime("%Y-%m-%d")
@@ -360,15 +417,18 @@ def fetch_and_rank_articles():
     if stale_count:
         print(f"  {stale_count} articles penalized as stale (similar to recent briefs)")
 
-    # 6. Select balanced mix for personal brief
+    # 6. Enrich missing images via og:image scraping
+    enrich_images(ranked)
+
+    # 7. Select balanced mix for personal brief
     top = select_balanced(ranked, max_total, sources)
     print(f"  Top {len(top)} articles selected for brief (balanced across categories)")
     print(f"  Full pool: {len(ranked)} articles available for category generation")
 
-    # 7. Save processed (top articles for brief)
+    # 8. Save processed (top articles for brief)
     save_articles(top, stage="processed")
 
-    # 8. Save full ranked pool for category generation
+    # 9. Save full ranked pool for category generation
     today = datetime.now().strftime("%Y-%m-%d")
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     all_path = PROCESSED_DIR / f"{today}_all.json"
