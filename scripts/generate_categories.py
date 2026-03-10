@@ -58,7 +58,7 @@ def format_categories_for_prompt(categories):
 
 
 def format_articles_for_prompt(articles):
-    """Format articles for the prompt — same as generate_brief.py."""
+    """Format articles for the prompt."""
     lines = []
     for i, article in enumerate(articles, 1):
         source = article.get("source", "Unknown")
@@ -66,6 +66,7 @@ def format_articles_for_prompt(articles):
         title = article.get("title", "No title")
         desc = article.get("description", "")
         published = article.get("published", "")
+        image_url = article.get("image_url", "")
 
         entry = f"{i}. [{category.upper()}] {title}\n"
         entry += f"   Source: {source}"
@@ -74,6 +75,8 @@ def format_articles_for_prompt(articles):
         entry += "\n"
         if desc:
             entry += f"   {desc}\n"
+        if image_url:
+            entry += f"   Image: {image_url}\n"
 
         lines.append(entry)
     return "\n".join(lines)

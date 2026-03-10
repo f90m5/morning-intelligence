@@ -39,7 +39,8 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
             "Specific fact with named entity, figure, source, and date — under 120 characters",
             "Specific fact with named entity, figure, source, and date — under 120 characters"
           ],
-          "sources": ["Source Name"]
+          "sources": ["Source Name"],
+          "image_url": "https://... or null"
         }},
         {{
           "headline": "Second distinct story headline. Different event from story 1.",
@@ -47,7 +48,8 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
             "Bullet 1",
             "Bullet 2"
           ],
-          "sources": ["Source Name"]
+          "sources": ["Source Name"],
+          "image_url": "https://... or null"
         }},
         {{
           "headline": "Third distinct story headline. Different event from stories 1 and 2.",
@@ -55,7 +57,8 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation before or
             "Bullet 1",
             "Bullet 2"
           ],
-          "sources": ["Source Name"]
+          "sources": ["Source Name"],
+          "image_url": "https://... or null"
         }}
       ],
       "has_content": true
@@ -124,3 +127,5 @@ QUALITY GATE: If a story cannot support at least 2 specific, factual bullets, sk
 LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false. Do not fabricate stories or lower the quality bar to fill slots.
 
 SOURCES: Only list sources actually used for that specific story.
+
+IMAGE: If any of the articles used for a story include an "Image:" URL, copy the URL of the most visually relevant one into the "image_url" field. Use the image from the primary source article for that story. If no articles for that story include an image, set "image_url" to null. Never invent or guess image URLs.

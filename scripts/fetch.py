@@ -67,6 +67,37 @@ def fetch_all_feeds(sources):
     return all_articles
 
 
+def extract_image_url(entry):
+    """
+    Try to extract a thumbnail/image URL from a feedparser entry.
+    Checks media:content, media:thumbnail, and enclosures in priority order.
+    Returns a URL string or None.
+    """
+    # media:content (most common — used by Reuters, BBC, etc.)
+    media_content = entry.get("media_content", [])
+    for m in media_content:
+        url = m.get("url", "")
+        medium = m.get("medium", "")
+        if url and (medium == "image" or any(url.lower().endswith(ext) for ext in (".jpg", ".jpeg", ".png", ".webp"))):
+            return url
+    # Any media:content with a URL even without medium tag
+    for m in media_content:
+        if m.get("url"):
+            return m["url"]
+
+    # media:thumbnail
+    media_thumb = entry.get("media_thumbnail", [])
+    if media_thumb and media_thumb[0].get("url"):
+        return media_thumb[0]["url"]
+
+    # enclosures (podcasts / some news feeds)
+    for enc in entry.get("enclosures", []):
+        if enc.get("type", "").startswith("image/") and enc.get("url"):
+            return enc["url"]
+
+    return None
+
+
 def parse_entry(entry, source_name, category, tier):
     """
     Extract a clean article dict from a feedparser entry.
@@ -95,6 +126,9 @@ def parse_entry(entry, source_name, category, tier):
         except Exception:
             pass
 
+    # Get image thumbnail
+    image_url = extract_image_url(entry)
+
     return {
         "title": title,
         "description": description[:500],  # cap length
@@ -103,6 +137,7 @@ def parse_entry(entry, source_name, category, tier):
         "category": category,
         "tier": tier,
         "published": published.isoformat() if published else None,
+        "image_url": image_url,
     }
 
 
