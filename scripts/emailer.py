@@ -219,7 +219,7 @@ def build_email_html(date_str, cat_data, ordered_ids, prefs):
                 font-size:11px;color:#4a4740;text-align:center;line-height:2;">
       <a href="{APP_URL}" style="color:#7a7367;text-decoration:none;">View full brief →</a>
       &nbsp;·&nbsp;
-      Customise your feed in the web app
+      Customize your feed in the web app
     </div>
 
   </div>
