@@ -968,7 +968,7 @@ function defaultPrefs() {
       closeAuth();
       const pendingRef = localStorage.getItem('ref');
       if (pendingRef) writeReferral(pendingRef);
-      Promise.all([loadUserPrefs(), loadUserProfile()]).then(() => {
+      Promise.all([loadAvailableDates(), loadUserPrefs(), loadUserProfile()]).then(() => {
         if (isFirstRun) { isFirstRun = false; renderFeed(); openOnboarding(); }
         else renderFeed();
       });
@@ -979,7 +979,9 @@ function defaultPrefs() {
     }
   });
 
-  await Promise.all([loadTodayData(), loadAvailableDates()]);
+  const initTasks = [loadTodayData()];
+  if (currentUser) initTasks.push(loadAvailableDates());
+  await Promise.all(initTasks);
   if (currentUser) await Promise.all([loadUserPrefs(), loadUserProfile()]);
   renderHeader();
   renderFeed();
@@ -1035,12 +1037,26 @@ function closeDateDropdown() {
 }
 
 function renderDateNav() {
+  // Hide entire date nav for logged-out users
+  const navBtns = document.querySelectorAll('.date-nav-btn');
+  const jumpBtn = document.getElementById('jump-today');
+  const dateLabel = document.getElementById('date-label');
+
+  if (!currentUser) {
+    navBtns.forEach(b => b.style.display = 'none');
+    jumpBtn.classList.remove('visible');
+    if (dateLabel) dateLabel.style.cursor = 'default';
+    return;
+  }
+
+  navBtns.forEach(b => b.style.display = '');
+  if (dateLabel) dateLabel.style.cursor = '';
+
   const idx = availableDates.indexOf(selectedDate);
   document.getElementById('date-prev').disabled = (idx < 0 || idx >= availableDates.length - 1);
   document.getElementById('date-next').disabled = (idx <= 0);
 
   // Show "Today" button when not on the most recent date
-  const jumpBtn = document.getElementById('jump-today');
   if (availableDates.length && selectedDate !== availableDates[0]) {
     jumpBtn.classList.add('visible');
   } else {
