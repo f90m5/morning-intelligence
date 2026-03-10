@@ -22,53 +22,53 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #0a0a0c;
-      --bg2:        #0f0f12;
-      --surface:    #16161a;
-      --surface2:   #1e1e24;
-      --surface3:   #26262e;
-      --border:     #2a2a34;
-      --border2:    #353540;
-      --text:       #f0eff4;
-      --text2:      #d4d3da;
-      --muted:      #8b8a94;
-      --muted2:     #a5a4ae;
-      --accent:     #6c8cff;
-      --accent-dim: rgba(108,140,255,.08);
-      --accent-med: rgba(108,140,255,.15);
-      --red:        #ff6b6b;
-      --green:      #4ecb71;
+      --bg:         #0e0e0e;
+      --bg2:        #131313;
+      --surface:    #1a1a1a;
+      --surface2:   #222222;
+      --surface3:   #2a2a2a;
+      --border:     #2e2e2e;
+      --border2:    #3a3a3a;
+      --text:       #ececec;
+      --text2:      #d0d0d0;
+      --muted:      #888888;
+      --muted2:     #a0a0a0;
+      --accent:     #9a9a9a;
+      --accent-dim: rgba(160,160,160,.07);
+      --accent-med: rgba(160,160,160,.13);
+      --red:        #cc6666;
+      --green:      #6aaa6a;
       --radius:     12px;
       --radius-sm:  8px;
       --radius-xs:  6px;
-      --shadow:     0 2px 12px rgba(0,0,0,.4);
-      --shadow-lg:  0 8px 32px rgba(0,0,0,.6);
-      --header-bg:  rgba(10,10,12,.82);
+      --shadow:     0 2px 12px rgba(0,0,0,.5);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,.7);
+      --header-bg:  rgba(14,14,14,.85);
       --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
       --font-serif: 'Playfair Display', Georgia, serif;
     }
 
     /* ── Light mode ─────────────────────── */
     html.light {
-      --bg:         #f5f5f7;
-      --bg2:        #eeeef0;
+      --bg:         #f4f4f4;
+      --bg2:        #eaeaea;
       --surface:    #ffffff;
-      --surface2:   #f0f0f2;
-      --surface3:   #e8e8ec;
-      --border:     #dcdce0;
-      --border2:    #c8c8ce;
-      --text:       #1a1a1e;
-      --text2:      #2c2c32;
-      --muted:      #6e6e78;
-      --muted2:     #55555e;
-      --accent:     #3564d5;
-      --accent-dim: rgba(53,100,213,.06);
-      --accent-med: rgba(53,100,213,.12);
-      --red:        #d94444;
-      --green:      #2d9e4e;
-      --shadow:     0 2px 12px rgba(0,0,0,.08);
-      --shadow-lg:  0 8px 32px rgba(0,0,0,.12);
-      --header-bg:  rgba(245,245,247,.85);
+      --surface2:   #f0f0f0;
+      --surface3:   #e6e6e6;
+      --border:     #dcdcdc;
+      --border2:    #c8c8c8;
+      --text:       #1a1a1a;
+      --text2:      #2e2e2e;
+      --muted:      #707070;
+      --muted2:     #585858;
+      --accent:     #555555;
+      --accent-dim: rgba(80,80,80,.06);
+      --accent-med: rgba(80,80,80,.1);
+      --red:        #c04040;
+      --green:      #408040;
+      --shadow:     0 2px 12px rgba(0,0,0,.06);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,.1);
+      --header-bg:  rgba(244,244,244,.88);
     }
     html.light header { border-bottom-color: rgba(0,0,0,.08); }
     html.light .icon-btn:hover { background: rgba(0,0,0,.05); }
@@ -131,8 +131,8 @@
     }
     .btn:hover { transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
-    .btn-accent { background: var(--accent); color: #fff; }
-    .btn-accent:hover { box-shadow: 0 4px 20px rgba(108,140,255,.35); }
+    .btn-accent { background: var(--text); color: var(--bg); }
+    .btn-accent:hover { opacity: .88; }
     .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); background: var(--surface2); }
     .icon-btn {
@@ -190,13 +190,13 @@
 
     .jump-today {
       display: none; margin-left: 4px;
-      background: var(--accent); color: #fff; border: none;
+      background: var(--text); color: var(--bg); border: none;
       font-size: 11px; font-weight: 700;
       padding: 5px 12px; border-radius: 20px;
       cursor: pointer; white-space: nowrap; transition: all .15s;
       letter-spacing: .02em;
     }
-    .jump-today:hover { box-shadow: 0 2px 12px rgba(108,140,255,.3); }
+    .jump-today:hover { opacity: .85; }
     .jump-today.visible { display: inline-flex; align-items: center; gap: 4px; }
 
     .brief-title {
@@ -389,15 +389,15 @@
     .density-pill:hover { color: var(--text); border-color: var(--muted); }
     .density-pill.active {
       background: var(--accent-dim); color: var(--accent);
-      border-color: rgba(108,140,255,.3);
+      border-color: rgba(160,160,160,.25);
     }
 
     /* ══════════════════════════════════════
        GUEST EXPERIENCE
        ══════════════════════════════════════ */
     .signin-banner {
-      background: linear-gradient(135deg, rgba(108,140,255,.08), rgba(108,140,255,.03));
-      border: 1px solid rgba(108,140,255,.15);
+      background: linear-gradient(135deg, rgba(160,160,160,.06), rgba(160,160,160,.02));
+      border: 1px solid rgba(160,160,160,.12);
       border-radius: var(--radius);
       padding: 24px 28px;
       margin-bottom: 20px;
@@ -478,7 +478,7 @@
       font-family: inherit; outline: none; margin-bottom: 10px;
       transition: border-color .15s;
     }
-    .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,140,255,.1); }
+    .auth-input:focus { border-color: var(--muted); box-shadow: 0 0 0 3px rgba(136,136,136,.1); }
     .auth-input.otp {
       font-size: 24px; font-weight: 700; letter-spacing: .4em;
       text-align: center; padding: 14px 16px;
@@ -541,7 +541,7 @@
     .dl-dot {
       width: 22px; height: 22px; border-radius: var(--radius-xs);
       background: var(--accent-dim); color: var(--accent);
-      border: 1px solid rgba(108,140,255,.2);
+      border: 1px solid rgba(160,160,160,.15);
       font-size: 10px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
     }
@@ -569,8 +569,8 @@
 
     .drag-placeholder {
       border-radius: var(--radius-sm);
-      background: rgba(108,140,255,.05);
-      border: 1.5px dashed rgba(108,140,255,.25);
+      background: rgba(160,160,160,.04);
+      border: 1.5px dashed rgba(160,160,160,.2);
       margin-bottom: 5px;
       box-sizing: border-box;
     }
@@ -615,7 +615,7 @@
     .dp:hover { color: var(--text); border-color: var(--muted); }
     .dp.active {
       background: var(--accent-dim); color: var(--accent);
-      border-color: rgba(108,140,255,.3);
+      border-color: rgba(160,160,160,.25);
     }
     .dp.disabled { pointer-events: none; opacity: .2; }
 
@@ -631,7 +631,7 @@
       background: var(--muted); border-radius: 50%;
       transition: transform .2s, background .2s;
     }
-    .sw input:checked + .sw-track { background: rgba(108,140,255,.2); }
+    .sw input:checked + .sw-track { background: rgba(160,160,160,.15); }
     .sw input:checked + .sw-track::before { transform: translateX(16px); background: var(--accent); }
 
     .cat-section-divider {
@@ -1160,18 +1160,18 @@ const SUPABASE_URL  = 'https://uvdsjltnzhcwtgckujoz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_dsTKTG7EQbMCULyGH1to1g_PvvDqgvX';
 
 const CATEGORIES = [
-  { id:'ai',            label:'AI',            color:'#8a9bc7' },
-  { id:'geopolitics',   label:'Geopolitics',   color:'#a3868e' },
-  { id:'markets',       label:'Markets',       color:'#7a9e8f' },
-  { id:'technology',    label:'Technology',    color:'#7b8fb5' },
-  { id:'energy',        label:'Energy',        color:'#b0967a' },
-  { id:'cybersecurity', label:'Cybersecurity', color:'#908aad' },
-  { id:'startups',      label:'Startups',      color:'#8892b0' },
-  { id:'science',       label:'Science',       color:'#7a9aaa' },
-  { id:'defense',       label:'Defense',       color:'#a08a78' },
-  { id:'business',      label:'Business',      color:'#7a9990' },
-  { id:'climate',       label:'Climate',       color:'#8a9e82' },
-  { id:'healthcare',    label:'Healthcare',    color:'#9a8a9e' },
+  { id:'ai',            label:'AI',            color:'#a8a8b0' },
+  { id:'geopolitics',   label:'Geopolitics',   color:'#b0a0a0' },
+  { id:'markets',       label:'Markets',       color:'#96a8a0' },
+  { id:'technology',    label:'Technology',    color:'#9ca4b0' },
+  { id:'energy',        label:'Energy',        color:'#b0a898' },
+  { id:'cybersecurity', label:'Cybersecurity', color:'#a4a0b0' },
+  { id:'startups',      label:'Startups',      color:'#a0a4ac' },
+  { id:'science',       label:'Science',       color:'#98a8ac' },
+  { id:'defense',       label:'Defense',       color:'#aca49c' },
+  { id:'business',      label:'Business',      color:'#98a8a0' },
+  { id:'climate',       label:'Climate',       color:'#a0a898' },
+  { id:'healthcare',    label:'Healthcare',    color:'#a8a0a8' },
 ];
 const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
