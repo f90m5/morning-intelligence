@@ -224,29 +224,24 @@
     }
     .story-block:hover { background: rgba(255,255,255,.015); }
 
-    /* Featured story (first in card) */
-    .story-featured { padding: 18px 22px; }
-    .story-featured .story-inner { padding: 0; }
+    /* Featured story — side-by-side image + content on desktop */
+    .story-featured {
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .story-featured .story-inner { flex: 1; min-width: 0; }
 
-    .story-hero {
-      width: 100%; max-height: 180px;
-      object-fit: cover; display: block;
-      background: var(--surface2);
+    .story-img {
+      flex-shrink: 0;
+      width: 200px; height: 150px;
       border-radius: var(--radius-sm);
-      margin-bottom: 14px;
+      object-fit: cover;
+      background: var(--surface2);
+      display: block;
     }
-    /* Wide images get a gentle aspect hint; tall ones handled by JS */
-    .story-hero.hero-wide { aspect-ratio: 2/1; }
-    .story-hero.hero-square { aspect-ratio: 3/2; max-height: 160px; }
 
+    /* Secondary stories — smaller inline thumb */
     .story-thumb-side {
-      width: 110px; height: 78px; flex-shrink: 0;
-      border-radius: var(--radius-sm); object-fit: cover;
-      background: var(--surface2); display: block;
-    }
-    /* Fallback thumb for portrait hero images */
-    .story-thumb-portrait {
-      width: 130px; height: 130px; flex-shrink: 0;
+      width: 100px; height: 72px; flex-shrink: 0;
       border-radius: var(--radius-sm); object-fit: cover;
       background: var(--surface2); display: block;
     }
@@ -264,7 +259,7 @@
       letter-spacing: -.01em;
     }
     .story-featured .card-headline {
-      font-size: 20px; font-weight: 800;
+      font-size: 18px; font-weight: 800;
       line-height: 1.35; letter-spacing: -.02em;
     }
 
@@ -324,10 +319,9 @@
     body.compact .card-header { padding: 12px 18px 10px; }
     body.compact .story-block { padding: 14px 18px; }
     body.compact .card-headline { font-size: 14px; line-height: 1.45; }
-    body.compact .story-featured .card-headline { font-size: 16px; }
-    body.compact .story-hero { max-height: 140px; }
-    body.compact .story-thumb-side { width: 80px; height: 56px; }
-    body.compact .story-thumb-portrait { width: 90px; height: 90px; }
+    body.compact .story-featured .card-headline { font-size: 15px; }
+    body.compact .story-img { width: 140px; height: 105px; }
+    body.compact .story-thumb-side { width: 72px; height: 52px; }
 
     body.compact .bullets-wrap {
       grid-template-rows: 0fr; overflow: hidden;
@@ -851,10 +845,10 @@
       .header-inner { padding: 0 16px; }
       main { padding: 24px 14px 80px; }
       .brief-title { font-size: 28px; }
-      .story-featured .card-headline { font-size: 17px; }
-      .story-hero { max-height: 150px; }
-      .story-thumb-side { width: 80px; height: 56px; }
-      .story-thumb-portrait { width: 100px; height: 100px; }
+      .story-featured { gap: 14px; }
+      .story-featured .card-headline { font-size: 16px; }
+      .story-img { width: 120px; height: 90px; }
+      .story-thumb-side { width: 72px; height: 52px; }
 
       .settings-panel {
         position: fixed; width: 100%; border-left: none;
@@ -1453,35 +1447,24 @@ function buildCard(row, idx = 0) {
     const expandBtn = bullets.length ? `<button class="expand-btn" onclick="toggleExpand(this)" aria-label="Show details"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>` : '';
     const headlineClick = bullets.length ? ` class="card-headline expandable-headline" onclick="toggleExpand(this)"` : ` class="card-headline"`;
 
-    // First story gets hero image if wide enough; tall/portrait → side thumb
-    // Subsequent stories always get side thumb
     const isFirst = i === 0;
     const imgEsc = imageUrl ? esc(imageUrl) : '';
-
-    // For first story with image: render a hero placeholder that adapts on load
-    // onload checks aspect ratio: wide → hero, squarish → smaller hero, tall → convert to side thumb
-    let heroHtml = '';
-    let thumbHtml = '';
-
-    if (imageUrl && isFirst) {
-      heroHtml = `<img class="story-hero" src="${imgEsc}" alt="" loading="lazy"
-        onerror="this.style.display='none'"
-        onload="adaptHeroImg(this)">`;
-    } else if (imageUrl) {
-      thumbHtml = `<img class="story-thumb-side" src="${imgEsc}" alt="" loading="lazy" onerror="this.style.display='none'">`;
-    }
+    const imgErr = `onerror="this.style.display='none'"`;
 
     const headlineContent = `<span${headlineClick}>${esc(headline)}</span>${expandBtn}`;
 
-    let inner = '';
-    if (thumbHtml) {
-      inner = `<div class="headline-row-wrap"><div class="headline-row" style="flex:1;min-width:0;">${headlineContent}</div>${thumbHtml}</div>`;
+    // Build text content (headline, bullets, sources)
+    let textContent = '';
+
+    // Secondary stories with images get an inline thumb next to headline
+    if (imageUrl && !isFirst) {
+      textContent = `<div class="headline-row-wrap"><div class="headline-row" style="flex:1;min-width:0;">${headlineContent}</div><img class="story-thumb-side" src="${imgEsc}" alt="" loading="lazy" ${imgErr}></div>`;
     } else {
-      inner = `<div class="headline-row">${headlineContent}</div>`;
+      textContent = `<div class="headline-row">${headlineContent}</div>`;
     }
 
     if (bullets.length) {
-      inner += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
+      textContent += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
     }
     if (srcs.length) {
       const parts = srcs.map(s => {
@@ -1491,13 +1474,18 @@ function buildCard(row, idx = 0) {
           ? `<a class="src-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`
           : `<span>${name}</span>`;
       });
-      inner += `<div class="card-sources">${parts.join(' <span class="src-dot">&bull;</span> ')}</div>`;
+      textContent += `<div class="card-sources">${parts.join(' <span class="src-dot">&bull;</span> ')}</div>`;
     }
 
-    const storyClass = isFirst && imageUrl ? 'story-block story-featured' : 'story-block';
-    const storyInner = isFirst && imageUrl
-      ? `${heroHtml}<div class="story-inner">${inner}</div>`
-      : inner;
+    // First story with image: side-by-side layout (image left, content right)
+    let storyClass, storyInner;
+    if (isFirst && imageUrl) {
+      storyClass = 'story-block story-featured';
+      storyInner = `<img class="story-img" src="${imgEsc}" alt="" loading="lazy" ${imgErr}><div class="story-inner">${textContent}</div>`;
+    } else {
+      storyClass = 'story-block';
+      storyInner = textContent;
+    }
 
     return `<div class="${storyClass}">${storyInner}</div>`;
   }).join('');
@@ -2167,40 +2155,6 @@ function showProfileMsg(id, text, type) {
     }
   }, { passive: true });
 })();
-
-// ── Image adaptation ──────────────────────────────────────────
-// Called onload for hero images — adapts display based on actual aspect ratio
-function adaptHeroImg(img) {
-  const r = img.naturalWidth / img.naturalHeight;
-  if (r >= 1.6) {
-    // Wide landscape — full hero with wide aspect
-    img.classList.add('hero-wide');
-  } else if (r >= 1.1) {
-    // Moderate landscape / squarish — smaller hero
-    img.classList.add('hero-square');
-  } else {
-    // Portrait or near-square — convert to side thumbnail layout
-    const featured = img.closest('.story-featured');
-    if (!featured) return;
-    // Move the image next to the headline instead of above it
-    img.classList.remove('story-hero');
-    img.classList.add('story-thumb-portrait');
-    img.removeAttribute('onload');
-    const inner = featured.querySelector('.story-inner');
-    if (inner) {
-      const headlineRow = inner.querySelector('.headline-row');
-      if (headlineRow) {
-        const wrap = document.createElement('div');
-        wrap.className = 'headline-row-wrap';
-        headlineRow.parentNode.insertBefore(wrap, headlineRow);
-        wrap.appendChild(headlineRow);
-        wrap.appendChild(img);
-      }
-    }
-    // Remove featured padding style since it's now inline
-    featured.classList.remove('story-featured');
-  }
-}
 
 // ── Helpers ───────────────────────────────────────────────────
 function showMsg(id, text, type) {
