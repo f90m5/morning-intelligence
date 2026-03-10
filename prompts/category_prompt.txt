@@ -95,19 +95,23 @@ CATEGORY BOUNDARIES: Each story must clearly belong to its assigned category. Do
 
 HEADLINE STANDARD: The headline must state the single most important specific fact as a complete claim — not just describe what the story is about. A reader should learn something concrete from the headline alone.
 Bad: "Apple announces new chip"
-Good: "Apple's M4 Ultra chip delivers 2.4x faster neural engine than M3 Ultra, per Apple March 9"
+Good: "Apple's M4 Ultra chip delivers 2.4x faster neural engine than M3 Ultra"
 
 BULLETS ADD DEPTH — NOT REPETITION: Each bullet must provide new information not already stated in the headline. The first bullet should give the most important supporting detail, the second should add context or scale, the third (if present) should cover what's next or a notable secondary fact. Never restate the headline in bullet form.
 
-SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), WHEN (date), and source attribution.
+SPECIFICITY: Every factual claim must include WHO (named entity), WHAT (specific figure or development), and WHEN (date embedded naturally in the sentence — not appended as a tag).
 Bad: "AI regulation is increasing"
-Good: "EU AI Act enforcement body formally launched March 9, giving national regulators until August to designate auditors — per Reuters"
+Good: "EU AI Act enforcement body launched March 9, giving national regulators until August to designate auditors"
+
+DATES: Embed dates naturally as part of the fact. Write "announced March 9", "filed Tuesday", "down 12% since January" — not "— per Source March 9" appended at the end. If the only date available is the article's publication date, you may omit it rather than pad the bullet with a meaningless tag.
+
+SOURCING — ONLY WHERE IT ADDS MEANING: Do not append "— per Source" to every bullet. The story-level sources field already credits the outlet. Only include an inline source attribution on a bullet when the source genuinely matters to the claim — for analyst projections, named quotes, company statements, contested figures, or cases where two sources conflict. For plain objective facts (a company filed a lawsuit, a stock rose, a deal was announced), no inline attribution is needed.
+Bad: "CHS has sold 35% of its portfolio since 2019 — per Fierce Healthcare March 9"
+Good: "CHS has sold roughly 35% of its hospital portfolio since 2019"
+Bad: "Analysts expect the deal to close by Q3 — per Bloomberg"
+Good: "Analysts expect the deal to close by Q3, per Bloomberg" (source matters here — it's a projection)
 
 RECENCY: Prefer stories published today or yesterday. Older stories may be included only when they represent the single most significant development in a category with no fresher coverage — importance always outweighs recency, but when two stories are otherwise equal, the more recent one wins.
-
-DATE RULE: Every bullet must include a date. If the source article does not state an event date, use its publication date. Format: "per [Source] [Month Day]". Never omit the date.
-
-SOURCING: Attribute every claim. Use "per Reuters", "according to Bloomberg", "BLS reported March 6". No unsourced assertions.
 
 BULLETS: Each bullet is a standalone fact. No vague observations. No repeated facts across bullets in the same story. Keep each bullet under 120 characters.
 
@@ -115,7 +119,7 @@ NO SPECULATION: Report confirmed events only. Do not write "could", "may", "migh
 
 ACCURACY — THIS IS NON-NEGOTIABLE: This output is delivered as factual intelligence to real users. Every name, number, date, quote, and claim must come directly and explicitly from the provided articles. Do not infer, extrapolate, paraphrase into a falsehood, or fill in any detail that is not stated in the source material. If you are not certain a fact appears in the article, omit it. A shorter, accurate bullet is always better than a longer, embellished one. Fabricated or inferred facts are a critical failure.
 
-QUALITY GATE: If a story cannot support at least 2 bullets that each meet the WHO/WHAT/WHEN/source standard above, skip that story entirely — set it to null. A missing story is better than vague bullets.
+QUALITY GATE: If a story cannot support at least 2 specific, factual bullets, skip that story entirely — set it to null. A missing story is better than vague bullets.
 
 LIMITED COVERAGE: If today's articles contain little or no coverage of a category, set "has_content": false. Do not fabricate stories or lower the quality bar to fill slots.
 
