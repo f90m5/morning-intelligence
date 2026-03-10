@@ -191,12 +191,20 @@ def build_email_html(date_str, cat_data, ordered_ids, prefs):
     n = len(visible)
 
     return f"""<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
+  <style>
+    :root {{ color-scheme: dark; }}
+    body {{ color-scheme: dark; background-color: #0d0c0a !important; }}
+    /* Prevent Gmail iOS auto-invert */
+    [data-ogsc] body, [data-ogsb] body {{ background-color: #0d0c0a !important; }}
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#0d0c0a;font-family:-apple-system,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:#0d0c0a;color-scheme:dark;font-family:-apple-system,Arial,sans-serif;">
   <div style="max-width:640px;margin:0 auto;padding:28px 16px 56px;">
 
     <!-- Header -->
