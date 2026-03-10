@@ -215,15 +215,16 @@
        FEED — the news grid
        ══════════════════════════════════════ */
     .feed {
-      columns: 2;
-      column-gap: 16px;
+      display: flex;
+      gap: 16px;
     }
-    .feed > .cat-card {
-      break-inside: avoid;
-      margin-bottom: 16px;
+    .feed-col {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 16px;
     }
     @media (max-width: 800px) {
-      .feed { columns: 1; }
+      .feed { flex-direction: column; }
+      .feed-col { width: 100%; }
     }
 
     /* ── Category card ───────────────────── */
@@ -359,8 +360,8 @@
 
     /* ── View modes ──────────────────────── */
     body.compact .expand-btn { display: flex; align-items: center; justify-content: center; }
-    body.compact .feed { column-gap: 12px; }
-    body.compact .feed > .cat-card { margin-bottom: 12px; }
+    body.compact .feed { gap: 12px; }
+    body.compact .feed-col { gap: 12px; }
     body.compact .card-header { padding: 12px 18px 10px; }
     body.compact .story-block { padding: 14px 18px; }
     body.compact .card-headline { font-size: 14px; line-height: 1.45; }
@@ -1443,7 +1444,12 @@ function renderFeed() {
   }
 
   metaEl.innerHTML = `${rows.length} topic${rows.length !== 1 ? 's' : ''}<span class="meta-dot"></span>${displayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-  feed.innerHTML = `<div class="feed">${rows.map((r, i) => buildCard(r, i)).join('')}</div>`;
+
+  // Distribute cards into two columns: left-right-left-right order
+  const cards = rows.map((r, i) => buildCard(r, i));
+  const col1 = [], col2 = [];
+  cards.forEach((html, i) => { (i % 2 === 0 ? col1 : col2).push(html); });
+  feed.innerHTML = `<div class="feed"><div class="feed-col">${col1.join('')}</div><div class="feed-col">${col2.join('')}</div></div>`;
 }
 
 function buildGuestPreview() {
