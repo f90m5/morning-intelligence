@@ -258,15 +258,15 @@
     }
     .story-block:hover { background: rgba(255,255,255,.015); }
 
-    /* Featured story — side-by-side image + content on desktop */
-    .story-featured {
-      display: flex; gap: 20px; align-items: flex-start;
+    /* Featured story — image beside headline, bullets span full width below */
+    .story-featured .featured-top {
+      display: flex; gap: 16px; align-items: flex-start;
     }
-    .story-featured .story-inner { flex: 1; min-width: 0; }
+    .story-featured .featured-top .headline-row { flex: 1; min-width: 0; }
 
     .story-img {
       flex-shrink: 0;
-      width: 200px; height: 150px;
+      width: 180px; height: 130px;
       border-radius: var(--radius-sm);
       object-fit: cover;
       background: var(--surface2);
@@ -293,7 +293,7 @@
       letter-spacing: -.01em;
     }
     .story-featured .card-headline {
-      font-size: 18px; font-weight: 800;
+      font-size: 17px; font-weight: 800;
       line-height: 1.35; letter-spacing: -.02em;
     }
 
@@ -354,7 +354,7 @@
     body.compact .story-block { padding: 14px 18px; }
     body.compact .card-headline { font-size: 14px; line-height: 1.45; }
     body.compact .story-featured .card-headline { font-size: 15px; }
-    body.compact .story-img { width: 140px; height: 105px; }
+    body.compact .story-img { width: 130px; height: 95px; }
     body.compact .story-thumb-side { width: 72px; height: 52px; }
 
     body.compact .bullets-wrap {
@@ -879,9 +879,9 @@
       .header-inner { padding: 0 16px; }
       main { padding: 24px 14px 80px; }
       .brief-title { font-size: 28px; }
-      .story-featured { gap: 14px; }
-      .story-featured .card-headline { font-size: 16px; }
-      .story-img { width: 120px; height: 90px; }
+      .story-featured .featured-top { gap: 12px; }
+      .story-featured .card-headline { font-size: 15px; }
+      .story-img { width: 110px; height: 80px; }
       .story-thumb-side { width: 72px; height: 52px; }
 
       .settings-panel {
@@ -1497,18 +1497,10 @@ function buildCard(row, idx = 0) {
 
     const headlineContent = `<span${headlineClick}>${esc(headline)}</span>${expandBtn}`;
 
-    // Build text content (headline, bullets, sources)
-    let textContent = '';
-
-    // Secondary stories with images get an inline thumb next to headline
-    if (imageUrl && !isFirst) {
-      textContent = `<div class="headline-row-wrap"><div class="headline-row" style="flex:1;min-width:0;">${headlineContent}</div><img class="story-thumb-side" src="${imgEsc}" alt="" loading="lazy" ${imgErr}></div>`;
-    } else {
-      textContent = `<div class="headline-row">${headlineContent}</div>`;
-    }
-
+    // Build bullets + sources (always full-width, below headline area)
+    let bulletsHtml = '';
     if (bullets.length) {
-      textContent += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
+      bulletsHtml += `<div class="bullets-wrap"><ul class="card-bullets">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`;
     }
     if (srcs.length) {
       const parts = srcs.map(s => {
@@ -1518,17 +1510,22 @@ function buildCard(row, idx = 0) {
           ? `<a class="src-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`
           : `<span>${name}</span>`;
       });
-      textContent += `<div class="card-sources">${parts.join(' <span class="src-dot">&bull;</span> ')}</div>`;
+      bulletsHtml += `<div class="card-sources">${parts.join(' <span class="src-dot">&bull;</span> ')}</div>`;
     }
 
-    // First story with image: side-by-side layout (image left, content right)
     let storyClass, storyInner;
     if (isFirst && imageUrl) {
+      // Featured: image + headline side by side on top, bullets full-width below
       storyClass = 'story-block story-featured';
-      storyInner = `<img class="story-img" src="${imgEsc}" alt="" loading="lazy" ${imgErr}><div class="story-inner">${textContent}</div>`;
-    } else {
+      storyInner = `<div class="featured-top"><div class="headline-row">${headlineContent}</div><img class="story-img" src="${imgEsc}" alt="" loading="lazy" ${imgErr}></div>${bulletsHtml}`;
+    } else if (imageUrl) {
+      // Secondary with thumb: image beside headline, bullets below
       storyClass = 'story-block';
-      storyInner = textContent;
+      storyInner = `<div class="headline-row-wrap"><div class="headline-row" style="flex:1;min-width:0;">${headlineContent}</div><img class="story-thumb-side" src="${imgEsc}" alt="" loading="lazy" ${imgErr}></div>${bulletsHtml}`;
+    } else {
+      // No image
+      storyClass = 'story-block';
+      storyInner = `<div class="headline-row">${headlineContent}</div>${bulletsHtml}`;
     }
 
     return `<div class="${storyClass}">${storyInner}</div>`;
