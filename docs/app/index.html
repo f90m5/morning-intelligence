@@ -225,13 +225,15 @@
     .story-block:hover { background: rgba(255,255,255,.015); }
 
     /* Featured story (first in card) */
-    .story-featured { padding: 0; }
-    .story-featured .story-inner { padding: 20px 22px; }
+    .story-featured { padding: 18px 22px; }
+    .story-featured .story-inner { padding: 0; }
 
     .story-hero {
-      width: 100%; aspect-ratio: 16/9; max-height: 260px;
+      width: 100%; aspect-ratio: 2/1; max-height: 180px;
       object-fit: cover; display: block;
       background: var(--surface2);
+      border-radius: var(--radius-sm);
+      margin-bottom: 14px;
     }
 
     .story-thumb-side {
@@ -314,7 +316,7 @@
     body.compact .story-block { padding: 14px 18px; }
     body.compact .card-headline { font-size: 14px; line-height: 1.45; }
     body.compact .story-featured .card-headline { font-size: 16px; }
-    body.compact .story-hero { max-height: 180px; }
+    body.compact .story-hero { max-height: 140px; }
     body.compact .story-thumb-side { width: 80px; height: 56px; }
 
     body.compact .bullets-wrap {
@@ -840,7 +842,7 @@
       main { padding: 24px 14px 80px; }
       .brief-title { font-size: 28px; }
       .story-featured .card-headline { font-size: 17px; }
-      .story-hero { max-height: 200px; }
+      .story-hero { max-height: 150px; }
       .story-thumb-side { width: 80px; height: 56px; }
 
       .settings-panel {
