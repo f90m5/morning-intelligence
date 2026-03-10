@@ -3,12 +3,15 @@ emailer.py — Send personalised daily brief emails to all signed-up users.
 
 Pulls today's category data and each user's preferences from Supabase,
 builds a custom HTML email respecting their category order/depth/toggles,
-and sends via Resend (resend.com).
+and sends via Brevo SMTP (smtp-relay.brevo.com).
 
 Setup (one-time):
-    1. Sign up at resend.com, verify dailynews.it.com domain
-    2. Add to your .env:  RESEND_API_KEY=re_xxxx
-    Also add RESEND_API_KEY to GitHub Actions secrets.
+    1. Sign up at brevo.com, verify dailynews.it.com domain
+    2. Go to SMTP & API → SMTP, generate an SMTP key
+    3. Add to your .env:
+         BREVO_SMTP_USER=your@login.email
+         BREVO_SMTP_KEY=xsmtpsib-xxxx
+    Also add both to GitHub Actions secrets.
 
 Usage:
     from scripts.emailer import send_brief_emails
@@ -16,10 +19,12 @@ Usage:
 """
 
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import datetime
 from pathlib import Path
 
-import resend
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -224,17 +229,35 @@ def build_email_html(date_str, cat_data, ordered_ids, prefs):
 
 # ── Main send function ────────────────────────────────────────────────────────
 
+def _send_via_brevo(smtp_user, smtp_key, to_email, subject, html_body):
+    """Send a single email via Brevo SMTP. Raises on failure."""
+    msg = MIMEMultipart("alternative")
+    msg["From"]    = f"Daily News <{SENDER_EMAIL}>"
+    msg["To"]      = to_email
+    msg["Subject"] = subject
+    # List-Unsubscribe header — Gmail bulk sender requirement
+    msg["List-Unsubscribe"] = f"<{APP_URL}settings>"
+    msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
+        server.ehlo()
+        server.starttls()
+        server.login(smtp_user, smtp_key)
+        server.sendmail(SENDER_EMAIL, to_email, msg.as_string())
+
+
 def send_brief_emails(date_str=None):
     """
     Main entry point. Pull all users + prefs from Supabase,
-    build a personalised email for each, and send via Resend.
+    build a personalised email for each, and send via Brevo SMTP.
     """
-    api_key = os.getenv("RESEND_API_KEY")
-    if not api_key:
-        print("  [SKIP] RESEND_API_KEY not set — skipping email.")
+    smtp_user = os.getenv("BREVO_SMTP_USER")
+    smtp_key  = os.getenv("BREVO_SMTP_KEY")
+    if not smtp_user or not smtp_key:
+        print("  [SKIP] BREVO_SMTP_USER / BREVO_SMTP_KEY not set — skipping email.")
         return False
-
-    resend.api_key = api_key
 
     if date_str is None:
         date_str = datetime.now().strftime("%Y-%m-%d")
@@ -270,13 +293,7 @@ def send_brief_emails(date_str=None):
         try:
             ordered_ids, prefs = _fetch_user_prefs(sb, user["id"])
             html = build_email_html(date_str, cat_data, ordered_ids, prefs)
-
-            resend.Emails.send({
-                "from":    f"Daily News <{SENDER_EMAIL}>",
-                "to":      [user["email"]],
-                "subject": subject,
-                "html":    html,
-            })
+            _send_via_brevo(smtp_user, smtp_key, user["email"], subject, html)
             print(f"  ✓ {user['email']}")
             sent += 1
         except Exception as e:
