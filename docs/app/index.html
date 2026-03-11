@@ -1453,11 +1453,16 @@ function renderFeed() {
 
   metaEl.innerHTML = `${rows.length} topic${rows.length !== 1 ? 's' : ''}<span class="meta-dot"></span>${displayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
-  // Distribute cards into two columns: left-right-left-right order
+  // Distribute cards: two-column zigzag on desktop, single column on mobile
   const cards = rows.map((r, i) => buildCard(r, i));
-  const col1 = [], col2 = [];
-  cards.forEach((html, i) => { (i % 2 === 0 ? col1 : col2).push(html); });
-  feed.innerHTML = `<div class="feed"><div class="feed-col">${col1.join('')}</div><div class="feed-col">${col2.join('')}</div></div>`;
+  const isMobile = window.innerWidth <= 800;
+  if (isMobile) {
+    feed.innerHTML = `<div class="feed"><div class="feed-col">${cards.join('')}</div></div>`;
+  } else {
+    const col1 = [], col2 = [];
+    cards.forEach((html, i) => { (i % 2 === 0 ? col1 : col2).push(html); });
+    feed.innerHTML = `<div class="feed"><div class="feed-col">${col1.join('')}</div><div class="feed-col">${col2.join('')}</div></div>`;
+  }
 }
 
 function buildGuestPreview() {
@@ -2251,6 +2256,22 @@ document.addEventListener('click', e => {
   const dd = document.getElementById('date-dropdown');
   if (dd && dd.classList.contains('open') && !e.target.closest('.brief-date')) closeDateDropdown();
 });
+
+// Re-render feed layout when crossing the mobile/desktop breakpoint
+(function() {
+  let wasMobile = window.innerWidth <= 800;
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const nowMobile = window.innerWidth <= 800;
+      if (nowMobile !== wasMobile) {
+        wasMobile = nowMobile;
+        renderFeed();
+      }
+    }, 150);
+  });
+})();
 </script>
 </body>
 </html>
